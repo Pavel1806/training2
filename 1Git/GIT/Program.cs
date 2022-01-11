@@ -6,6 +6,7 @@ namespace GIT
     {
         static void Main(string[] args)
         {
+            int p = 1;
             Console.WriteLine("Hello World!");
         }
     }
