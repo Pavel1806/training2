@@ -7,6 +7,7 @@ namespace GIT
         static void Main(string[] args)
         {
             int p = 1;
+            bool bugfix0 = false;
             Console.WriteLine("Hello World!");
         }
     }
