@@ -1,0 +1,35 @@
+git branch resethard
+git checkout resethard
+сделал изменения
+git add .
+git commit
+сделал изменения
+git add .
+git commit
+git push -u origin resethard
+git log
+узнал хеш коммита
+git reset --hard хеш коммита
+добавил измениения
+git add .
+git commit
+git push origin resethard
+
+
+git checkout main
+git branch revert
+git checkout revert
+сделал изменения
+git add .
+git commit
+сделал изменения
+git add .
+git commit
+git push -u origin revert
+git log
+узнал хеш коммита
+git revert хеш коммита
+git add .
+git commit
+git push origin revert
+

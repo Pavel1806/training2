@@ -1,0 +1,12 @@
+git branch stash
+git checkout stash
+сделал изменения
+git add .
+git stash
+git stash list
+посмотрел номер id
+git stash apply 0   или git stash pop(достанет последний stash)
+git commit
+git push
+
+

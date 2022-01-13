@@ -1,0 +1,20 @@
+git branch bugfix
+git branch bugfix0
+git checkout bugfix
+сделал изменения в файле 1Git/GIT/Program.cs
+git add .
+git commit
+git checkout bugfix0
+сделал изменения в файле 1Git/GIT/Program.cs
+git add 1Git/GIT/Program.cs
+git commit
+git checkout main
+git merge bugfix
+git merge bugfix0 не получилось слить в main
+открыл файл, откорректировал то, что надо оставить, закрыл файл.
+git add 1Git/GIT/Program.cs
+git commit
+
+
+
+

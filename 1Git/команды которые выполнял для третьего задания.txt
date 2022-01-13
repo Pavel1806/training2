@@ -1,0 +1,38 @@
+git branch merge
+git branch rebase1
+git branch cherrypick
+git checkout merge
+сделал изменения
+git add .
+git commit -m "Merge branch"
+git push -u origin merge
+git checkout rebase1
+сделал изменения
+git add .
+git commit -m "Rebase branch"
+git push -u origin rebase1
+git checkout cherrypick
+сделал изменения
+git add .
+git commit -m "cherrypick branch"
+git push -u origin cherrypick
+git checkout main
+git merge merge
+git push -u origin main
+git rebase rebase1
+не получилось сделать git push -u origin main
+git pull
+git push -u origin main
+git checkout cherrypick
+git log
+узнал номер хеша
+git checkout main
+git cherry-pick начало хеша
+git push -u origin main
+
+
+
+
+
+
+
