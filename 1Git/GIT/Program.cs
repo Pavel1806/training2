@@ -8,6 +8,7 @@ namespace GIT
         {
             int p = 1;
             bool bugfix = true;
+            bool bugfix0 = false;
             Console.WriteLine("Hello World!");
         }
     }
