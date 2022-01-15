@@ -1,5 +1,5 @@
 ﻿using System;
-using Multitargeting;
+using Multitargeting2;
 
 namespace NetCoreConsole
 {
