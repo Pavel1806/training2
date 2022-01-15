@@ -16,6 +16,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multitargeting2", "2Introduction .net\Multitargeting2\Multitargeting2.csproj", "{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultitargetingStandart2.0", "2Introduction .net\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj", "{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}"
+<<<<<<< HEAD
 EndProject
 <<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetFrameworkWpf", "2Introduction .net\NetFrameworkWpf\NetFrameworkWpf.csproj", "{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}"
@@ -25,6 +26,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multitargeting2", "2Introduction .net\Multitargeting2\Multitargeting2.csproj", "{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultitargetingStandart2.0", "2Introduction .net\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj", "{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}"
+>>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
+=======
 >>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 EndProject
 Global
@@ -63,9 +66,12 @@ Global
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}.Release|Any CPU.Build.0 = Release|Any CPU
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 =======
 >>>>>>> creatingConsoleApp
+=======
+>>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,12 +86,15 @@ Global
 		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 		{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
+<<<<<<< HEAD
 >>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 =======
 		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 		{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 >>>>>>> creatingConsoleApp
+=======
+>>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F2A78ADC-502B-4082-B3EB-210A2A0B1A9F}
