@@ -5,7 +5,11 @@ VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1Git", "1Git", "{2C9D4489-AE31-4DDA-97A7-E66A252A6909}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GIT", "1Git\GIT\GIT.csproj", "{35E0450C-1ABD-4163-9C56-44BC338F2F4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GIT", "1Git\GIT\GIT.csproj", "{35E0450C-1ABD-4163-9C56-44BC338F2F4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2Introduction .net", "2Introduction .net", "{159C018F-F493-417F-A7E7-3F2DB06C971D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreConsole", "2Introduction .net\NetCoreConsole\NetCoreConsole.csproj", "{38D45655-FDE1-48F7-96D3-B19417C30218}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +21,17 @@ Global
 		{35E0450C-1ABD-4163-9C56-44BC338F2F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35E0450C-1ABD-4163-9C56-44BC338F2F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35E0450C-1ABD-4163-9C56-44BC338F2F4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38D45655-FDE1-48F7-96D3-B19417C30218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38D45655-FDE1-48F7-96D3-B19417C30218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38D45655-FDE1-48F7-96D3-B19417C30218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38D45655-FDE1-48F7-96D3-B19417C30218}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{35E0450C-1ABD-4163-9C56-44BC338F2F4F} = {2C9D4489-AE31-4DDA-97A7-E66A252A6909}
+		{38D45655-FDE1-48F7-96D3-B19417C30218} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F2A78ADC-502B-4082-B3EB-210A2A0B1A9F}
