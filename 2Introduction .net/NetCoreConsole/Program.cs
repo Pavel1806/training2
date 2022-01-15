@@ -1,4 +1,5 @@
 ﻿using System;
+using Multitargeting;
 
 namespace NetCoreConsole
 {
@@ -10,7 +11,12 @@ namespace NetCoreConsole
 
             string name = Console.ReadLine();
 
-            Console.WriteLine($"Hello {name}!");
+            //Console.WriteLine($"Hello {name}!");
+
+            StringWithTime stringWithTime = new StringWithTime();
+            string str = stringWithTime.OutputNameDatetime(name);
+
+            Console.WriteLine(str);
         }
     }
 }
