@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Multitargeting2\Multitargeting2.csproj" />
-    <ProjectReference Include="..\Multitargeting\Multitargeting.csproj" />
+    <ProjectReference Include="..\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj" />
   </ItemGroup>
 
 </Project>
