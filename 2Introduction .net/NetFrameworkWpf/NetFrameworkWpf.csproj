@@ -94,5 +94,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj">
+      <Project>{8a6a29d6-8721-4a95-858d-bad18f4f6f5d}</Project>
+      <Name>MultitargetingStandart2.0</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

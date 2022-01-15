@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MultitargetingStandart2._0;
 
 namespace NetFrameworkWpf
 {
@@ -35,7 +36,10 @@ namespace NetFrameworkWpf
             }
             else
             {
-                MessageBox.Show($"Hello {name}");
+
+                //MessageBox.Show($"Hello {name}");
+                StringWithTime str = new StringWithTime();
+                MessageBox.Show($"{str.OutputNameDatetime(name)}");
             }
         }
     }
