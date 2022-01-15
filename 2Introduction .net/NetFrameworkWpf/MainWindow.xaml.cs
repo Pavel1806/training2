@@ -27,7 +27,16 @@ namespace NetFrameworkWpf
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+            string name = InputField.Text;
+
+            if(name == "")
+            {
+                MessageBox.Show("Вы не ввели свое имя в поле");
+            }
+            else
+            {
+                MessageBox.Show($"Hello {name}");
+            }
         }
     }
 }
