@@ -15,20 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multitargeting", "2Introduc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multitargeting2", "2Introduction .net\Multitargeting2\Multitargeting2.csproj", "{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultitargetingStandart2.0", "2Introduction .net\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj", "{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}"
-<<<<<<< HEAD
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultitargetingStandart2.0", "2Introduction .net\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj", "{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}"
 EndProject
-<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetFrameworkWpf", "2Introduction .net\NetFrameworkWpf\NetFrameworkWpf.csproj", "{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}"
-=======
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multitargeting", "2Introduction .net\Multitargeting\Multitargeting.csproj", "{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multitargeting2", "2Introduction .net\Multitargeting2\Multitargeting2.csproj", "{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultitargetingStandart2.0", "2Introduction .net\MultitargetingStandart2.0\MultitargetingStandart2.0.csproj", "{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}"
->>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
-=======
->>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,15 +33,6 @@ Global
 		{38D45655-FDE1-48F7-96D3-B19417C30218}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38D45655-FDE1-48F7-96D3-B19417C30218}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38D45655-FDE1-48F7-96D3-B19417C30218}.Release|Any CPU.Build.0 = Release|Any CPU
-<<<<<<< HEAD
-<<<<<<< HEAD
-		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Release|Any CPU.Build.0 = Release|Any CPU
-=======
-=======
->>>>>>> creatingConsoleApp
 		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,13 +45,10 @@ Global
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D}.Release|Any CPU.Build.0 = Release|Any CPU
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
-=======
->>>>>>> creatingConsoleApp
-=======
->>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
+		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,22 +56,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{35E0450C-1ABD-4163-9C56-44BC338F2F4F} = {2C9D4489-AE31-4DDA-97A7-E66A252A6909}
 		{38D45655-FDE1-48F7-96D3-B19417C30218} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-<<<<<<< HEAD
-<<<<<<< HEAD
+		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
+		{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
+		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
 		{7CD44860-4BA7-4C4D-8708-F0D641A0F0DC} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-=======
-		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-		{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-<<<<<<< HEAD
->>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
-=======
-		{D5BFDAD7-8F74-4CA7-867B-FE8CCC822546} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-		{BE7F4FC6-01C8-40B2-9E25-5065EF1D8C44} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
-		{8A6A29D6-8721-4A95-858D-BAD18F4F6F5D} = {159C018F-F493-417F-A7E7-3F2DB06C971D}
->>>>>>> creatingConsoleApp
-=======
->>>>>>> e28c0e1 (Создал библиотеку net standart 2.0)
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F2A78ADC-502B-4082-B3EB-210A2A0B1A9F}
