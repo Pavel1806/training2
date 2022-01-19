@@ -37,7 +37,7 @@ namespace NetFrameworkWpf
             else
             {
 
-                //MessageBox.Show($"Hello {name}");
+                //MessageBox.Show($"Hello {name}"); // TODO: Мертвого кода в репозитории быть не должно.
                 StringWithTime str = new StringWithTime();
                 MessageBox.Show($"{str.OutputNameDatetime(name)}");
             }
