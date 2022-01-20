@@ -11,7 +11,7 @@ namespace NetCoreConsole
 
             string name = Console.ReadLine();
 
-            //Console.WriteLine($"Hello {name}!");
+            //Console.WriteLine($"Hello {name}!"); // TODO: Мертвого кода в репозитории быть не должно.
 
             StringWithTime stringWithTime = new StringWithTime();
             string str = stringWithTime.OutputNameDatetime(name);
