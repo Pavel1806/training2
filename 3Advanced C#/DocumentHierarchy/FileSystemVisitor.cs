@@ -10,10 +10,12 @@ namespace DocumentHierarchy
     {
      
         string Puth { get; set; }
+        string Word { get; set; }
 
-        public FileSystemVisitor(string puth)
+        public FileSystemVisitor(string puth, string word)
         {
             Puth = puth;
+            Word = word;
         }
 
         public List<string> ListDocuments()
@@ -32,14 +34,23 @@ namespace DocumentHierarchy
                 string puth = stack.Pop();
 
                 var directories = Directory.EnumerateDirectories(puth);
+                var directories1 = Directory.EnumerateDirectories(puth, Word);
 
-                var file = Directory.EnumerateFiles(puth);
+                var file = Directory.EnumerateFiles(puth, Word);
 
+                if (directories1 != null)
+                {
+                    foreach (var item in directories1)
+                    {
+                        vs.Add(item);
+                       
+                    }
+                }
                 if (directories != null)
                 {
                     foreach (var item in directories)
                     {
-                        vs.Add(item);
+                        
                         stack.Push(item);
                     }
                 }

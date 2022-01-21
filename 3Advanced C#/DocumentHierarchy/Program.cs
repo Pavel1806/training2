@@ -11,7 +11,7 @@ namespace DocumentHierarchy
             //string puth = $"D:\\VisualStudio\\repos\\training";
             string puth = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
 
-            FileSystemVisitor fileSystem = new FileSystemVisitor(puth);
+            FileSystemVisitor fileSystem = new FileSystemVisitor(puth, "*.cs");
 
             var t = fileSystem.Tree();
 
