@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DocumentHierarchy
 {
@@ -6,7 +8,18 @@ namespace DocumentHierarchy
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            //string puth = $"D:\\VisualStudio\\repos\\training";
+            string puth = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
+
+            FileSystemVisitor fileSystem = new FileSystemVisitor(puth);
+
+            var t = fileSystem.Tree();
+
+            foreach(var item in t)
+            {
+                Console.WriteLine(item);
+            }
+
         }
     }
 }
