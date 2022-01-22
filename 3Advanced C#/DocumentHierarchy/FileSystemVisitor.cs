@@ -16,6 +16,7 @@ namespace DocumentHierarchy
         {
             Puth = puth;
             Word = word;
+            //Tree();
         }
 
         public List<string> ListDocuments()
