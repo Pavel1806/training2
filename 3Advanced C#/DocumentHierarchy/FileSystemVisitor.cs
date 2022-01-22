@@ -27,7 +27,7 @@ namespace DocumentHierarchy
         public void EndSearch()
         {
             vs.Add("Поиск закончился");
-            //Console.WriteLine("Осталась последняя директория");
+            
         }
 
 
