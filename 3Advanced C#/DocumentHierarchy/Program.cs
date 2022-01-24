@@ -7,19 +7,29 @@ namespace DocumentHierarchy
     class Program
     {
         static void Main(string[] args)
-        {
-            
-            string puth = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
+        {           
+            string path = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
 
-            FileSystemVisitor fileSystem = new FileSystemVisitor(puth);
+            FileSystemVisitor fileSystem = new FileSystemVisitor(path)
+            {
+                MethodForTheAlgorithm = (IEnumerable<string> vs) => 
+                   {
+                       List<string> vs1 = new List<string>();
 
-            fileSystem.ListDocuments(10);
-            fileSystem.DeleteFiles("WpfApp", ".cs");
+                       foreach (var item in vs)
+                       {
+                           
+                       }
+                       return vs1;
+                   }
+            };
 
+            var filteredList = fileSystem.DelegateExecution();
 
-
-
-
+            foreach (var item in filteredList)
+            {
+                Console.WriteLine(item);
+            }
 
         }
     }
