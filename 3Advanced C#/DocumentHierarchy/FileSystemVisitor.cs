@@ -13,6 +13,7 @@ namespace DocumentHierarchy
         string Puth { get; set; }
         string Word { get; set; }
         List<string> vs { get; set; }
+        Stack<string> stack { get; set; }
 
         public FileSystemVisitor(string puth, string word)
         {
@@ -20,86 +21,140 @@ namespace DocumentHierarchy
             Word = word;
             vs = new List<string>();
         }
+        public FileSystemVisitor(string puth)
+        {
+            Puth = puth;
+            vs = new List<string>();
+            stack = new Stack<string>();
+        }
         public void StartSearch()
         {
-            vs.Add("Поиск начался");
+            
+            Console.WriteLine("Поиск начался");
         }
         public void EndSearch()
         {
+
             vs.Add("Поиск закончился");
             
+            Console.WriteLine("Поиск закончился");
+        }
+        public void StoppedSearch()
+        {
+            
+            Console.WriteLine("Поиск прервался");
         }
 
 
-        public List<string> ListDocuments()
+        public List<string> ListDocuments(int stop)
         {
-            Stack<string> stack = new Stack<string>();
-
+            
             MyEvent myEvent = new MyEvent();
             myEvent.myEvent += StartSearch;
             myEvent.InvokeEvent();
 
-            vs.Add(Puth);
+            int i = 1;
 
-            stack.Push(Puth);
+            if(vs.Count == 0)
+               vs.Add(Puth);
 
+            if (stack.Count == 0)
+                stack.Push(Puth);
 
             while (stack.Count > 0)
             {
-
-                string puth = stack.Pop();
-
-                var directories = Directory.EnumerateDirectories(puth);
-                var directories1 = Directory.EnumerateDirectories(puth, Word);
-
-                var file = Directory.EnumerateFiles(puth, Word);
-
-
-
-                if (directories1 != null)
+                if (i != stop)
                 {
-                    foreach (var item in directories1)
-                    {
-                        vs.Add(item);
+                    string puth = stack.Pop();
 
+                    var directories = Directory.EnumerateDirectories(puth);
+
+                    var file = Directory.EnumerateFiles(puth);
+
+                    if (directories != null)
+                    {
+                        foreach (var item in directories)
+                        {
+
+                            vs.Add(item);
+                            stack.Push(item);
+                            Console.WriteLine(item);
+
+                        }
+                    }
+                    if (file != null)
+                    {
+                        foreach (var item in file)
+                        {
+                            vs.Add(item);
+                            Console.WriteLine(item);
+                        }
+                    }
+                    if (stack.Count == 0)
+                    {
+                        MyEvent myEvent1 = new MyEvent();
+                        myEvent1.myEvent += EndSearch;
+                        myEvent1.InvokeEvent();
                     }
                 }
-                if (directories != null)
-                {
-                    foreach (var item in directories)
-                    {
-
-                        stack.Push(item);
-                    }
-                }
-
-                if (file != null)
-                {
-                    foreach (var item in file)
-                    {
-                        vs.Add(item);
-                    }
-                }
-                if (stack.Count == 0)
+                else
                 {
                     MyEvent myEvent1 = new MyEvent();
-                    myEvent1.myEvent += EndSearch;
+                    myEvent1.myEvent += StoppedSearch;
                     myEvent1.InvokeEvent();
+                    break;
                 }
+                
+                i++;
+                
             }
             return vs;
         }
 
-        public IEnumerable Tree()
+        public void DeleteFiles(string searchWord, string expansion)
         {
-
-            foreach (var item in ListDocuments())
+            List<string> del = new List<string>();
+            foreach(var item in vs)
             {
-                yield return item;
+                int indexOfChar = item.IndexOf(searchWord);
+
+                if (indexOfChar != -1)
+                {
+                    if(item.EndsWith(expansion))
+                    {
+                        del.Add(item);
+                    }                   
+                }               
+            }
+            Console.WriteLine(new string('-', 50));
+            Console.WriteLine("Список папок и файлов подходящих для удаления");
+           for(int i=0; i<del.Count; i++)
+            {
+                Console.WriteLine($"{i+1}.{del[i]}");
+            }
+            Console.WriteLine("Введите номер удаляемого элемента");
+            int number = Convert.ToInt32(Console.ReadLine());
+
+            string file = del[number-1];
+
+            foreach(var item in vs)
+            {
+                if(item.IndexOf(file) == 0)
+                {
+                    vs.Remove(item);
+                    break;
+                }
             }
         }
 
+        //public IEnumerable<string> Tree()
+        //{
 
+        //    foreach (var item in ListDocuments())
+        //    {
+        //        yield return item;
+        //    }
+        //}
     }
 }
 
