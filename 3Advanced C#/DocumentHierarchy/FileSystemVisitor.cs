@@ -11,7 +11,7 @@ namespace DocumentHierarchy
     {
         string Path { get; set; }
 
-        IEnumerable<string> ListForFoldersAndFiles { get; set; }
+        List<string> ListForFoldersAndFiles { get; set; }
 
         Algorithm MethodForTheAlgorithm { get; set; }
 
@@ -23,27 +23,47 @@ namespace DocumentHierarchy
             ListForFoldersAndFiles = new List<string>();
         }
 
-        public void DelegateExecution()
+        public List<string> CollectingTreeOfFoldersAndFiles()
         {
-            string thePathToFilter = "";
 
-            bool p = MethodForTheAlgorithm(thePathToFilter);
+            Stack<string> stack = new Stack<string>();
+
+            if(ListForFoldersAndFiles.Count == 0)
+                ListForFoldersAndFiles.Add(Path);
+
+            if (stack.Count == 0)
+                stack.Push(Path);
+
+            while (stack.Count > 0)
+            {
+                string path = stack.Pop();
+
+                var directories = Directory.EnumerateDirectories(path);
+
+                var file = Directory.EnumerateFiles(path);
+
+                if (directories != null)
+                {
+                    foreach (var item in directories)
+                    {
+                        stack.Push(item);
+
+                        if(MethodForTheAlgorithm(item) == true)
+                               ListForFoldersAndFiles.Add(item);
+                    }
+                }
+                
+                if (file != null)
+                {
+                    foreach (var item in file)
+                    {
+                        if(MethodForTheAlgorithm(item) == true)
+                               ListForFoldersAndFiles.Add(item);
+                    }
+                }
+            }
+            return ListForFoldersAndFiles;
         }
-
-        public void CollectingTreeOfFoldersAndFiles()
-        {
-            string path = ListForFoldersAndFiles;
-
-
-            ListForFoldersAndFiles = Directory.GetFileSystemEntries(Path);
-        }
-
-
-        IEnumerable<string> Metod()
-        {
-            yield return ListForFoldersAndFiles;
-        }
-
     }
 }
 

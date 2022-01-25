@@ -12,25 +12,24 @@ namespace DocumentHierarchy
 
             FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string p) =>
             {
-                string substring = "Introduction";
+                string substring = "WpfApp";
                 int indexOfSubstring = p.IndexOf(substring);
-                if(indexOfSubstring != -1)
+                if (indexOfSubstring != -1)
                 {
                     return true;
                 }
                 else
                 {
                     return false;
-                }              
+                }
+                //return true;
             }
             );
 
-            fileSystem.CollectingTreeOfFoldersAndFiles();
-
-            //foreach (var item in filteredList)
-            //{
-            //    Console.WriteLine(item);
-            //}
+            foreach (var item in fileSystem.CollectingTreeOfFoldersAndFiles())
+            {
+                Console.WriteLine(item);
+            }
 
         }
     }
