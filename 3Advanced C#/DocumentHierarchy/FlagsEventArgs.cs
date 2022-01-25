@@ -6,6 +6,12 @@ namespace DocumentHierarchy
 {
     class FlagsEventArgs
     {
-        string Message { get; set; }
+        public string MessageStart { get; set; }
+        //string MessageEnd { get; set; }
+
+        public FlagsEventArgs(string messageStart)
+        {
+            MessageStart = messageStart;
+        }
     }
 }

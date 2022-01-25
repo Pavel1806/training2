@@ -15,15 +15,18 @@ namespace DocumentHierarchy
 
         Algorithm MethodForTheAlgorithm { get; set; }
 
-       
         public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
         {
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
             ListForFoldersAndFiles = new List<string>();
+            //myEvent.myEvent += CollectingTreeOfFoldersAndFiles;
         }
 
-        public List<string> CollectingTreeOfFoldersAndFiles()
+        //public 
+        MyEvent myEvent = new MyEvent();
+
+        public IEnumerable<string> CollectingTreeOfFoldersAndFiles()
         {
 
             Stack<string> stack = new Stack<string>();
@@ -33,6 +36,8 @@ namespace DocumentHierarchy
 
             if (stack.Count == 0)
                 stack.Push(Path);
+
+            myEvent.SimulateNewMail("Начало сбора дерева");
 
             while (stack.Count > 0)
             {

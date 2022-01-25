@@ -16,6 +16,11 @@ namespace DocumentHierarchy
                 t(this, args);
         }
 
+        public void SimulateNewMail(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
 
+            OnMyEvent(e);
+        }
     }
 }
