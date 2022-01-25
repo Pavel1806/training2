@@ -14,17 +14,17 @@ namespace DocumentHierarchy
         List<string> ListForFoldersAndFiles { get; set; }
 
         Algorithm MethodForTheAlgorithm { get; set; }
+        MyEvent myEvent { get; set; }
+
 
         public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
         {
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
             ListForFoldersAndFiles = new List<string>();
-            //myEvent.myEvent += CollectingTreeOfFoldersAndFiles;
+            myEvent = new MyEvent();
+            Output output = new Output(myEvent);
         }
-
-        //public 
-        MyEvent myEvent = new MyEvent();
 
         public IEnumerable<string> CollectingTreeOfFoldersAndFiles()
         {
@@ -37,7 +37,7 @@ namespace DocumentHierarchy
             if (stack.Count == 0)
                 stack.Push(Path);
 
-            myEvent.SimulateNewMail("Начало сбора дерева");
+            myEvent.MethodOfCallingTheEvent("Начат обход дерева");
 
             while (stack.Count > 0)
             {
@@ -54,7 +54,11 @@ namespace DocumentHierarchy
                         stack.Push(item);
 
                         if(MethodForTheAlgorithm(item) == true)
-                               ListForFoldersAndFiles.Add(item);
+                        {
+                            ListForFoldersAndFiles.Add(item);
+                            Console.WriteLine(item);
+                        }    
+                               
                     }
                 }
                 
@@ -63,8 +67,17 @@ namespace DocumentHierarchy
                     foreach (var item in file)
                     {
                         if(MethodForTheAlgorithm(item) == true)
-                               ListForFoldersAndFiles.Add(item);
+                        {
+                            ListForFoldersAndFiles.Add(item);
+                            Console.WriteLine(item);
+                        }
+                               
                     }
+                }
+
+                if (stack.Count == 0)
+                {
+                    myEvent.MethodOfCallingTheEvent("Закончен обход дерева");
                 }
             }
             return ListForFoldersAndFiles;

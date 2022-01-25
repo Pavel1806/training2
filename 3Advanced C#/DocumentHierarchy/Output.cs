@@ -13,7 +13,7 @@ namespace DocumentHierarchy
 
         private void OutputToTheConsole(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.MessageStart);
+            Console.WriteLine(e.Message);
         }
 
     }

@@ -16,7 +16,7 @@ namespace DocumentHierarchy
                 t(this, args);
         }
 
-        public void SimulateNewMail(string mes)
+        public void MethodOfCallingTheEvent (string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
 

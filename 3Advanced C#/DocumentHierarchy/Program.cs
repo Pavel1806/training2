@@ -26,19 +26,13 @@ namespace DocumentHierarchy
             }
             );
 
-            MyEvent myEvent = new MyEvent();
-            myEvent.myEvent += MyEvent_myEvent;
-
-            foreach (var item in fileSystem.CollectingTreeOfFoldersAndFiles())
-            {
-                Console.WriteLine(item);
-            }
+            fileSystem.CollectingTreeOfFoldersAndFiles();
+            //foreach (var item in fileSystem.CollectingTreeOfFoldersAndFiles())
+            //{
+            //    Console.WriteLine(item);
+            //}
 
         }
 
-        private static void MyEvent_myEvent(object sender, FlagsEventArgs e)
-        {
-            Console.WriteLine();
-        }
     }
 }
