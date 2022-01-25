@@ -10,26 +10,27 @@ namespace DocumentHierarchy
         {           
             string path = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
 
-            FileSystemVisitor fileSystem = new FileSystemVisitor(path)
+            FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string p) =>
             {
-                MethodForTheAlgorithm = (IEnumerable<string> vs) => 
-                   {
-                       List<string> vs1 = new List<string>();
-
-                       foreach (var item in vs)
-                       {
-                           
-                       }
-                       return vs1;
-                   }
-            };
-
-            var filteredList = fileSystem.DelegateExecution();
-
-            foreach (var item in filteredList)
-            {
-                Console.WriteLine(item);
+                string substring = "Introduction";
+                int indexOfSubstring = p.IndexOf(substring);
+                if(indexOfSubstring != -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }              
             }
+            );
+
+            fileSystem.CollectingTreeOfFoldersAndFiles();
+
+            //foreach (var item in filteredList)
+            //{
+            //    Console.WriteLine(item);
+            //}
 
         }
     }

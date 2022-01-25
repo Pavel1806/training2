@@ -6,25 +6,42 @@ using System.Text;
 
 namespace DocumentHierarchy
 {
-    public delegate IEnumerable<string> Algorithm(IEnumerable<string> vs);
+    public delegate bool Algorithm(string p);
     class FileSystemVisitor
     {
         string Path { get; set; }
 
         IEnumerable<string> ListForFoldersAndFiles { get; set; }
 
-        public Algorithm MethodForTheAlgorithm { get; set; }
+        Algorithm MethodForTheAlgorithm { get; set; }
 
        
-        public FileSystemVisitor(string path)
+        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
         {
             Path = path;
+            MethodForTheAlgorithm = methodForTheAlgorithm;
             ListForFoldersAndFiles = new List<string>();
         }
 
-        public IEnumerable<string> DelegateExecution()
+        public void DelegateExecution()
         {
-           return MethodForTheAlgorithm(ListForFoldersAndFiles);
+            string thePathToFilter = "";
+
+            bool p = MethodForTheAlgorithm(thePathToFilter);
+        }
+
+        public void CollectingTreeOfFoldersAndFiles()
+        {
+            string path = ListForFoldersAndFiles;
+
+
+            ListForFoldersAndFiles = Directory.GetFileSystemEntries(Path);
+        }
+
+
+        IEnumerable<string> Metod()
+        {
+            yield return ListForFoldersAndFiles;
         }
 
     }

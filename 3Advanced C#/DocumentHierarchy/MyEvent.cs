@@ -6,12 +6,16 @@ namespace DocumentHierarchy
 {
     class MyEvent
     {
-        public delegate void EventDelegate();
-        public event EventDelegate myEvent = null;
+        //public delegate void EventDelegate();
+        public event EventHandler<FlagsEventArgs> myEvent;
 
-        public void InvokeEvent()
+        protected virtual void OnMyEvent(FlagsEventArgs args)
         {
-            myEvent.Invoke();
+            var t = myEvent;
+            if (t != null)
+                t(this, args);
         }
+
+
     }
 }
