@@ -9,6 +9,9 @@ namespace DocumentHierarchy
         static void Main(string[] args)
         {           
             string path = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
+            bool a = true;
+            bool b = true;
+            MyEvent myEvent; 
 
             FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string p) =>
             {
@@ -23,15 +26,22 @@ namespace DocumentHierarchy
                     return false;
                 }
                 //return true;
-            }
+            }, myEvent = new MyEvent(a, b)
             );
 
+            myEvent.myEvent += OutputToTheConsole;
+
             fileSystem.CollectingTreeOfFoldersAndFiles();
+
             //foreach (var item in fileSystem.CollectingTreeOfFoldersAndFiles())
             //{
             //    Console.WriteLine(item);
             //}
 
+        }
+        static void OutputToTheConsole(object sender, FlagsEventArgs e)
+        {
+            Console.WriteLine(e.Message);
         }
 
     }

@@ -6,7 +6,10 @@ namespace DocumentHierarchy
 {
     class MyEvent
     {
-        //public delegate void EventDelegate();
+        public MyEvent(bool a, bool g)
+        {
+
+        }
         public event EventHandler<FlagsEventArgs> myEvent;
 
         protected virtual void OnMyEvent(FlagsEventArgs args)

@@ -14,21 +14,20 @@ namespace DocumentHierarchy
         List<string> ListForFoldersAndFiles { get; set; }
 
         Algorithm MethodForTheAlgorithm { get; set; }
-        MyEvent myEvent { get; set; }
+        MyEvent MyEvent { get; set; }
 
 
-        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
+        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm, MyEvent myEvent)
         {
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
             ListForFoldersAndFiles = new List<string>();
-            myEvent = new MyEvent();
-            Output output = new Output(myEvent);
+            MyEvent = myEvent;
         }
 
         public IEnumerable<string> CollectingTreeOfFoldersAndFiles()
         {
-
+            
             Stack<string> stack = new Stack<string>();
 
             if(ListForFoldersAndFiles.Count == 0)
@@ -37,7 +36,7 @@ namespace DocumentHierarchy
             if (stack.Count == 0)
                 stack.Push(Path);
 
-            myEvent.MethodOfCallingTheEvent("Начат обход дерева");
+            MyEvent.MethodOfCallingTheEvent("Начат обход дерева");
 
             while (stack.Count > 0)
             {
@@ -60,8 +59,7 @@ namespace DocumentHierarchy
                         }    
                                
                     }
-                }
-                
+                }                
                 if (file != null)
                 {
                     foreach (var item in file)
@@ -71,13 +69,16 @@ namespace DocumentHierarchy
                             ListForFoldersAndFiles.Add(item);
                             Console.WriteLine(item);
                         }
-                               
                     }
                 }
-
                 if (stack.Count == 0)
                 {
-                    myEvent.MethodOfCallingTheEvent("Закончен обход дерева");
+                    MyEvent.MethodOfCallingTheEvent("Закончена фильтрация файлов");
+                    MyEvent.MethodOfCallingTheEvent("Закончена фильтрация папок");
+                    MyEvent.MethodOfCallingTheEvent("Закончен обход файлов");
+                    MyEvent.MethodOfCallingTheEvent("Закончен обход папок");
+                    MyEvent.MethodOfCallingTheEvent("Закончен обход дерева");
+                    
                 }
             }
             return ListForFoldersAndFiles;
