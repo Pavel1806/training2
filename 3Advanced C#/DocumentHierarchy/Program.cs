@@ -28,13 +28,13 @@ namespace DocumentHierarchy
 
             fileSystem.EventForNotifications += OutputToTheConsole;
 
-            fileSystem.SearchTreeOfFoldersAndFiles();
-            fileSystem.CollectingTreeOfFoldersAndFiles();
+            //fileSystem.SearchTreeOfFoldersAndFiles();
+            var col = fileSystem.CollectingTreeOfFoldersAndFiles();
 
-            //foreach (var item in fileSystem.CollectingTreeOfFoldersAndFiles())
-            //{
-            //    Console.WriteLine(item);
-            //}
+            foreach (var item in col)
+            {
+                Console.WriteLine(item);
+            }
 
         }
         static void OutputToTheConsole(object sender, FlagsEventArgs e)

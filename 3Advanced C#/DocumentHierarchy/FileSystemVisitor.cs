@@ -56,7 +56,7 @@ namespace DocumentHierarchy
                         if(MethodForTheAlgorithm(item) == true)
                         {
                             ListForFoldersAndFiles.Add(item);
-                            Console.WriteLine(item);
+                            //Console.WriteLine(item);
                         }    
                                
                     }
@@ -68,7 +68,7 @@ namespace DocumentHierarchy
                         if(MethodForTheAlgorithm(item) == true)
                         {
                             ListForFoldersAndFiles.Add(item);
-                            Console.WriteLine(item);
+                            //Console.WriteLine(item);
                         }
                     }
                 }
