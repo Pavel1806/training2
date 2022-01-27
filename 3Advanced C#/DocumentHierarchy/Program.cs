@@ -9,7 +9,8 @@ namespace DocumentHierarchy
         static void Main(string[] args)
         {           
             string path = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
-            
+
+
             FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string p) =>
             {
                 string substring = "WpfApp";
@@ -28,7 +29,6 @@ namespace DocumentHierarchy
 
             fileSystem.EventForNotifications += OutputToTheConsole;
 
-            //fileSystem.SearchTreeOfFoldersAndFiles();
             var col = fileSystem.CollectingTreeOfFoldersAndFiles();
 
             foreach (var item in col)

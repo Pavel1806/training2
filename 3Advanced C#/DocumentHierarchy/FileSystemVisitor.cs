@@ -7,7 +7,7 @@ using System.Text;
 namespace DocumentHierarchy
 {
     public delegate bool Algorithm(string p);
-    class FileSystemVisitor
+    public class FileSystemVisitor
     {
         string Path { get; set; }
 
@@ -26,7 +26,7 @@ namespace DocumentHierarchy
             
         }
 
-        public IEnumerable<string> SearchTreeOfFoldersAndFiles()
+        IEnumerable<string> SearchTreeOfFoldersAndFiles()
         {
             
             Stack<string> stack = new Stack<string>();
@@ -42,8 +42,15 @@ namespace DocumentHierarchy
             while (stack.Count > 0)
             {
                 string path = stack.Pop();
-
-                var directories = Directory.EnumerateDirectories(path);
+                IEnumerable<string> directories = null;
+                try
+                {
+                    directories = Directory.EnumerateDirectories(path);
+                }
+                catch
+                {
+                    continue;
+                }
 
                 var file = Directory.EnumerateFiles(path);
 

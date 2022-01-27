@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DocumentHierarchy
 {
-    class FlagsEventArgs
+    public class FlagsEventArgs
     {
         public string Message { get; set; }
 
