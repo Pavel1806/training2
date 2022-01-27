@@ -13,7 +13,7 @@ namespace DocumentHierarchy.Tests
             string path = $"D:\\";
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string p)=> { return true; });
             var col = new List<string>();
-            foreach(var item in fileSystemVisitor.CollectingTreeOfFoldersAndFiles())
+            foreach(var item in fileSystemVisitor.SearchTreeOfFoldersAndFiles())
             {
                 col.Add(item);
             }

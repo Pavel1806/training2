@@ -10,19 +10,20 @@ namespace DocumentHierarchy
     public class FileSystemVisitor
     {
         string Path { get; set; }
-        
-        List<string> ListForFoldersAndFiles { get; set; }
 
         Algorithm MethodForTheAlgorithm { get; set; }
         
-        public event EventHandler<FlagsEventArgs> EventForNotifications;
-
+        public event EventHandler<FlagsEventArgs> EventStartTree;
+        public event EventHandler<FlagsEventArgs> EventFinishTree;
+        public event EventHandler<FlagsEventArgs> EventFileFinded;
+        public event EventHandler<FlagsEventArgs> EventDirectoryFinded;
+        public event EventHandler<FlagsEventArgs> EventFilteredFileFinded;
+        public event EventHandler<FlagsEventArgs> EventFilteredDirectoryFinded;
 
         public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
         {
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
-            ListForFoldersAndFiles = new List<string>();
         }
         List<string> stack = new List<string>();
         
@@ -30,8 +31,10 @@ namespace DocumentHierarchy
         {
             if (stack.Count == 0)
                 stack.Add(Path);
-            
-            while(stack.Count > 0)
+
+            MethodOfCallingTheEvent("Начали обход дерева");
+
+            while (stack.Count > 0)
             {
                 IEnumerable<string> directories = null;
                 string path = stack[0];
@@ -55,23 +58,88 @@ namespace DocumentHierarchy
                 }
                 
             }
+            MethodOfCallingTheEventFilteredFileFinded("Фильтрация файлов закончена");
+            MethodOfCallingTheEventFilteredDirectoryFinded("Фильтрация папок закончена");
+            MethodOfCallingTheEventFileFinded("Обход файлов закончен");
+            MethodOfCallingTheEventDirectoryFinded("Обход папок закончен");
+            MethodOfCallingTheEventFinish("Обход дерева закончен");
         }
        
-        protected virtual void OnMyEvent(FlagsEventArgs args)
+        protected virtual void OnEventStartTree(FlagsEventArgs args)
         {
-            var intermediateEvent = EventForNotifications;
+            var intermediateEvent = EventStartTree;
             if (intermediateEvent != null)
                 intermediateEvent(this, args);
         }
-
-        public bool MethodOfCallingTheEvent(string mes)
+        public void MethodOfCallingTheEvent(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
-
-            OnMyEvent(e);
-            return e.Flag;
+            OnEventStartTree(e);
+            //return e.Flag;
+        }
+        protected virtual void OnEventFinishTree(FlagsEventArgs args)
+        {
+            var intermediateEvent = EventFinishTree;
+            if (intermediateEvent != null)
+                intermediateEvent(this, args);
+        }
+        public void MethodOfCallingTheEventFinish(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
+            OnEventFinishTree(e);
+            //return e.Flag;
+        }
+        protected virtual void OnEventFileFinded(FlagsEventArgs args)
+        {
+            var intermediateEvent = EventFileFinded;
+            if (intermediateEvent != null)
+                intermediateEvent(this, args);
+        }
+        public void MethodOfCallingTheEventFileFinded(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
+            OnEventFileFinded(e);
+            //return e.Flag;
         }
 
+        protected virtual void OnEventDirectoryFinded(FlagsEventArgs args)
+        {
+            var intermediateEvent = EventDirectoryFinded;
+            if (intermediateEvent != null)
+                intermediateEvent(this, args);
+        }
+        public void MethodOfCallingTheEventDirectoryFinded(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
+            OnEventDirectoryFinded(e);
+            //return e.Flag;
+        }
+
+        protected virtual void OnEventFilteredFileFinded(FlagsEventArgs args)
+        {
+            var intermediateEvent = EventFilteredFileFinded;
+            if (intermediateEvent != null)
+                intermediateEvent(this, args);
+        }
+        public void MethodOfCallingTheEventFilteredFileFinded(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
+            OnEventFilteredFileFinded(e);
+            //return e.Flag;
+        }
+
+        protected virtual void OnEventFilteredDirectoryFinded(FlagsEventArgs args)
+        {
+            var intermediateEvent = EventFilteredDirectoryFinded;
+            if (intermediateEvent != null)
+                intermediateEvent(this, args);
+        }
+        public void MethodOfCallingTheEventFilteredDirectoryFinded(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
+            OnEventFilteredDirectoryFinded(e);
+            //return e.Flag;
+        }
     }
 }
 

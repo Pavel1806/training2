@@ -26,7 +26,12 @@ namespace DocumentHierarchy
             }
             );
 
-            fileSystem.EventForNotifications += OutputToTheConsole;
+            fileSystem.EventStartTree += OutputToTheConsole;
+            fileSystem.EventFinishTree += FileSystem_EventFinishTree;
+            fileSystem.EventFileFinded += FileSystem_FilteredFileFinded;
+            fileSystem.EventDirectoryFinded += FileSystem_EventDirectoryFinded;
+            fileSystem.EventFilteredFileFinded += FileSystem_EventFilteredFileFinded;
+            fileSystem.EventFilteredDirectoryFinded += FileSystem_EventFilteredDirectoryFinded;
 
             //var col = fileSystem.SearchTreeOfFoldersAndFiles();
 
@@ -36,9 +41,34 @@ namespace DocumentHierarchy
             }
 
         }
+
+        private static void FileSystem_EventFilteredDirectoryFinded(object sender, FlagsEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        private static void FileSystem_EventFilteredFileFinded(object sender, FlagsEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        private static void FileSystem_EventDirectoryFinded(object sender, FlagsEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        private static void FileSystem_FilteredFileFinded(object sender, FlagsEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        private static void FileSystem_EventFinishTree(object sender, FlagsEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
         static void OutputToTheConsole(object sender, FlagsEventArgs e)
         {
-            e.Flag = false;
             Console.WriteLine(e.Message);
         }
 
