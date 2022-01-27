@@ -14,15 +14,16 @@ namespace DocumentHierarchy
         List<string> ListForFoldersAndFiles { get; set; }
 
         Algorithm MethodForTheAlgorithm { get; set; }
-        MyEvent MyEvent { get; set; }
+        
+        public event EventHandler<FlagsEventArgs> myEvent;
 
 
-        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm, MyEvent myEvent)
+        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
         {
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
             ListForFoldersAndFiles = new List<string>();
-            MyEvent = myEvent;
+            
         }
 
         public IEnumerable<string> CollectingTreeOfFoldersAndFiles()
@@ -36,7 +37,7 @@ namespace DocumentHierarchy
             if (stack.Count == 0)
                 stack.Push(Path);
 
-            MyEvent.MethodOfCallingTheEvent("Начат обход дерева");
+            MethodOfCallingTheEvent("Начат обход дерева");
 
             while (stack.Count > 0)
             {
@@ -73,15 +74,29 @@ namespace DocumentHierarchy
                 }
                 if (stack.Count == 0)
                 {
-                    MyEvent.MethodOfCallingTheEvent("Закончена фильтрация файлов");
-                    MyEvent.MethodOfCallingTheEvent("Закончена фильтрация папок");
-                    MyEvent.MethodOfCallingTheEvent("Закончен обход файлов");
-                    MyEvent.MethodOfCallingTheEvent("Закончен обход папок");
-                    MyEvent.MethodOfCallingTheEvent("Закончен обход дерева");
+                    MethodOfCallingTheEvent("Закончена фильтрация файлов");
+                    MethodOfCallingTheEvent("Закончена фильтрация папок");
+                    MethodOfCallingTheEvent("Закончен обход файлов");
+                    MethodOfCallingTheEvent("Закончен обход папок");
+                    MethodOfCallingTheEvent("Закончен обход дерева");
                     
                 }
             }
             return ListForFoldersAndFiles;
+        }
+
+        protected virtual void OnMyEvent(FlagsEventArgs args)
+        {
+            var t = myEvent;
+            if (t != null)
+                t(this, args);
+        }
+
+        public void MethodOfCallingTheEvent(string mes)
+        {
+            FlagsEventArgs e = new FlagsEventArgs(mes);
+
+            OnMyEvent(e);
         }
     }
 }
