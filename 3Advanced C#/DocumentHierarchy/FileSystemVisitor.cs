@@ -15,7 +15,7 @@ namespace DocumentHierarchy
 
         Algorithm MethodForTheAlgorithm { get; set; }
         
-        public event EventHandler<FlagsEventArgs> myEvent;
+        public event EventHandler<FlagsEventArgs> EventForNotifications;
 
 
         public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
@@ -26,7 +26,7 @@ namespace DocumentHierarchy
             
         }
 
-        public IEnumerable<string> CollectingTreeOfFoldersAndFiles()
+        public IEnumerable<string> SearchTreeOfFoldersAndFiles()
         {
             
             Stack<string> stack = new Stack<string>();
@@ -84,12 +84,19 @@ namespace DocumentHierarchy
             }
             return ListForFoldersAndFiles;
         }
+        public IEnumerable<string> CollectingTreeOfFoldersAndFiles()
+        {
+            foreach (var item in SearchTreeOfFoldersAndFiles())
+            {
+                yield return item;
+            }
+        }
 
         protected virtual void OnMyEvent(FlagsEventArgs args)
         {
-            var t = myEvent;
-            if (t != null)
-                t(this, args);
+            var intermediateEvent = EventForNotifications;
+            if (intermediateEvent != null)
+                intermediateEvent(this, args);
         }
 
         public void MethodOfCallingTheEvent(string mes)

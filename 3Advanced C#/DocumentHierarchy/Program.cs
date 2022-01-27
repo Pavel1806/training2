@@ -26,8 +26,9 @@ namespace DocumentHierarchy
             }
             );
 
-            fileSystem.myEvent += OutputToTheConsole;
+            fileSystem.EventForNotifications += OutputToTheConsole;
 
+            fileSystem.SearchTreeOfFoldersAndFiles();
             fileSystem.CollectingTreeOfFoldersAndFiles();
 
             //foreach (var item in fileSystem.CollectingTreeOfFoldersAndFiles())
