@@ -7,6 +7,7 @@ namespace DocumentHierarchy
     public class FlagsEventArgs
     {
         public string Message { get; set; }
+        public bool Flag { get; set; }
 
         public FlagsEventArgs(string message)
         {

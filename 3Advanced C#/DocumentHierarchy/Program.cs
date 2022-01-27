@@ -8,7 +8,8 @@ namespace DocumentHierarchy
     {
         static void Main(string[] args)
         {           
-            string path = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
+            string path = $"D:\\";
+            bool stoppingTheSearch = false;
 
 
             FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string p) =>
@@ -24,7 +25,7 @@ namespace DocumentHierarchy
                     return false;
                 }
                 //return true;
-            }
+            }, stoppingTheSearch
             );
 
             fileSystem.EventForNotifications += OutputToTheConsole;
@@ -39,6 +40,7 @@ namespace DocumentHierarchy
         }
         static void OutputToTheConsole(object sender, FlagsEventArgs e)
         {
+            e.Flag = false;
             Console.WriteLine(e.Message);
         }
 

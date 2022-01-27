@@ -10,6 +10,7 @@ namespace DocumentHierarchy
     public class FileSystemVisitor
     {
         string Path { get; set; }
+        bool StoppingTheSearch { get; set; }
 
         List<string> ListForFoldersAndFiles { get; set; }
 
@@ -18,14 +19,13 @@ namespace DocumentHierarchy
         public event EventHandler<FlagsEventArgs> EventForNotifications;
 
 
-        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
+        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm, bool stop)
         {
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
             ListForFoldersAndFiles = new List<string>();
-            
+            StoppingTheSearch = stop;
         }
-
         IEnumerable<string> SearchTreeOfFoldersAndFiles()
         {
             
@@ -49,11 +49,35 @@ namespace DocumentHierarchy
                 }
                 catch
                 {
+                    if(StoppingTheSearch == true)
+                    {
+                        var check = MethodOfCallingTheEvent("Сработало событие с удалением");
+                        if (check == true)
+                        {
+                            Console.WriteLine($"С этой папкой что-то не так{path}. Здесь можно исключить ее из поиска");
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    
+                }
+                IEnumerable<string> file = null;
+                try
+                {
+                    file = Directory.EnumerateFiles(path);
+                }
+                catch
+                {
+                    Console.WriteLine("Файлы не скачаны, папка не доступна");
                     continue;
                 }
-
-                var file = Directory.EnumerateFiles(path);
-
+                
                 if (directories != null)
                 {
                     foreach (var item in directories)
@@ -64,8 +88,7 @@ namespace DocumentHierarchy
                         {
                             ListForFoldersAndFiles.Add(item);
                             //Console.WriteLine(item);
-                        }    
-                               
+                        }             
                     }
                 }                
                 if (file != null)
@@ -106,12 +129,14 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        public void MethodOfCallingTheEvent(string mes)
+        public bool MethodOfCallingTheEvent(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
 
             OnMyEvent(e);
+            return e.Flag;
         }
+
     }
 }
 
