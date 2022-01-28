@@ -47,19 +47,35 @@ namespace DocumentHierarchy
                 {
                     continue;
                 }
+                List<string> listAddsFilteredPath = new List<string>();
                 if(directories!=null)
                 {
                     foreach (var item in directories)
                     {
                         stack.Add(item);
                         if(MethodForTheAlgorithm(item) == true)
-                         yield return item;
+                        {
+                            listAddsFilteredPath.Add(item);
+                            yield return item;
+                        }
                     }
                 }
-                
+                if(listAddsFilteredPath.Count != 0)
+                {
+                    Console.WriteLine("");
+                    MethodOfCallingTheEventFilteredFileFinded($"Фильтрация файлов в папке {path} закончена");
+
+                    if (MethodOfCallingTheEventFilteredDirectoryFinded($"Фильтрация папок в папке {path} закончена") == true)
+                    {
+                        Console.WriteLine("");
+                        Console.WriteLine("Поиск остановился");
+                        Console.WriteLine("Нажмите любую клавишу");
+                        Console.ReadLine();
+                        Console.WriteLine(("").PadRight(84, '-'));
+                    }
+                }
             }
-            MethodOfCallingTheEventFilteredFileFinded("Фильтрация файлов закончена");
-            MethodOfCallingTheEventFilteredDirectoryFinded("Фильтрация папок закончена");
+            
             MethodOfCallingTheEventFileFinded("Обход файлов закончен");
             MethodOfCallingTheEventDirectoryFinded("Обход папок закончен");
             MethodOfCallingTheEventFinish("Обход дерева закончен");
@@ -134,11 +150,11 @@ namespace DocumentHierarchy
             if (intermediateEvent != null)
                 intermediateEvent(this, args);
         }
-        public void MethodOfCallingTheEventFilteredDirectoryFinded(string mes)
+        public bool MethodOfCallingTheEventFilteredDirectoryFinded(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFilteredDirectoryFinded(e);
-            //return e.Flag;
+            return e.FlagToStopSearch;
         }
     }
 }

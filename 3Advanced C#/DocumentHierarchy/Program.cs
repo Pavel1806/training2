@@ -45,6 +45,7 @@ namespace DocumentHierarchy
         private static void FileSystem_EventFilteredDirectoryFinded(object sender, FlagsEventArgs e)
         {
             Console.WriteLine(e.Message);
+            e.FlagToStopSearch = true;
         }
 
         private static void FileSystem_EventFilteredFileFinded(object sender, FlagsEventArgs e)
