@@ -10,8 +10,6 @@ namespace DocumentHierarchy
         static void Main(string[] args)
         {
 
-            
-
             string path = $"D:\\VisualStudio\\repos\\training\\2Introduction .net";
 
             FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string p) =>
@@ -26,18 +24,15 @@ namespace DocumentHierarchy
                 {
                     return false;
                 }
-                //return true;
             }
             );
 
-            fileSystem.EventStartTree += OutputToTheConsole;
+            fileSystem.EventStartTree += FileSystem_EventStartTree;
             fileSystem.EventFinishTree += FileSystem_EventFinishTree;
             fileSystem.EventFileFinded += FileSystem_FilteredFileFinded;
             fileSystem.EventDirectoryFinded += FileSystem_EventDirectoryFinded;
             fileSystem.EventFilteredFileFinded += FileSystem_EventFilteredFileFinded;
             fileSystem.EventFilteredDirectoryFinded += FileSystem_EventFilteredDirectoryFinded;
-
-            //var col = fileSystem.SearchTreeOfFoldersAndFiles();
 
             foreach (var item in fileSystem.SearchTreeOfFoldersAndFiles())
             {
@@ -72,7 +67,7 @@ namespace DocumentHierarchy
             Console.WriteLine(e.Message);
         }
 
-        static void OutputToTheConsole(object sender, FlagsEventArgs e)
+        static void FileSystem_EventStartTree(object sender, FlagsEventArgs e)
         {
             Console.WriteLine(e.Message);
         }

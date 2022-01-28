@@ -25,20 +25,20 @@ namespace DocumentHierarchy
             Path = path;
             MethodForTheAlgorithm = methodForTheAlgorithm;
         }
-        List<string> stack = new List<string>();
+        List<string> listAddsFileOrDirectory = new List<string>();
         
         public IEnumerable<string> SearchTreeOfFoldersAndFiles()
         {
-            if (stack.Count == 0)
-                stack.Add(Path);
+            if (listAddsFileOrDirectory.Count == 0)
+                listAddsFileOrDirectory.Add(Path);
 
             MethodOfCallingTheEvent("Начали обход дерева");
 
-            while (stack.Count > 0)
+            while (listAddsFileOrDirectory.Count > 0)
             {
                 IEnumerable<string> directories = null;
-                string path = stack[0];
-                stack.RemoveAt(0);
+                string path = listAddsFileOrDirectory[0];
+                listAddsFileOrDirectory.RemoveAt(0);
                 try
                 {
                     directories = Directory.GetFileSystemEntries(path);
@@ -47,20 +47,20 @@ namespace DocumentHierarchy
                 {
                     continue;
                 }
-                List<string> listAddsFilteredPath = new List<string>();
+                List<string> listAddsFilteredDirectory = new List<string>();
                 if(directories!=null)
                 {
                     foreach (var item in directories)
                     {
-                        stack.Add(item);
+                        listAddsFileOrDirectory.Add(item);
                         if(MethodForTheAlgorithm(item) == true)
                         {
-                            listAddsFilteredPath.Add(item);
+                            listAddsFilteredDirectory.Add(item);
                             yield return item;
                         }
                     }
                 }
-                if(listAddsFilteredPath.Count != 0)
+                if(listAddsFilteredDirectory.Count != 0)
                 {
                     Console.WriteLine("");
                     MethodOfCallingTheEventFilteredFileFinded($"Фильтрация файлов в папке {path} закончена");
@@ -69,7 +69,7 @@ namespace DocumentHierarchy
                     {
                         Console.WriteLine("");
                         Console.WriteLine("Поиск остановился");
-                        Console.WriteLine("Нажмите любую клавишу");
+                        Console.WriteLine("Нажмите enter");
                         Console.ReadLine();
                         Console.WriteLine(("").PadRight(84, '-'));
                     }
@@ -91,7 +91,6 @@ namespace DocumentHierarchy
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventStartTree(e);
-            //return e.Flag;
         }
         protected virtual void OnEventFinishTree(FlagsEventArgs args)
         {
@@ -103,7 +102,6 @@ namespace DocumentHierarchy
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFinishTree(e);
-            //return e.Flag;
         }
         protected virtual void OnEventFileFinded(FlagsEventArgs args)
         {
@@ -115,7 +113,6 @@ namespace DocumentHierarchy
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFileFinded(e);
-            //return e.Flag;
         }
 
         protected virtual void OnEventDirectoryFinded(FlagsEventArgs args)
@@ -128,7 +125,6 @@ namespace DocumentHierarchy
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventDirectoryFinded(e);
-            //return e.Flag;
         }
 
         protected virtual void OnEventFilteredFileFinded(FlagsEventArgs args)
@@ -141,7 +137,6 @@ namespace DocumentHierarchy
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFilteredFileFinded(e);
-            //return e.Flag;
         }
 
         protected virtual void OnEventFilteredDirectoryFinded(FlagsEventArgs args)
