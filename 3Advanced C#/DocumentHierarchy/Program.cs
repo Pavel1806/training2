@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 
 namespace DocumentHierarchy
 {
@@ -16,13 +13,13 @@ namespace DocumentHierarchy
             {
                 string substring = "WpfApp";
                 int indexOfSubstring = p.IndexOf(substring);
-                if (indexOfSubstring != -1)
+                if (indexOfSubstring != -1) 
                 {
                     return true;
                 }
                 else
                 {
-                    return false;
+                    return false; // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
                 }
             }
             );
