@@ -42,7 +42,7 @@ namespace DocumentHierarchy
 
                 try
                 {
-                    directories = Directory.GetFileSystemEntries(path);
+                    directories = Directory.GetFileSystemEntries(path); // TODO: Должен признать что реализация с EnumerateDirectories и EnumerateFiles получилось бы лучше. Должен признать мой совет с GetFileSystemEntries оказался плохим. Проверки на то что получили мы файл или каталог не делают код лучше.
                 }
                 catch
                 {
