@@ -4,93 +4,109 @@ using System.IO;
 
 namespace DocumentHierarchy
 {
-    public delegate bool Algorithm(string p); // TODO: [naming] Algorithm слишком абстрактно. p - неговоряще (это буква под ней может скрываться что угодно, но мы же знаем что здесь ожидаем?)
+    public delegate bool AlgorithmForPathProcessing(string path); // TODO: [naming] Algorithm слишком абстрактно. p - неговоряще (это буква под ней может скрываться что угодно, но мы же знаем что здесь ожидаем?)
 
     public class FileSystemVisitor
     {
-        string Path { get; set; } // TODO: [design] Почему свойство а не поле? Требуется пояснение.
+        private string path;   // TODO: [design] Почему свойство а не поле? Требуется пояснение.
+                               // исправил на поле. Т.к. мы его используем только внутри этого класса, значит меняем на поле.
+        private AlgorithmForPathProcessing filter; // TODO: [design] Почему свойство а не поле?
+                                                   // исправил на поле. Т.к. мы его используем только внутри этого класса, значит меняем на поле.
+        private List<string> listAddsFileOrDirectory = new List<string>(); // TODO: [design,naming] Что насчёт области видимости? Рекомендую не мешать порядок следования в коде полей, свойствв, методов. 
+                                                                           // переместил
 
-        Algorithm MethodForTheAlgorithm { get; set; } // TODO: [design] Почему свойство а не поле?
-
-        public event EventHandler<FlagsEventArgs> EventStartTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?
+        public event EventHandler<FlagsEventArgs> EventStartTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?   // я так понял, чтобы было единообразый вызов событий, я должен всегда с аргументами его делать
         public event EventHandler<FlagsEventArgs> EventFinishTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?
         public event EventHandler<FlagsEventArgs> EventFileFinded;
         public event EventHandler<FlagsEventArgs> EventDirectoryFinded;
         public event EventHandler<FlagsEventArgs> EventFilteredFileFinded;
         public event EventHandler<FlagsEventArgs> EventFilteredDirectoryFinded;
 
-        public FileSystemVisitor(string path, Algorithm methodForTheAlgorithm)
+        public FileSystemVisitor(string path, AlgorithmForPathProcessing filter)
         {
-            Path = path;
-            MethodForTheAlgorithm = methodForTheAlgorithm; // TODO: [naming] Строго говоря это не метод а делегат. В названии писать делегат не надо, это и так из типа видно. "Метод для алгоритма", какого алгоритма? Вот это нужно расрыть. Это фильтр? Если так то почему бы его так и не назвать?
+            this.path = path;
+            this.filter = filter;  // TODO: [naming] Строго говоря это не метод а делегат. В названии писать делегат не надо, это и так из типа видно. "Метод для алгоритма", какого алгоритма? Вот это нужно расрыть. Это фильтр? Если так то почему бы его так и не назвать?
         }
 
-        List<string> listAddsFileOrDirectory = new List<string>(); // TODO: [design,naming] Что насчёт области видимости? Рекомендую не мешать порядок следования в коде полей, свойствв, методов.
-
-        public IEnumerable<string> SearchTreeOfFoldersAndFiles() // TODO: [naming] Возвращается не дерево, зачем тогда его упоминать. ИМХО Get лучше.
+        public IEnumerable<string> GetFoldersAndFiles() // TODO: [naming] Возвращается не дерево, зачем тогда его упоминать. ИМХО Get лучше.
         {
             if (listAddsFileOrDirectory.Count == 0)
-                listAddsFileOrDirectory.Add(Path);
+                listAddsFileOrDirectory.Add(path);
 
-            MethodOfCallingTheEvent("Начали обход дерева");
+            Start("Начали обход дерева");
 
             while (listAddsFileOrDirectory.Count > 0) 
             {
-                IEnumerable<string> directories = null;
+                IEnumerable<string> directoriesOrFiles = null;
                 string path = listAddsFileOrDirectory[0]; // TODO: [design] Наблюдая обращение по индексу не могу не спросить почему listAddsFileOrDirectory список, может оптимальнее использовать что-то другое?
+                                                          // Мне кажется можно использовать Dictionary. Но я подумал, что я обращаюсь всегда к первому элементу, значит времени на поиск будет уходить одинаково. Массив точно нельзя потому что количество всегда разное.
                 listAddsFileOrDirectory.RemoveAt(0);
 
-                try
+                if(Directory.Exists(path) == false)
                 {
-                    directories = Directory.GetFileSystemEntries(path);
+                    continue;
                 }
-                catch
-                {
-                    continue; // TODO: [Design] Очень не очевидный способ проверить с файлом мы имеем дело или с каталогом. Как насчет Directory.Exist например?
+                { 
+                    directoriesOrFiles = Directory.GetFileSystemEntries(path);
                 }
-
-                List<string> listAddsFilteredDirectory = new List<string>(); // TODO: [design] Зачем эта коллекция?
-                if (directories != null)
+                if (directoriesOrFiles != null)
                 {
-                    foreach (var item in directories)
+                    foreach (var item in directoriesOrFiles)
                     {
+
                         listAddsFileOrDirectory.Add(item);
-                        if(MethodForTheAlgorithm(item) == true) // TODO: [многословность] Сравнивать выражение возращающее bool c true избыточно.
+                        if(Directory.Exists(item))
                         {
-                            listAddsFilteredDirectory.Add(item);
+                            DirectoryFinded($"Папка {item} найдена"); // TODO: [требование] DirectoryFinded - "каталог найден" выродилось в "Обход папок закончен".
+                                                                      // исправил
+                        }
+                        else
+                        {
+                            FileFinded($"Файл {item} найден"); // TODO: [требование] FileFinded - "файл найден" выродилось в "Обход файлов закончен".
+                                                               // исправил
+                        }
+                        if (filter(item)) // TODO: [многословность] Сравнивать выражение возращающее bool c true избыточно.
+                                          // исправил
+                        {
+
+                            if (Directory.Exists(item))
+                            {
+                                if(FilteredDirectoryFinded($"Папка {item} отобрана"))
+                                {
+                                    Console.WriteLine("Здесь можно исключать папку из поиска. Нажмите enter");
+                                    Console.ReadLine();
+                                    
+                                }
+                            }
+                            else
+                            {
+                                if(FilteredFileFinded($"Файл {item} отобран")) // TODO: [требование] FilteredFileFinded - "файл отобран" выродилось в "Фильтрация файлов в папке {path} закончена".
+                                                                               // исправил
+                                {
+                                    Console.WriteLine("Здесь можно исключать файл из поиска. Нажмите enter");
+                                    Console.ReadLine(); 
+                                }
+                            }
                             yield return item;
+                        }
+                        else
+                        {
+
                         }
                     }
                 }
-
-                if(listAddsFilteredDirectory.Count != 0)
-                {
-                    Console.WriteLine("");
-                    MethodOfCallingTheEventFilteredFileFinded($"Фильтрация файлов в папке {path} закончена"); // TODO: [требование] FilteredFileFinded - "файл отобран" выродилось в "Фильтрация файлов в папке {path} закончена".
-
-                    if (MethodOfCallingTheEventFilteredDirectoryFinded($"Фильтрация папок в папке {path} закончена") == true) // TODO: [требование] FilteredDirectoryFinded - "каталог отобран" выродилось в "Фильтрация папок в папке {path} закончена".
-                    {
-                        Console.WriteLine(""); // TODO: [design bag] Как взаимодействовать с пользователем не ответственность этого класса. Может у пользователя GUI. Есть событие для этого.
-                        Console.WriteLine("Поиск остановился");
-                        Console.WriteLine("Нажмите enter");
-                        Console.ReadLine();
-                        Console.WriteLine(("").PadRight(84, '-'));
-                    }
-                }
             }
-            
-            MethodOfCallingTheEventFileFinded("Обход файлов закончен"); // TODO: [требование] FileFinded - "файл найден" выродилось в "Обход файлов закончен".
-            MethodOfCallingTheEventDirectoryFinded("Обход папок закончен"); // TODO: [требование] DirectoryFinded - "каталог найден" выродилось в "Обход папок закончен".
-            MethodOfCallingTheEventFinish("Обход дерева закончен");
+            Finish("Обход дерева закончен");
         }
 
         protected virtual void OnEventStartTree(FlagsEventArgs args)
         {
             EventStartTree?.Invoke(this, args); // TODO: Сокращённая форма на будущее.
+                                                // Ок, понял. Тогда ниже пока не исправляю. Если что буду сюда заглядывать и смотреть что можно и так и так.
         }
 
-        public void MethodOfCallingTheEvent(string mes) // TODO: [naming] Здесь и ниже. Как по мне этот метод избыточен (по правде сказать он заметает следы, и он мне не нравиться). Но если уж он есть то почему так называется?
-        {
+        void Start(string mes) // TODO: [naming] Здесь и ниже. Как по мне этот метод избыточен (по правде сказать он заметает следы, и он мне не нравиться). Но если уж он есть то почему так называется?
+        {                                               // Я читал про реализацию в таком варианте в книжке "Рихтера". Там конечно этот метод называется "SimulateNewMail"
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventStartTree(e);
         }
@@ -102,7 +118,7 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        public void MethodOfCallingTheEventFinish(string mes)
+        void Finish(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFinishTree(e);
@@ -115,7 +131,7 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        public void MethodOfCallingTheEventFileFinded(string mes)
+        void FileFinded(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFileFinded(e);
@@ -128,7 +144,7 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        public void MethodOfCallingTheEventDirectoryFinded(string mes)
+        void DirectoryFinded(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventDirectoryFinded(e);
@@ -141,10 +157,11 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        public void MethodOfCallingTheEventFilteredFileFinded(string mes)
+        bool FilteredFileFinded(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFilteredFileFinded(e);
+            return e.FlagToStopSearch;
         }
 
         protected virtual void OnEventFilteredDirectoryFinded(FlagsEventArgs args)
@@ -154,7 +171,7 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        public bool MethodOfCallingTheEventFilteredDirectoryFinded(string mes)
+        bool FilteredDirectoryFinded(string mes)
         {
             FlagsEventArgs e = new FlagsEventArgs(mes);
             OnEventFilteredDirectoryFinded(e);

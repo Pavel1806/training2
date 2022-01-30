@@ -11,21 +11,19 @@ namespace DocumentHierarchy.Tests
         [TestInitialize]
         public void Testinitialize()
         {
-            var path = Environment.CurrentDirectory + "\\Tests";
-
-            try
-            {
-                var directories = Directory.GetFileSystemEntries(path);
-            }
-            catch // TODO: [Design bag] Мы ещё поговорим об исключениях в следующем модуле. Тем не менее строить логику на ИСКЛЮЧЕНИЯХ не хорошо, они для ИСКЛЮЧИТЕЛЬНЫХ случаев предназначены. Почему бы не сделать проверку и при необходимости создать необходимые объекты?
+            var path = Path.Join(Environment.CurrentDirectory,"\\Tests"); 
+            // TODO: [Design bag] Мы ещё поговорим об исключениях в следующем модуле. Тем не менее строить логику на ИСКЛЮЧЕНИЯХ не хорошо, они для ИСКЛЮЧИТЕЛЬНЫХ случаев предназначены. Почему бы не сделать проверку и при необходимости создать необходимые объекты?
+            // исправил. Сделал проверку Exists
+            if (Directory.Exists(path) == false)
             {
                 Directory.CreateDirectory(path);
                 for (int i = 0; i < 5; i++)
                 {
-                    Directory.CreateDirectory(path + $"\\Test{i}"); // TODO: [улучшение] Для конкатенации путей есть лучше решение, см. класс Path
+                    Directory.CreateDirectory(Path.Join(Environment.CurrentDirectory, $"\\Tests{i}")); // TODO: [улучшение] Для конкатенации путей есть лучше решение, см. класс Path
+                                                                                                       // исправил
                     for (int j = 0; j < 5; j++)
                     {
-                        File.Create(path + $"\\Test{i}" + $"\\test{j}.txt");
+                        File.Create(Path.Join(path, $"\\Test{i}", $"\\test{j}.txt"));
                     }
                 }
             }
@@ -34,12 +32,15 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_NotNull()
         {
-            string path = Environment.CurrentDirectory + "\\Tests";
-            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string p)=> { return true; });
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => { return true; });
             var col = new List<string>();
-            foreach(var item in fileSystemVisitor.SearchTreeOfFoldersAndFiles())
+            int x = 0;
+            foreach(var item in fileSystemVisitor.GetFoldersAndFiles())
             {
-                col.Add(item); // TODO: [избыточность] Забегая вперёд (модуль LINQ), скажу что IEnumerable к списку можно привести через метод расширения ToList()
+                // TODO: [избыточность] Забегая вперёд (модуль LINQ), скажу что IEnumerable к списку можно привести через метод расширения ToList()
+                // исправил
+                x++;
             }
 
             CollectionAssert.AllItemsAreNotNull(col);
@@ -48,41 +49,38 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_QuantityDirectoryOrFiles_Contains_0()
         {
-            string path = Environment.CurrentDirectory + "\\Tests";
-            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string p) => {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
                 string substring = "0"; // TODO: [читабельность] Это не ошибка, но если вместо переменной использовать литерал, код будет читаться легче. Сжатие коде не всегда благо, но здесь оно оправдано.
-                int indexOfSubstring = p.IndexOf(substring);
-                if (indexOfSubstring != -1)
-                {
-                    return true; // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
-                }
-                else
-                {
-                    return false;
-                }
+                int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
+                
+                 return indexOfSubstring != -1; // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
+                                                // исправил
             });
 
-            var col = new List<string>();
-            foreach (var item in fileSystemVisitor.SearchTreeOfFoldersAndFiles())
+            int x = 0;
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
             {
-                col.Add(item); // TODO: [избыточность] Чтобы посчитать кол-во элементов, это не самая оптимальная стратегия. Нам нужен int, а мы для этого целую коллекцию породили.
+                // TODO: [избыточность] Чтобы посчитать кол-во элементов, это не самая оптимальная стратегия. Нам нужен int, а мы для этого целую коллекцию породили.
+                // исправил
+                x++;
             }
 
             int expected = 10;
 
-            Assert.AreEqual(expected, col.Count);
+            Assert.AreEqual(expected, x);
         }
 
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_QuantityDirectoryOrFiles_All()
         {
-            string path = Environment.CurrentDirectory + "\\Tests";
-            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string p) => {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
                 return true;
             });
 
             var col = new List<string>();
-            foreach (var item in fileSystemVisitor.SearchTreeOfFoldersAndFiles())
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
             {
                 col.Add(item);
             }
@@ -92,5 +90,24 @@ namespace DocumentHierarchy.Tests
             Assert.AreEqual(expected, col.Count);
         }
 
+        //[TestMethod]
+        //public void CollectingTreeOfFoldersAndFiles_()
+        //{
+        //    var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+        //    FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
+        //        return true;
+        //    });
+
+        //    fileSystemVisitor.EventStartTree += FileSystemVisitor_EventStartTree;
+
+        //    string expected = "Начали обход дерева";
+
+        //    Assert.AreEqual(expected, );
+        //}
+
+        //private void FileSystemVisitor_EventStartTree(object sender, FlagsEventArgs e)
+        //{
+        //    Console.WriteLine(e.Message);
+        //}
     }
 }
