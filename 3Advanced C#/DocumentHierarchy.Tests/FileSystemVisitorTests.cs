@@ -30,7 +30,7 @@ namespace DocumentHierarchy.Tests
 
         }
         [TestMethod]
-        public void CollectingTreeOfFoldersAndFiles_NotNull()
+        public void GetFoldersAndFiles_NotNull()
         {
             var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => { return true; });
@@ -47,7 +47,7 @@ namespace DocumentHierarchy.Tests
         }
 
         [TestMethod]
-        public void CollectingTreeOfFoldersAndFiles_QuantityDirectoryOrFiles_Contains_0()
+        public void GetFoldersAndFiles_QuantityDirectoryOrFiles_Contains_0()
         {
             var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
@@ -72,7 +72,7 @@ namespace DocumentHierarchy.Tests
         }
 
         [TestMethod]
-        public void CollectingTreeOfFoldersAndFiles_QuantityDirectoryOrFiles_All()
+        public void GetFoldersAndFiles_QuantityDirectoryOrFiles_All()
         {
             var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
@@ -90,24 +90,153 @@ namespace DocumentHierarchy.Tests
             Assert.AreEqual(expected, col.Count);
         }
 
-        //[TestMethod]
-        //public void CollectingTreeOfFoldersAndFiles_()
-        //{
-        //    var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
-        //    FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
-        //        return true;
-        //    });
+        [TestMethod]
+        public void GetFoldersAndFiles_EventStartTree()
+        {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
+            {
+                return true;
+            });
+            //List<string> vs = new List<string>();
 
-        //    fileSystemVisitor.EventStartTree += FileSystemVisitor_EventStartTree;
+            int actual = 0;
+            fileSystemVisitor.EventStartTree += delegate (object sender, FlagsEventArgs e)
+            {
+                //vs.Add(e.Message);
+                actual++;
+            };
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
+            {
+               
+            }
+            int expected = 1;
+            Assert.AreEqual(expected, actual);
+        }
 
-        //    string expected = "Начали обход дерева";
+        [TestMethod]
+        public void CollectingTreeOfFoldersAndFiles_EventDirectoryFinded()
+        {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
+            {
+                return true;
+            });
 
-        //    Assert.AreEqual(expected, );
-        //}
+            int actual = 0;
+            
+            fileSystemVisitor.EventDirectoryFinded += delegate (object sender, FlagsEventArgs e)
+            {
+                actual++;
+            };
 
-        //private void FileSystemVisitor_EventStartTree(object sender, FlagsEventArgs e)
-        //{
-        //    Console.WriteLine(e.Message);
-        //}
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
+            {
+
+            }
+            int expected = 5;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CollectingTreeOfFoldersAndFiles_EventFileFinded()
+        {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
+            {
+                return true;
+            });
+
+            int actual = 0;
+
+            fileSystemVisitor.EventFileFinded += delegate (object sender, FlagsEventArgs e)
+            {
+                actual++;
+            };
+
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
+            {
+
+            }
+            int expected = 25;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CollectingTreeOfFoldersAndFiles_EventFilteredFileFinded()
+        {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
+            {
+                return true;
+            });
+
+            int actual = 0;
+
+            fileSystemVisitor.EventFilteredFileFinded += delegate (object sender, FlagsEventArgs e)
+            {
+                actual++;
+            };
+
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
+            {
+
+            }
+            int expected = 25;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CollectingTreeOfFoldersAndFiles_EventFilteredDirectoryFinded()
+        {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
+            {
+                return true;
+            });
+
+            int actual = 0;
+
+            fileSystemVisitor.EventFilteredDirectoryFinded += delegate (object sender, FlagsEventArgs e)
+            {
+                actual++;
+            };
+
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
+            {
+
+            }
+            int expected = 5;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CollectingTreeOfFoldersAndFiles_EventFinishTree()
+        {
+            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
+            {
+                return true;
+            });
+
+            int actual = 0;
+
+            fileSystemVisitor.EventFinishTree += delegate (object sender, FlagsEventArgs e)
+            {
+                actual++;
+            };
+
+            foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
+            {
+
+            }
+            int expected = 1;
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

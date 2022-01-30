@@ -12,10 +12,9 @@ namespace DocumentHierarchy
 
             FileSystemVisitor fileSystem = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
-                //string substring = "WpfApp";
-                //int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
-                //return indexOfSubstring != -1;                     // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
-                return true;
+                string substring = "WpfApp";
+                int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
+                return indexOfSubstring != -1;                     // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
             }
             );
 
