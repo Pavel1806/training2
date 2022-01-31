@@ -43,8 +43,8 @@ namespace DocumentHierarchy
         private static void FileSystem_EventFilteredFileFinded(object sender, FlagsEventArgs e)
         {
             Console.WriteLine($"Файл отфильтрован {e.Name}");
-            if(e.NumberOfFoldersOrFilesProcessed >= 2)
-               e.FlagToStopSearch = true;
+            if (e.NumberOfFoldersOrFilesProcessed >= 2)
+                e.FlagToStopSearch = true;
         }
 
         private static void FileSystem_EventDirectoryFinded(object sender, FlagsEventArgs e)

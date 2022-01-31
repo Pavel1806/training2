@@ -10,7 +10,7 @@ namespace DocumentHierarchy
     {
         private string path;
         private AlgorithmForPathProcessing filter;
-        private List<string> listAddsFileOrDirectory = new List<string>(); 
+        private Queue<string> listAddsFileOrDirectory = new Queue<string>(); 
 
         public event EventHandler<FlagsEventArgs> EventStartTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?   // я так понял, чтобы было единообразый вызов событий, я должен всегда с аргументами его делать
         public event EventHandler<FlagsEventArgs> EventFinishTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?
@@ -28,7 +28,7 @@ namespace DocumentHierarchy
         public IEnumerable<string> GetFoldersAndFiles()
         {
             if (listAddsFileOrDirectory.Count == 0)
-                listAddsFileOrDirectory.Add(path);
+                listAddsFileOrDirectory.Enqueue(path);
 
             Start();
 
@@ -38,9 +38,9 @@ namespace DocumentHierarchy
             while (listAddsFileOrDirectory.Count > 0) 
             {
                 IEnumerable<string> directoriesOrFiles = null;
-                string path = listAddsFileOrDirectory[0]; // TODO: [design] Наблюдая обращение по индексу не могу не спросить почему listAddsFileOrDirectory список, может оптимальнее использовать что-то другое?
+                string path = listAddsFileOrDirectory.Dequeue(); // TODO: [design] Наблюдая обращение по индексу не могу не спросить почему listAddsFileOrDirectory список, может оптимальнее использовать что-то другое?
                                                           // Мне кажется можно использовать Dictionary. Но я подумал, что я обращаюсь всегда к первому элементу, значит времени на поиск будет уходить одинаково. Массив точно нельзя потому что количество всегда разное.
-                listAddsFileOrDirectory.RemoveAt(0);
+                //listAddsFileOrDirectory.RemoveAt(0);
                 if (Directory.Exists(path) == false)
                 {
                     continue;
@@ -54,7 +54,7 @@ namespace DocumentHierarchy
                 {
                     foreach (var item in directoriesOrFiles)
                     {
-                        listAddsFileOrDirectory.Add(item);
+                        listAddsFileOrDirectory.Enqueue(item);
                         if(Directory.Exists(item))
                         {
                             DirectoryFinded(item); 
