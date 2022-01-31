@@ -20,7 +20,7 @@ namespace DocumentHierarchy
 
             fileSystem.EventStartTree += FileSystem_EventStartTree;
             fileSystem.EventFinishTree += FileSystem_EventFinishTree;
-            fileSystem.EventFileFinded += FileSystem_FilteredFileFinded;
+            fileSystem.EventFileFinded += FileSystem_EventFileFinded;
             fileSystem.EventDirectoryFinded += FileSystem_EventDirectoryFinded;
             fileSystem.EventFilteredFileFinded += FileSystem_EventFilteredFileFinded;
             fileSystem.EventFilteredDirectoryFinded += FileSystem_EventFilteredDirectoryFinded;
@@ -33,37 +33,38 @@ namespace DocumentHierarchy
                 Console.ResetColor();              
             }
         }
-
+        
         private static void FileSystem_EventFilteredDirectoryFinded(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.Message);
-            e.FlagToStopSearch = true;
+            Console.WriteLine($"Папка отфильтрована {e.Name}");
+
         }
 
         private static void FileSystem_EventFilteredFileFinded(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.Message);
-            e.FlagToStopSearch = true;
+            Console.WriteLine($"Файл отфильтрован {e.Name}");
+            if(e.NumberOfFoldersOrFilesProcessed >= 2)
+               e.FlagToStopSearch = true;
         }
 
         private static void FileSystem_EventDirectoryFinded(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine($"Папка найдена {e.Name}");
         }
 
-        private static void FileSystem_FilteredFileFinded(object sender, FlagsEventArgs e)
+        private static void FileSystem_EventFileFinded(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine($"Файл найден {e.Name}");
         }
 
         private static void FileSystem_EventFinishTree(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine("Обход дерева закончен");
         }
 
         static void FileSystem_EventStartTree(object sender, FlagsEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine("Обход дерева начат");
         }
 
     }

@@ -37,8 +37,6 @@ namespace DocumentHierarchy.Tests
             var col = new List<string>();
             foreach(var item in fileSystemVisitor.GetFoldersAndFiles())
             {
-                // TODO: [избыточность] Забегая вперёд (модуль LINQ), скажу что IEnumerable к списку можно привести через метод расширения ToList()
-                // исправил
                 col.Add(item);
             }
 
@@ -53,15 +51,12 @@ namespace DocumentHierarchy.Tests
                 string substring = "0"; // TODO: [читабельность] Это не ошибка, но если вместо переменной использовать литерал, код будет читаться легче. Сжатие коде не всегда благо, но здесь оно оправдано.
                 int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
                 
-                 return indexOfSubstring != -1; // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
-                                                // исправил
+                 return indexOfSubstring != -1;
             });
 
             int x = 0;
             foreach (var item in fileSystemVisitor.GetFoldersAndFiles())
             {
-                // TODO: [избыточность] Чтобы посчитать кол-во элементов, это не самая оптимальная стратегия. Нам нужен int, а мы для этого целую коллекцию породили.
-                // исправил
                 x++;
             }
 
@@ -97,12 +92,10 @@ namespace DocumentHierarchy.Tests
             {
                 return true;
             });
-            //List<string> vs = new List<string>();
 
             int actual = 0;
             fileSystemVisitor.EventStartTree += delegate (object sender, FlagsEventArgs e)
             {
-                //vs.Add(e.Message);
                 actual++;
             };
             foreach (var item in fileSystemVisitor.GetFoldersAndFiles())

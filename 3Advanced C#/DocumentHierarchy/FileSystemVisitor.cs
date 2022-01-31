@@ -30,7 +30,10 @@ namespace DocumentHierarchy
             if (listAddsFileOrDirectory.Count == 0)
                 listAddsFileOrDirectory.Add(path);
 
-            Start("Начали обход дерева");
+            Start();
+
+            int numberProcessedFoldersOrFiles = 0;
+            bool endSearch = false;
 
             while (listAddsFileOrDirectory.Count > 0) 
             {
@@ -51,56 +54,57 @@ namespace DocumentHierarchy
                 {
                     foreach (var item in directoriesOrFiles)
                     {
-
                         listAddsFileOrDirectory.Add(item);
                         if(Directory.Exists(item))
                         {
-                            DirectoryFinded($"Папка {item} найдена"); 
+                            DirectoryFinded(item); 
                         }
                         else
                         {
-                            FileFinded($"Файл {item} найден");
+                            FileFinded(item);
                         }
                         if (filter(item)) 
                         {
+                            
                             if (Directory.Exists(item))
                             {
-                                if(FilteredDirectoryFinded($"Папка {item} отобрана"))
+                                if(FilteredDirectoryFinded(item))
                                 {
-                                    Console.WriteLine("Здесь можно исключать папку из поиска. Нажмите enter");
-                                    Console.ReadLine();
                                     
                                 }
                             }
                             else
                             {
-                                if(FilteredFileFinded($"Файл {item} отобран"))
+                                numberProcessedFoldersOrFiles++;
+                                if (FilteredFileFinded(item, numberProcessedFoldersOrFiles))
                                 {
-                                    Console.WriteLine("Здесь можно исключать файл из поиска. Нажмите enter");
-                                    Console.ReadLine(); 
+                                    endSearch = true;
+                                    yield return item;
+                                    break;
                                 }
                             }
                             yield return item;
                         }
-                        else
-                        {
-
-                        }
                     }
                 }
+                if(endSearch)
+                {
+                    break;
+                }
             }
-            Finish("Обход дерева закончен");
+            Finish();
         }
 
         protected virtual void OnEventStartTree(FlagsEventArgs args)
         {
             EventStartTree?.Invoke(this, args); // TODO: Сокращённая форма на будущее.
-                                                // Ок, понял. Тогда ниже пока не исправляю. Если что буду сюда заглядывать и смотреть что можно и так и так.
+            //var intermediateEvent = EventStartTree;
+            //if (intermediateEvent != null)
+            //    intermediateEvent(this, args);
         }
-
-        void Start(string mes) // TODO: [naming] Здесь и ниже. Как по мне этот метод избыточен (по правде сказать он заметает следы, и он мне не нравиться). Но если уж он есть то почему так называется?
-        {                                               // Я читал про реализацию в таком варианте в книжке "Рихтера". Там конечно этот метод называется "SimulateNewMail"
-            FlagsEventArgs e = new FlagsEventArgs(mes);
+        void Start()
+        {
+            FlagsEventArgs e = new FlagsEventArgs();
             OnEventStartTree(e);
         }
 
@@ -111,9 +115,9 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        void Finish(string mes)
+        void Finish()
         {
-            FlagsEventArgs e = new FlagsEventArgs(mes);
+            FlagsEventArgs e = new FlagsEventArgs();
             OnEventFinishTree(e);
         }
 
@@ -124,9 +128,10 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        void FileFinded(string mes)
+        void FileFinded(string name)
         {
-            FlagsEventArgs e = new FlagsEventArgs(mes);
+            FlagsEventArgs e = new FlagsEventArgs();
+            e.Name = name;
             OnEventFileFinded(e);
         }
 
@@ -137,9 +142,10 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        void DirectoryFinded(string mes)
+        void DirectoryFinded(string name)
         {
-            FlagsEventArgs e = new FlagsEventArgs(mes);
+            FlagsEventArgs e = new FlagsEventArgs();
+            e.Name = name;
             OnEventDirectoryFinded(e);
         }
 
@@ -150,9 +156,11 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        bool FilteredFileFinded(string mes)
+        bool FilteredFileFinded(string name, int number)
         {
-            FlagsEventArgs e = new FlagsEventArgs(mes);
+            FlagsEventArgs e = new FlagsEventArgs();
+            e.Name = name;
+            e.NumberOfFoldersOrFilesProcessed = number;
             OnEventFilteredFileFinded(e);
             return e.FlagToStopSearch;
         }
@@ -164,9 +172,10 @@ namespace DocumentHierarchy
                 intermediateEvent(this, args);
         }
 
-        bool FilteredDirectoryFinded(string mes)
+        bool FilteredDirectoryFinded(string name)
         {
-            FlagsEventArgs e = new FlagsEventArgs(mes);
+            FlagsEventArgs e = new FlagsEventArgs();
+            e.Name = name;
             OnEventFilteredDirectoryFinded(e);
             return e.FlagToStopSearch;
         }
