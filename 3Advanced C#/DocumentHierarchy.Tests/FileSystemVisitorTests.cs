@@ -12,15 +12,13 @@ namespace DocumentHierarchy.Tests
         public void Testinitialize()
         {
             var path = Path.Join(Environment.CurrentDirectory,"Tests"); 
-            // TODO: [Design bag] Мы ещё поговорим об исключениях в следующем модуле. Тем не менее строить логику на ИСКЛЮЧЕНИЯХ не хорошо, они для ИСКЛЮЧИТЕЛЬНЫХ случаев предназначены. Почему бы не сделать проверку и при необходимости создать необходимые объекты?
-            // исправил. Сделал проверку Exists
+
             if (Directory.Exists(path) == false)
             {
                 Directory.CreateDirectory(path);
                 for (int i = 0; i < 5; i++)
                 {
-                    Directory.CreateDirectory(Path.Join(Environment.CurrentDirectory, $"Tests{i}")); // TODO: [улучшение] Для конкатенации путей есть лучше решение, см. класс Path
-                                                                                                       // исправил
+                    Directory.CreateDirectory(Path.Join(Environment.CurrentDirectory, $"Tests{i}"));
                     for (int j = 0; j < 5; j++)
                     {
                         File.Create(Path.Join(path, $"Test{i}", $"test{j}.txt"));
@@ -48,7 +46,7 @@ namespace DocumentHierarchy.Tests
         {
             var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
-                string substring = "0"; // TODO: [читабельность] Это не ошибка, но если вместо переменной использовать литерал, код будет читаться легче. Сжатие коде не всегда благо, но здесь оно оправдано.
+                string substring = "0";
                 int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
                 
                  return indexOfSubstring != -1;
