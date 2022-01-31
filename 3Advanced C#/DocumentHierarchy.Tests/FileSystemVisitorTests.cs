@@ -11,7 +11,7 @@ namespace DocumentHierarchy.Tests
         [TestInitialize]
         public void Testinitialize()
         {
-            var path = Path.Join(Environment.CurrentDirectory,"\\Tests"); 
+            var path = Path.Join(Environment.CurrentDirectory,"Tests"); 
             // TODO: [Design bag] Мы ещё поговорим об исключениях в следующем модуле. Тем не менее строить логику на ИСКЛЮЧЕНИЯХ не хорошо, они для ИСКЛЮЧИТЕЛЬНЫХ случаев предназначены. Почему бы не сделать проверку и при необходимости создать необходимые объекты?
             // исправил. Сделал проверку Exists
             if (Directory.Exists(path) == false)
@@ -19,11 +19,11 @@ namespace DocumentHierarchy.Tests
                 Directory.CreateDirectory(path);
                 for (int i = 0; i < 5; i++)
                 {
-                    Directory.CreateDirectory(Path.Join(Environment.CurrentDirectory, $"\\Tests{i}")); // TODO: [улучшение] Для конкатенации путей есть лучше решение, см. класс Path
+                    Directory.CreateDirectory(Path.Join(Environment.CurrentDirectory, $"Tests{i}")); // TODO: [улучшение] Для конкатенации путей есть лучше решение, см. класс Path
                                                                                                        // исправил
                     for (int j = 0; j < 5; j++)
                     {
-                        File.Create(Path.Join(path, $"\\Test{i}", $"\\test{j}.txt"));
+                        File.Create(Path.Join(path, $"Test{i}", $"test{j}.txt"));
                     }
                 }
             }
@@ -32,15 +32,14 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void GetFoldersAndFiles_NotNull()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => { return true; });
             var col = new List<string>();
-            int x = 0;
             foreach(var item in fileSystemVisitor.GetFoldersAndFiles())
             {
                 // TODO: [избыточность] Забегая вперёд (модуль LINQ), скажу что IEnumerable к списку можно привести через метод расширения ToList()
                 // исправил
-                x++;
+                col.Add(item);
             }
 
             CollectionAssert.AllItemsAreNotNull(col);
@@ -49,7 +48,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void GetFoldersAndFiles_QuantityDirectoryOrFiles_Contains_0()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
                 string substring = "0"; // TODO: [читабельность] Это не ошибка, но если вместо переменной использовать литерал, код будет читаться легче. Сжатие коде не всегда благо, но здесь оно оправдано.
                 int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
@@ -74,7 +73,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void GetFoldersAndFiles_QuantityDirectoryOrFiles_All()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) => {
                 return true;
             });
@@ -93,7 +92,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void GetFoldersAndFiles_EventStartTree()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
                 return true;
@@ -117,7 +116,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_EventDirectoryFinded()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
                 return true;
@@ -142,7 +141,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_EventFileFinded()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
                 return true;
@@ -167,7 +166,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_EventFilteredFileFinded()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
                 return true;
@@ -192,7 +191,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_EventFilteredDirectoryFinded()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
                 return true;
@@ -217,7 +216,7 @@ namespace DocumentHierarchy.Tests
         [TestMethod]
         public void CollectingTreeOfFoldersAndFiles_EventFinishTree()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "\\Tests");
+            var path = Path.Join(Environment.CurrentDirectory, "Tests");
             FileSystemVisitor fileSystemVisitor = new FileSystemVisitor(path, (string pathDirectoryOrFile) =>
             {
                 return true;

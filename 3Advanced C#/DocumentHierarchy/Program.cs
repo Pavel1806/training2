@@ -14,7 +14,7 @@ namespace DocumentHierarchy
             {
                 string substring = "WpfApp";
                 int indexOfSubstring = pathDirectoryOrFile.IndexOf(substring);
-                return indexOfSubstring != -1;                     // TODO: [многословность] Вся конструкция if else легко заменяется одним выражением "return indexOfSubstring != -1;"
+                return indexOfSubstring != -1;               
             }
             );
 

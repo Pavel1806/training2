@@ -4,16 +4,13 @@ using System.IO;
 
 namespace DocumentHierarchy
 {
-    public delegate bool AlgorithmForPathProcessing(string path); // TODO: [naming] Algorithm слишком абстрактно. p - неговоряще (это буква под ней может скрываться что угодно, но мы же знаем что здесь ожидаем?)
+    public delegate bool AlgorithmForPathProcessing(string path);
 
     public class FileSystemVisitor
     {
-        private string path;   // TODO: [design] Почему свойство а не поле? Требуется пояснение.
-                               // исправил на поле. Т.к. мы его используем только внутри этого класса, значит меняем на поле.
-        private AlgorithmForPathProcessing filter; // TODO: [design] Почему свойство а не поле?
-                                                   // исправил на поле. Т.к. мы его используем только внутри этого класса, значит меняем на поле.
-        private List<string> listAddsFileOrDirectory = new List<string>(); // TODO: [design,naming] Что насчёт области видимости? Рекомендую не мешать порядок следования в коде полей, свойствв, методов. 
-                                                                           // переместил
+        private string path;
+        private AlgorithmForPathProcessing filter;
+        private List<string> listAddsFileOrDirectory = new List<string>(); 
 
         public event EventHandler<FlagsEventArgs> EventStartTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?   // я так понял, чтобы было единообразый вызов событий, я должен всегда с аргументами его делать
         public event EventHandler<FlagsEventArgs> EventFinishTree; // TODO: [Design] этому событию действительно нужен FlagsEventArgs?
@@ -25,10 +22,10 @@ namespace DocumentHierarchy
         public FileSystemVisitor(string path, AlgorithmForPathProcessing filter)
         {
             this.path = path;
-            this.filter = filter;  // TODO: [naming] Строго говоря это не метод а делегат. В названии писать делегат не надо, это и так из типа видно. "Метод для алгоритма", какого алгоритма? Вот это нужно расрыть. Это фильтр? Если так то почему бы его так и не назвать?
+            this.filter = filter;  
         }
 
-        public IEnumerable<string> GetFoldersAndFiles() // TODO: [naming] Возвращается не дерево, зачем тогда его упоминать. ИМХО Get лучше.
+        public IEnumerable<string> GetFoldersAndFiles()
         {
             if (listAddsFileOrDirectory.Count == 0)
                 listAddsFileOrDirectory.Add(path);
@@ -41,8 +38,7 @@ namespace DocumentHierarchy
                 string path = listAddsFileOrDirectory[0]; // TODO: [design] Наблюдая обращение по индексу не могу не спросить почему listAddsFileOrDirectory список, может оптимальнее использовать что-то другое?
                                                           // Мне кажется можно использовать Dictionary. Но я подумал, что я обращаюсь всегда к первому элементу, значит времени на поиск будет уходить одинаково. Массив точно нельзя потому что количество всегда разное.
                 listAddsFileOrDirectory.RemoveAt(0);
-
-                if(Directory.Exists(path) == false)
+                if (Directory.Exists(path) == false)
                 {
                     continue;
                     //directories = Directory.GetFileSystemEntries(path); // TODO: Должен признать что реализация с EnumerateDirectories и EnumerateFiles получилось бы лучше. Должен признать мой совет с GetFileSystemEntries оказался плохим. Проверки на то что получили мы файл или каталог не делают код лучше.
@@ -50,6 +46,7 @@ namespace DocumentHierarchy
                 { 
                     directoriesOrFiles = Directory.GetFileSystemEntries(path);
                 }
+
                 if (directoriesOrFiles != null)
                 {
                     foreach (var item in directoriesOrFiles)
@@ -58,18 +55,14 @@ namespace DocumentHierarchy
                         listAddsFileOrDirectory.Add(item);
                         if(Directory.Exists(item))
                         {
-                            DirectoryFinded($"Папка {item} найдена"); // TODO: [требование] DirectoryFinded - "каталог найден" выродилось в "Обход папок закончен".
-                                                                      // исправил
+                            DirectoryFinded($"Папка {item} найдена"); 
                         }
                         else
                         {
-                            FileFinded($"Файл {item} найден"); // TODO: [требование] FileFinded - "файл найден" выродилось в "Обход файлов закончен".
-                                                               // исправил
+                            FileFinded($"Файл {item} найден");
                         }
-                        if (filter(item)) // TODO: [многословность] Сравнивать выражение возращающее bool c true избыточно.
-                                          // исправил
+                        if (filter(item)) 
                         {
-
                             if (Directory.Exists(item))
                             {
                                 if(FilteredDirectoryFinded($"Папка {item} отобрана"))
@@ -81,8 +74,7 @@ namespace DocumentHierarchy
                             }
                             else
                             {
-                                if(FilteredFileFinded($"Файл {item} отобран")) // TODO: [требование] FilteredFileFinded - "файл отобран" выродилось в "Фильтрация файлов в папке {path} закончена".
-                                                                               // исправил
+                                if(FilteredFileFinded($"Файл {item} отобран"))
                                 {
                                     Console.WriteLine("Здесь можно исключать файл из поиска. Нажмите enter");
                                     Console.ReadLine(); 
