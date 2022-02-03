@@ -7,6 +7,14 @@ namespace ConvertStringToNumber
     {
         public static int ToInt(string wordConvert)
         {
+            bool negativeNumber = false;
+
+            if (wordConvert[0] == '-')
+            {
+                negativeNumber = true;
+                wordConvert = wordConvert.Substring(1);
+            }
+
             int a;
             int[] arrayInt = new int[wordConvert.Length];
 
@@ -30,6 +38,11 @@ namespace ConvertStringToNumber
                 for (int i = 0; i < arrayInt.Length; i++)
                 {
                     number += arrayInt[i] * (int)Math.Pow(10, arrayInt.Length - 1 - i);
+                }
+
+                if (negativeNumber)
+                {
+                    number = 0 - number;
                 }
 
                 return number;
