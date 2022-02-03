@@ -45,5 +45,14 @@ namespace ConvertStringToNumber.Tests
             ConvertString.ToInt("2147483648");
 
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(IndexOutOfRangeException))]
+        public void ToInt_IndexOutOfRangeException()
+        {
+
+            ConvertString.ToInt("");
+
+        }
     }
 }

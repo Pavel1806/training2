@@ -12,6 +12,12 @@ namespace ConvertStringToNumber
         /// <returns>Численное значение строки wordConvert</returns>
         public static int ToInt(string wordConvert)
         {
+
+            if (wordConvert == "")
+            {
+                throw new IndexOutOfRangeException();
+            }
+            
             bool negativeNumber = false;
 
             if (wordConvert[0] == '-')

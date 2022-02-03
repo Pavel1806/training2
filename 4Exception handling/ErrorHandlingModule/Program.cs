@@ -22,7 +22,7 @@ namespace ErrorHandlingModule
             int number = 0;
             try
             {
-                number = ConvertString.ToInt("ауцкпцукп");
+                number = ConvertString.ToInt("-658678");
                 Console.WriteLine(number);
             }
             catch(Exception e)
