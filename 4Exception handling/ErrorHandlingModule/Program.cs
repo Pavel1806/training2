@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConvertStringToNumber;
+using System;
 
 namespace ErrorHandlingModule
 {
@@ -18,6 +19,9 @@ namespace ErrorHandlingModule
                 Console.WriteLine(e.Message); 
             }
 
+            int t =  ConvertString.ToInt("eruut");
+
+            Console.WriteLine(t);
         }
     }
 }
