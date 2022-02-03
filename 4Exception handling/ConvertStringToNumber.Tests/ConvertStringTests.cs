@@ -10,9 +10,9 @@ namespace ConvertStringToNumber.Tests
         public void ToInt_String9_Int9()
         {
 
-            int actual = ConvertString.ToInt("9");
+            var actual = ConvertString.ToInt("9");
 
-            int expected = 9;
+            const int expected = 9;
 
             Assert.AreEqual(expected, actual);
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 
 namespace ConvertStringToNumber
 {
@@ -8,22 +7,22 @@ namespace ConvertStringToNumber
         /// <summary>
         /// Метод для преобразования строки в целое число
         /// </summary>
-        /// <param name="wordConvert">Строка, которая приходит для перевода в числовое значение</param>
-        /// <returns>Численное значение строки wordConvert</returns>
+        /// <param name="wordConvert">Строка, которая приходит для перевода в числовое значение</param> // TODO: "Слово" ИМХО неудачное имя, здесь как раз тот случай когда можно написать просто s или value
+        /// <returns>Численное значение строки wordConvert</returns> // TODO: А где информация об исключениях?
         public static int ToInt(string wordConvert)
         {
 
-            if (wordConvert == "")
+            if (wordConvert == "") // TODO: Как насчёт проверить ещё и на null?
             {
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException(); // TODO: Текст в исключении не повредил бы. Почему IndexOutOfRangeException а не например ArgumentException
             }
             
-            bool negativeNumber = false;
+            var negativeNumber = false;
 
-            if (wordConvert[0] == '-')
+            if (wordConvert[0] == '-') // TODO: Мы уверены что первый элемент есть?
             {
                 negativeNumber = true;
-                wordConvert = wordConvert.Substring(1);
+                wordConvert = wordConvert.Substring(1); // TODO: Почему бы не завести отдельную переменную? Подобные конструкции - ловушки.
             }
 
             int a;
@@ -41,7 +40,7 @@ namespace ConvertStringToNumber
                     }
                     else
                     {
-                        throw new FormatException();
+                        throw new FormatException(); // TODO: Текст в исключении не повредил бы.
                     }
                 }
 
@@ -49,13 +48,13 @@ namespace ConvertStringToNumber
                 {
                     throw new OverflowException();
                 }
-                else
+                else // TODO: else избыточен, здесь и ниже
                 {
                     if (wordConvert.Length == 10 && arrayInt[0] > 2)
                     {
                         throw new OverflowException();
                     }
-                    else if (wordConvert.Length == 10 && arrayInt[0] == 2)
+                    else if (wordConvert.Length == 10 && arrayInt[0] == 2) 
                     {
                         if (arrayInt[1] > 1)
                         {
@@ -111,7 +110,7 @@ namespace ConvertStringToNumber
                                                         }
                                                         else if (arrayInt[9] == 7)
                                                         {
-                                                            
+                                                            // TODO: ?
                                                         }
                                                     }
                                                 }
@@ -140,7 +139,7 @@ namespace ConvertStringToNumber
             }
             catch(Exception)
             {
-                throw;
+                throw; // TODO: Зачем это?
             }
         }
     }

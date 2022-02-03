@@ -16,16 +16,16 @@ namespace ErrorHandlingModule
             }
             catch(Exception e)
             {
-                Console.WriteLine("Вы ничего не ввели!"); 
+                Console.WriteLine("Вы ничего не ввели!"); // TODO: Не должно быть логики на исключениях. Исключения для другого.
             }
 
-            int number = 0;
+            int number = 0; // TODO: Стоит перенести ближе к использованию.
             try
             {
-                number = ConvertString.ToInt("-658678");
+                number = ConvertString.ToInt("-658678"); // TODO: Почему бы не запросить у пользователя число?
                 Console.WriteLine(number);
             }
-            catch(Exception e)
+            catch(Exception e) // TODO: Как насчёт того чтобы проинформировать пользователя в о том, что конкретно пошло не так?
             {
                 Console.WriteLine(e.Message);
             }
