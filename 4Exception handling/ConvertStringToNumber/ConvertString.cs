@@ -22,7 +22,7 @@ namespace ConvertStringToNumber
                     }
                     else
                     {
-                       throw new Exception("Вы ввели не число");
+                        throw new FormatException();
                     }
                 }
                 int number = 0;
@@ -34,7 +34,7 @@ namespace ConvertStringToNumber
 
                 return number;
             }
-            catch(Exception)
+            catch(FormatException)
             {
                 throw;
             }
