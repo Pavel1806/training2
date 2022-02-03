@@ -16,12 +16,21 @@ namespace ErrorHandlingModule
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message); 
+                Console.WriteLine("Вы ничего не ввели!"); 
             }
 
-            int t =  ConvertString.ToInt("eruut");
+            int number = 0;
+            try
+            {
+                number = ConvertString.ToInt("456");
+                Console.WriteLine(number);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
-            Console.WriteLine(t);
+            
         }
     }
 }

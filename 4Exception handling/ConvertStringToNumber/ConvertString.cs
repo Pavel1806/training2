@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace ConvertStringToNumber
@@ -12,32 +9,35 @@ namespace ConvertStringToNumber
         {
             int a;
             int[] arrayInt = new int[wordConvert.Length];
-            
-            for(int i = 0 ; i< wordConvert.Length; i++)
+
+            try
             {
-                char characterFromString = wordConvert[i];
-                a = characterFromString - '0';
-                if (a <= 9)
+                for (int i = 0; i < wordConvert.Length; i++)
                 {
-                    arrayInt[i] = a;
+                    char characterFromString = wordConvert[i];
+                    a = characterFromString - '0';
+                    if (a <= 9)
+                    {
+                        arrayInt[i] = a;
+                    }
+                    else
+                    {
+                       throw new Exception("Вы ввели не число");
+                    }
                 }
-                else
+                int number = 0;
+
+                for (int i = 0; i < arrayInt.Length; i++)
                 {
-                    return 0;
+                    number += arrayInt[i] * (int)Math.Pow(10, arrayInt.Length - 1 - i);
                 }
+
+                return number;
             }
-
-            int number = 0;
-
-            for (int i = 0; i < arrayInt.Length; i++)
+            catch(Exception)
             {
-                number += arrayInt[i] * (int)Math.Pow(10, arrayInt.Length - 1 - i);
+                throw;
             }
-
-            return number;
-
-            
-
         }
     }
 }
