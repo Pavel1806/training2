@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErrorHandlingModule", "ErrorHandlingModule.csproj", "{BDB13776-7C0C-49D6-BF3A-F7CAAD23468E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErrorHandlingModule", "ErrorHandlingModule.csproj", "{BDB13776-7C0C-49D6-BF3A-F7CAAD23468E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertStringToNumber", "..\ConvertStringToNumber\ConvertStringToNumber.csproj", "{C95E3A2A-71A0-4452-B647-18382CBF639E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConvertStringToNumber", "..\ConvertStringToNumber\ConvertStringToNumber.csproj", "{C95E3A2A-71A0-4452-B647-18382CBF639E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConvertStringToNumber.Tests", "..\ConvertStringToNumber.Tests\ConvertStringToNumber.Tests.csproj", "{B7D1C13F-EE07-4F6C-8A62-CEB4F3B6E792}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{C95E3A2A-71A0-4452-B647-18382CBF639E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C95E3A2A-71A0-4452-B647-18382CBF639E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C95E3A2A-71A0-4452-B647-18382CBF639E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7D1C13F-EE07-4F6C-8A62-CEB4F3B6E792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7D1C13F-EE07-4F6C-8A62-CEB4F3B6E792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7D1C13F-EE07-4F6C-8A62-CEB4F3B6E792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7D1C13F-EE07-4F6C-8A62-CEB4F3B6E792}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

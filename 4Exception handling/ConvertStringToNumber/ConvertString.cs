@@ -5,6 +5,11 @@ namespace ConvertStringToNumber
 {
     public static class ConvertString
     {
+        /// <summary>
+        /// Метод для преобразования строки в целое число
+        /// </summary>
+        /// <param name="wordConvert">Строка, которая приходит для перевода в числовое значение</param>
+        /// <returns>Численное значение строки wordConvert</returns>
         public static int ToInt(string wordConvert)
         {
             bool negativeNumber = false;
@@ -127,7 +132,7 @@ namespace ConvertStringToNumber
 
                 return number;
             }
-            catch(FormatException)
+            catch(Exception)
             {
                 throw;
             }
