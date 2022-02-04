@@ -23,78 +23,82 @@ namespace ConvertStringToNumber
                 throw new IndexOutOfRangeException("Значение переменной value пусто");
 
             var negativeNumber = false;
-                //string valueWithoutMinus = value;
+            string valueForProcessing = null;
 
-                if (value[0] == '-')
-                {
-                    negativeNumber = true;
-                    value = value.Substring(1); // TODO: Почему бы не завести отдельную переменную? Подобные конструкции - ловушки
-                                                // Я здесь так сделал потому что если не будет минуса, то чтение кода пойдет дальше и будет использована переменная value
-                                                // Если меняю переменную, то надо вводить еще кусок кода для обработки переменной которая выйдет из этого if
-                                                // NS: Это не значит что переменную для беззнаковой части нельзя завести.
-                }
+            if (value[0] == '-')
+            {
+                negativeNumber = true;
+                valueForProcessing = value.Substring(1); // TODO: Почему бы не завести отдельную переменную? Подобные конструкции - ловушки
+                                            // Я здесь так сделал потому что если не будет минуса, то чтение кода пойдет дальше и будет использована переменная value
+                                            // Если меняю переменную, то надо вводить еще кусок кода для обработки переменной которая выйдет из этого if
+                                            // NS: Это не значит что переменную для беззнаковой части нельзя завести.
+                                            // Исправил.
+            }
+            else
+            {
+                valueForProcessing = value;
+            }
 
             int a;
-            int[] arrayInt = new int[value.Length];
+            int[] arrayInt = new int[valueForProcessing.Length];
 
-                for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < valueForProcessing.Length; i++)
+            {
+                char characterFromString = valueForProcessing[i];
+                a = characterFromString - '0';
+                if (a <= 9)
                 {
-                    char characterFromString = value[i];
-                    a = characterFromString - '0';
-                    if (a <= 9)
-                    {
-                        arrayInt[i] = a;
-                    }
-                    else
-                    {
-                        throw new FormatException("Введено не число");
-                    }
+                    arrayInt[i] = a;
                 }
-
-                if (value.Length > 10)
-                    throw new OverflowException("Переменная не вмещает такое число");
-
-                if (value.Length == 10 && arrayInt[0] > 2)
-                    throw new OverflowException("Переменная не вмещает такое число");
-
-                if (value.Length == 10 && arrayInt[0] == 2) 
+                else
                 {
-                    if (arrayInt[1] > 1)
-                        throw new OverflowException("Переменная не вмещает такое число");
+                    throw new FormatException("Введено не число");
+                }
+            }
 
-                    if (arrayInt[1] == 1)
+            if (valueForProcessing.Length > 10)
+                throw new OverflowException("Переменная не вмещает такое число");
+
+            if (valueForProcessing.Length == 10 && arrayInt[0] > 2)
+                throw new OverflowException("Переменная не вмещает такое число");
+
+            if (valueForProcessing.Length == 10 && arrayInt[0] == 2) 
+            {
+                if (arrayInt[1] > 1)
+                    throw new OverflowException("Переменная не вмещает такое число");
+
+                if (arrayInt[1] == 1)
+                {
+                    if (arrayInt[2] > 4)
+                        throw new OverflowException("Переменная не вмещает такое число");
+                    if (arrayInt[2] == 4)
                     {
-                        if (arrayInt[2] > 4)
+                        if (arrayInt[3] > 7)
                             throw new OverflowException("Переменная не вмещает такое число");
-                        if (arrayInt[2] == 4)
+                        if (arrayInt[3] == 7)
                         {
-                            if (arrayInt[3] > 7)
+                            if (arrayInt[4] > 4)
                                 throw new OverflowException("Переменная не вмещает такое число");
-                            if (arrayInt[3] == 7)
+                            if (arrayInt[4] == 4)
                             {
-                                if (arrayInt[4] > 4)
+                                if (arrayInt[5] > 8)
                                     throw new OverflowException("Переменная не вмещает такое число");
-                                if (arrayInt[4] == 4)
+                                if (arrayInt[5] == 8)
                                 {
-                                    if (arrayInt[5] > 8)
+                                    if (arrayInt[6] > 3)
                                         throw new OverflowException("Переменная не вмещает такое число");
-                                    if (arrayInt[5] == 8)
+                                    if (arrayInt[6] == 3)
                                     {
-                                        if (arrayInt[6] > 3)
+                                        if (arrayInt[7] > 6)
                                             throw new OverflowException("Переменная не вмещает такое число");
-                                        if (arrayInt[6] == 3)
+                                        if (arrayInt[7] == 6)
                                         {
-                                            if (arrayInt[7] > 6)
+                                            if (arrayInt[8] > 4)
                                                 throw new OverflowException("Переменная не вмещает такое число");
-                                            if (arrayInt[7] == 6)
+                                            if (arrayInt[8] == 4)
                                             {
-                                                if (arrayInt[8] > 4)
+                                                if (arrayInt[9] > 7)
                                                     throw new OverflowException("Переменная не вмещает такое число");
-                                                if (arrayInt[8] == 4)
-                                                {
-                                                    if (arrayInt[9] > 7)
-                                                        throw new OverflowException("Переменная не вмещает такое число");
-                                                }
                                             }
                                         }
                                     }
@@ -103,16 +107,17 @@ namespace ConvertStringToNumber
                         }
                     }
                 }
+            }
 
-                int number = 0;
+            int number = 0;
 
-                for (int i = 0; i < arrayInt.Length; i++)
-                    number += arrayInt[i] * (int)Math.Pow(10, arrayInt.Length - 1 - i);
+            for (int i = 0; i < arrayInt.Length; i++)
+                number += arrayInt[i] * (int)Math.Pow(10, arrayInt.Length - 1 - i);
 
-                if (negativeNumber)
-                    number = 0 - number;
+            if (negativeNumber)
+                number = 0 - number;
 
-                return number;
+            return number;
         }
     }
 }
