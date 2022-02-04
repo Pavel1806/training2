@@ -19,11 +19,9 @@ namespace ErrorHandlingModule
 
                 Console.WriteLine("Вы ничего не ввели!");
 
-                Console.WriteLine(e.Message); // TODO: Не должно быть логики на исключениях. Исключения для другого.
-                                              // Исправлены замечания
+                Console.WriteLine(e.Message);
             }
 
-            //int number = 0; // TODO: Стоит перенести ближе к использованию.
             try
             {
                 Console.WriteLine("Введите число до 2147483647 или до -2147483647");
@@ -39,7 +37,7 @@ namespace ErrorHandlingModule
             {
                 Console.WriteLine("Введено пустое значение");
             }
-            catch (FormatException) // TODO: Как насчёт того чтобы проинформировать пользователя в о том, что конкретно пошло не так?
+            catch (FormatException)
             {
                 Console.WriteLine("Введено не число");
             }
