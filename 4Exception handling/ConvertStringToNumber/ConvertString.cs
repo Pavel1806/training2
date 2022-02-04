@@ -19,7 +19,7 @@ namespace ConvertStringToNumber
             
             var negativeNumber = false;
 
-            if (wordConvert[0] == '-') // TODO: Мы уверены что первый элемент есть?
+            if (wordConvert[0] == '-')
             {
                 negativeNumber = true;
                 wordConvert = wordConvert.Substring(1); // TODO: Почему бы не завести отдельную переменную? Подобные конструкции - ловушки.

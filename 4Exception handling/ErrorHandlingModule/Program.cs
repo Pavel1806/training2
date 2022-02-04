@@ -16,7 +16,7 @@ namespace ErrorHandlingModule
             }
             catch(Exception e)
             {
-                Console.WriteLine("Вы ничего не ввели!"); // TODO: Не должно быть логики на исключениях. Исключения для другого.
+                Console.WriteLine("Вы ничего не ввели!");
             }
 
             int number = 0; // TODO: Стоит перенести ближе к использованию.
