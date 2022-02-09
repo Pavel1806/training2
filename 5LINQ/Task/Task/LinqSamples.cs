@@ -27,22 +27,18 @@ namespace SampleQueries
 
 		[Category("Restriction Operators")]
 		[Title("Where - Task 1")]
-		[Description("This sample uses the where clause to find all elements of an array with a value less than 5.")]
+		[Description("Список клиентов у которых сумма всех заказов больше orderAmmount")]
 		public void Linq1()
-		{
-			int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+        {
+            int orderAmmount = 35400;
+            
+            var listOfSortedClients = dataSource.Customers.Where(x => x.Orders.Sum(y => y.Total) > orderAmmount);
 
-			var lowNums =
-				from num in numbers
-				where num < 5
-				select num;
-
-			Console.WriteLine("Numbers < 5:");
-			foreach (var x in lowNums)
-			{
-				Console.WriteLine(x);
-			}
-		}
+            foreach (var x in listOfSortedClients)
+            {
+                Console.WriteLine(x.CompanyName);
+            }
+        }
 
 		[Category("Restriction Operators")]
 		[Title("Where - Task 2")]
