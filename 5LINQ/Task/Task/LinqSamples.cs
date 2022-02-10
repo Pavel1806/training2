@@ -109,10 +109,7 @@ namespace SampleQueries
                 {
                     Console.WriteLine("Поставщиков в том же городе, что и клиент, не найдено");
                 }
-
             }
-
-
         }
         [Category("Task 3")]
         [Title("Where - Task 3")]
@@ -237,8 +234,6 @@ namespace SampleQueries
         [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
         public void Linq8()
         {
-            //var productGroup = dataSource.Products.Select(p => p.UnitPrice);
-
             Console.WriteLine("Дешевые");
             foreach (var item in dataSource.Products.Where(x=>x.UnitPrice > 0 && x.UnitPrice < 30))
             {
@@ -256,7 +251,6 @@ namespace SampleQueries
             {
                 Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
             }
-
         }
 
         [Category("Task 9")]
@@ -264,7 +258,6 @@ namespace SampleQueries
         [Description("Cредняя прибыльность каждого города и средняя интенсивность")]
         public void Linq9()
         {
-
             var productGroup = dataSource.Customers.GroupBy(x => x.City).Select(v=> new
             {
                 City = v.Key,
@@ -287,26 +280,106 @@ namespace SampleQueries
 
         [Category("Task 10")]
         [Title("Where - Task 10.1")]
-        [Description("Cреднегодовая статистика активности клиентов по месяцам не учитывая год")]
+        [Description("Cреднегодовая статистика активности клиентов по годам")]
         public void Linq10_1()
         {
-            var t = dataSource.Customers.GroupBy(x => x.CompanyName);
+            var dateGroups = dataSource.Customers.Select(x => new
+            {
+                Company = x.CompanyName,
+                YearGroups = x.Orders.GroupBy(a=>a.OrderDate.Year).Select(n=> new
+                {
+                    Year = n.Key,
+                    Summ = n.Sum(c=>c.Total),
+                })
 
+            });
 
-            foreach (var item in t)
+            foreach (var item in dateGroups)
             {
                 Console.WriteLine();
-                Console.WriteLine(item.Key);
+                Console.WriteLine(item.Company);
                 Console.WriteLine();
-                foreach (var x in item)
+                foreach (var x in item.YearGroups)
                 {
-                    foreach (var y in x.Orders)
-                    {
-                        Console.WriteLine(y.Total);
-                    }
+                    Console.WriteLine($"{x.Year}--{x.Summ}");
                 }
             }
         }
 
+        [Category("Task 10")]
+        [Title("Where - Task 10.2")]
+        [Description("Cреднегодовая статистика активности клиентов по месяцам за один год(1997)")]
+        public void Linq10_2()
+        {
+            var dateGroups = dataSource.Customers.Select(x => new
+            {
+                Company = x.CompanyName,
+                YearGroups = x.Orders.GroupBy(a => a.OrderDate.Year).Select(n => new
+                {
+                    Year = n.Key,
+                    Summ = n.Sum(c => c.Total),
+                    MonthGroups = n.GroupBy(k => k.OrderDate.Month).Select(g => new
+                    {
+                        Month = g.Key,
+                        Summ = g.Sum(d => d.Total)
+                    })
+                })
+
+            });
+
+            foreach (var item in dateGroups)
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.Company);
+                Console.WriteLine();
+                foreach (var x in item.YearGroups)
+                {
+                    if(x.Year == 1997)
+                        foreach (var y in x.MonthGroups)
+                        {
+                            Console.WriteLine($"{y.Month}--{y.Summ}");
+                        }
+                }
+            }
+        }
+        [Category("Task 10")]
+        [Title("Where - Task 10.3")]
+        [Description("Cреднегодовая статистика активности клиентов по месяцам и годам")]
+        public void Linq10_3()
+        {
+            var dateGroups = dataSource.Customers.Select(x => new
+            {
+                Company = x.CompanyName,
+                YearGroups = x.Orders.GroupBy(a => a.OrderDate.Year).Select(n => new
+                {
+                    Year = n.Key,
+                    Summ = n.Sum(c => c.Total),
+                    MonthGroups = n.GroupBy(k => k.OrderDate.Month).Select(g => new
+                    {
+                        Month = g.Key,
+                        Summ = g.Sum(d => d.Total)
+                    })
+                })
+
+            });
+
+            foreach (var item in dateGroups)
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.Company);
+                Console.WriteLine();
+                foreach (var x in item.YearGroups)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($" {x.Year}");
+                    Console.WriteLine();
+
+                    foreach (var y in x.MonthGroups)
+                    {
+                        Console.WriteLine($"  {y.Month}--{y.Summ}");
+                    }
+                }
+            }
+        }
     }
 }
