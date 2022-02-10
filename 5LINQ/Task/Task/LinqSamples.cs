@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using SampleSupport;
@@ -282,5 +283,30 @@ namespace SampleQueries
                 Console.WriteLine();
             }
         }
+
+
+        [Category("Task 10")]
+        [Title("Where - Task 10.1")]
+        [Description("Cреднегодовая статистика активности клиентов по месяцам не учитывая год")]
+        public void Linq10_1()
+        {
+            var t = dataSource.Customers.GroupBy(x => x.CompanyName);
+
+
+            foreach (var item in t)
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.Key);
+                Console.WriteLine();
+                foreach (var x in item)
+                {
+                    foreach (var y in x.Orders)
+                    {
+                        Console.WriteLine(y.Total);
+                    }
+                }
+            }
+        }
+
     }
 }
