@@ -257,5 +257,30 @@ namespace SampleQueries
             }
 
         }
+
+        [Category("Task 9")]
+        [Title("Where - Task 9")]
+        [Description("Cредняя прибыльность каждого города и средняя интенсивность")]
+        public void Linq9()
+        {
+
+            var productGroup = dataSource.Customers.GroupBy(x => x.City).Select(v=> new
+            {
+                City = v.Key,
+                Summ = v.Average(c=>c.Orders.Average(x=> x?.Total)),
+                NumbOrders =  v.Average(c=>c.Orders.Length) / v?.Count()
+            });
+
+            foreach (var item in productGroup)
+            {
+                var n = item.NumbOrders;
+                var s = item.Summ;
+                var str1 = string.Format("{0:0.##}", n);
+                var str2 = string.Format("{0:0.##}", s);
+                Console.WriteLine();
+                Console.WriteLine($"{str1}--{str2}--{item.City}");
+                Console.WriteLine();
+            }
+        }
     }
 }
