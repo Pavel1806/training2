@@ -198,5 +198,64 @@ namespace SampleQueries
                 Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
             }
         }
+
+        [Category("Task 7")]
+        [Title("Where - Task 7")]
+        [Description("Сгруппированные все продукты по категориям, внутри – по наличию на складе, внутри последней группы по стоимости")]
+        public void Linq7()
+        {
+            var productGroup = dataSource.Products.GroupBy(p => p.Category);
+            int i = 1;
+            foreach (var item in productGroup)
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.Key);
+                Console.WriteLine();
+
+                if (i != productGroup.Count())
+                {
+                    foreach (var x in item.OrderBy(x => x.UnitsInStock))
+                    {
+                        Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
+                    }
+                }
+                else
+                {
+                    foreach (var x in item.OrderBy(x => x.UnitPrice))
+                    {
+                        Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
+                    }
+                }
+
+                i++;
+            }
+        }
+
+        [Category("Task 8")]
+        [Title("Where - Task 8")]
+        [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
+        public void Linq8()
+        {
+            //var productGroup = dataSource.Products.Select(p => p.UnitPrice);
+
+            Console.WriteLine("Дешевые");
+            foreach (var item in dataSource.Products.Where(x=>x.UnitPrice > 0 && x.UnitPrice < 30))
+            {
+                Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+            }
+
+            Console.WriteLine("Средние");
+            foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60))
+            {
+                Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+            }
+
+            Console.WriteLine("Дорогие");
+            foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 60))
+            {
+                Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+            }
+
+        }
     }
 }
