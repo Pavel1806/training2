@@ -183,5 +183,20 @@ namespace SampleQueries
                 Console.WriteLine($"{item.Date.Year}--{item.Date.Month}--{item.moneyTurnover}--{item.Customer}");
             }
         }
+
+        [Category("Task 6")]
+        [Title("Where - Task 6")]
+        [Description("Список клиентов, у которых указан нецифровой почтовый код или не заполнен регион или в телефоне не указан код оператора")]
+        public void Linq6()
+        {
+            int res;
+            var listOfSortedCustomers = dataSource.Customers.Where(x =>
+                Int32.TryParse(x.PostalCode, out res) == false || x.Region == null || x.Phone.Contains("(") == false);
+               
+            foreach (var item in listOfSortedCustomers)
+            {
+                Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
+            }
+        }
     }
 }
