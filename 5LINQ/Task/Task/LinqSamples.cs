@@ -49,7 +49,9 @@ namespace SampleQueries
         {
             var listCustomer = dataSource.Customers;
 
-            foreach (var item in listCustomer)
+            foreach (var item in listCustomer) // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.
+                                                      // Т.е. сначала через LINQ получаем данные. А затем выводим на экран (тут можно использовать foreach).
+                                                      // 2 шага, не надо их смешивать. Здесь и далее.
             {
                 var listOfSortedSuppliers = dataSource.Suppliers.Where(x => x.Country == item.Country).Where(y => y.City == item.City);
                 
@@ -133,7 +135,7 @@ namespace SampleQueries
             var listOfSortedCustomers = dataSource.Customers.Select(x => new
             {
                 Customer = x.CompanyName,
-                Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime()
+                Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
             });
 
             foreach (var item in listOfSortedCustomers)
@@ -145,7 +147,7 @@ namespace SampleQueries
         [Category("Task 4")]
         [Title("Where - Task 4.2")]
         [Description("Список клиентов с указанием, начиная с какого месяца какого года они стали клиентами")]
-        public void Linq4_2()
+        public void Linq4_2() // TODO: Это не требовалось. Для самопроверки?
         {
             foreach (var item in dataSource.Customers)
             {
@@ -173,8 +175,10 @@ namespace SampleQueries
             {
                 Customer = x.CompanyName,
                 moneyTurnover = x.Orders.Sum(y=>y.Total),
-                Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime()
-            }).OrderByDescending(x=>x.Date.Year).ThenByDescending(t=>t.Date.Month).ThenByDescending(j=>j.moneyTurnover);
+                Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
+            }).OrderByDescending(x=>x.Date.Year)
+                .ThenByDescending(t=>t.Date.Month)
+                .ThenByDescending(j=>j.moneyTurnover); // TODO: А где сортировка по имени клиента?
 
             foreach (var item in listOfSortedCustomers)
             {
@@ -187,10 +191,9 @@ namespace SampleQueries
         [Description("Список клиентов, у которых указан нецифровой почтовый код или не заполнен регион или в телефоне не указан код оператора")]
         public void Linq6()
         {
-            int res;
             var listOfSortedCustomers = dataSource.Customers.Where(x =>
-                Int32.TryParse(x.PostalCode, out res) == false || x.Region == null || x.Phone.Contains("(") == false);
-               
+                Int32.TryParse(x.PostalCode, out _) == false || x.Region == null || x.Phone.Contains("(") == false); // TODO: Contains это не про начинается. Как насчёт StartsWith? Для "== false" есть оператор "!"
+
             foreach (var item in listOfSortedCustomers)
             {
                 Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
@@ -204,7 +207,7 @@ namespace SampleQueries
         {
             var productGroup = dataSource.Products.GroupBy(p => p.Category);
             int i = 1;
-            foreach (var item in productGroup)
+            foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
             {
                 Console.WriteLine();
                 Console.WriteLine(item.Key);
@@ -233,7 +236,7 @@ namespace SampleQueries
         [Title("Where - Task 8")]
         [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
         public void Linq8()
-        {
+        {  // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.
             Console.WriteLine("Дешевые");
             foreach (var item in dataSource.Products.Where(x=>x.UnitPrice > 0 && x.UnitPrice < 30))
             {
@@ -262,7 +265,7 @@ namespace SampleQueries
             {
                 City = v.Key,
                 Summ = v.Average(c=>c.Orders.Average(x=> x?.Total)),
-                NumbOrders =  v.Average(c=>c.Orders.Length) / v?.Count()
+                NumbOrders =  v.Average(c=>c.Orders.Length) / v.Count()
             });
 
             foreach (var item in productGroup)
@@ -308,7 +311,7 @@ namespace SampleQueries
 
         [Category("Task 10")]
         [Title("Where - Task 10.2")]
-        [Description("Cреднегодовая статистика активности клиентов по месяцам за один год(1997)")]
+        [Description("Cреднегодовая статистика активности клиентов по месяцам за один год(1997)")] // TODO: Почему только за 1997? Впрочем формулировка противоречивая, пусть будет так. Но если получишь значения по месяцам без привязки к году, будет здорово.
         public void Linq10_2()
         {
             var dateGroups = dataSource.Customers.Select(x => new
