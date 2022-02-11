@@ -245,40 +245,40 @@ namespace SampleQueries
         [Description("Сгруппированные все продукты по категориям, внутри – по наличию на складе, внутри последней группы по стоимости")]
         public void Linq7()
         {
-            //var productGroup = dataSource.Products.Select(d => d.Category).Where(u=>u.Length  );
 
-            //foreach (var x in productGroup)
-            //{
-            //    Console.WriteLine($"--{x.Key.cat}");
-            //    foreach (var y in x)
-            //    {
-            //        Console.WriteLine(y.UnitPrice);
-            //    }
-            //}
+            var productGroup = dataSource.Products.GroupBy(d => d.Category).Select(r=> new
+            {
+                category= r.Key,
+                unitsInStock = r.OrderBy(t=>t.UnitsInStock),
+                unitPrice = r.OrderBy(u=>u.UnitPrice)
+            });
 
-            //foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
-            //{
-            //    Console.WriteLine();
-            //    Console.WriteLine(item.Key);
-            //    Console.WriteLine();
+            int i = 1;
 
-            //    if (i != productGroup.Count())
-            //    {
-            //        foreach (var x in item.OrderBy(x => x.UnitsInStock))
-            //        {
-            //            Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
-            //        }
-            //    }
-            //    else
-            //    {
-            //        foreach (var x in item.OrderBy(x => x.UnitPrice))
-            //        {
-            //            Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
-            //        }
-            //    }
+            foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
+                                                                    // // исправил, но вывод результатов остался таким же. Просто все выражения linq, убрал в запрос.
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.category);
+                Console.WriteLine();
 
-            //    i++;
-            //}
+                if (i != productGroup.Count())
+                {
+                    foreach (var x in item.unitsInStock)
+                    {
+                        Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
+                    }
+                }
+                else
+                {
+                    foreach (var x in item.unitPrice)
+                    {
+                        Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
+                    }
+                }
+
+                i++;
+            }
         }
 
         [Category("Task 8")]
