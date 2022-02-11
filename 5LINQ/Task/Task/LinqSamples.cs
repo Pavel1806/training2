@@ -47,31 +47,56 @@ namespace SampleQueries
 
 		public void Linq2_1()
         {
-            var listCustomer = dataSource.Customers;
 
-            foreach (var item in listCustomer) // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.
-                                                      // Т.е. сначала через LINQ получаем данные. А затем выводим на экран (тут можно использовать foreach).
-                                                      // 2 шага, не надо их смешивать. Здесь и далее.
+            var listOfSortedCustomers = dataSource.Customers.Select(t => new
             {
-                var listOfSortedSuppliers = dataSource.Suppliers.Where(x => x.Country == item.Country).Where(y => y.City == item.City);
-                
-                Console.WriteLine();
-                Console.WriteLine($"Имя клиента {item.CompanyName}");
-                Console.WriteLine();
+                Customer = t.CompanyName,
+                Suppliers = dataSource.Suppliers.Where(e => e.Country == t.Country).Where(r=> r.City ==t.City)
+            });
 
-                if (listOfSortedSuppliers.Count() != 0)
+            foreach (var item in listOfSortedCustomers)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Клиент-{item.Customer}");
+                Console.WriteLine();
+                if (item.Suppliers.Count() != 0)
                 {
-                    Console.WriteLine("Список поставщиков");
-                    foreach (var x in listOfSortedSuppliers)
+                    foreach (var x in item.Suppliers)
                     {
-                        Console.WriteLine(x.SupplierName);
+                        Console.WriteLine("Поставщики");
+                        Console.WriteLine($"{x.SupplierName}");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Поставщиков в той же стране и в том же городе, что и клиент, не найдено");
+                    Console.WriteLine("Нет поставщиков");
                 }
+                
             }
+
+            //foreach (var item in listCustomer) // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.         // Исправил
+            //                                          // Т.е. сначала через LINQ получаем данные. А затем выводим на экран (тут можно использовать foreach).
+            //                                          // 2 шага, не надо их смешивать. Здесь и далее.
+            //{
+            //    var listOfSortedSuppliers = dataSource.Suppliers.Where(x => x.Country == item.Country).Where(y => y.City == item.City);
+                
+            //    Console.WriteLine();
+            //    Console.WriteLine($"Имя клиента {item.CompanyName}");
+            //    Console.WriteLine();
+
+            //    if (listOfSortedSuppliers.Count() != 0)
+            //    {
+            //        Console.WriteLine("Список поставщиков");
+            //        foreach (var x in listOfSortedSuppliers)
+            //        {
+            //            Console.WriteLine(x.SupplierName);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Поставщиков в той же стране и в том же городе, что и клиент, не найдено");
+            //    }
+            //}
         }
 
         [Category("Task 2")]
