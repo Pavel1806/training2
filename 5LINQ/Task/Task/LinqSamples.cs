@@ -428,11 +428,10 @@ namespace SampleQueries
                 Console.WriteLine();
                 foreach (var x in item.YearGroups)
                 {
-                    if(x.Year == 1997)
-                        foreach (var y in x.MonthGroups)
-                        {
-                            Console.WriteLine($"{y.Month}--{y.Summ}");
-                        }
+                  foreach (var y in x.MonthGroups)
+                    {
+                        Console.WriteLine($"{y.Month}.{x.Year}--{y.Summ}");
+                    }
                 }
             }
         }
