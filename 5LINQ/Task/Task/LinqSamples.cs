@@ -245,54 +245,105 @@ namespace SampleQueries
         [Description("Сгруппированные все продукты по категориям, внутри – по наличию на складе, внутри последней группы по стоимости")]
         public void Linq7()
         {
-            var productGroup = dataSource.Products.GroupBy(p => p.Category);
-            int i = 1;
-            foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
-            {
-                Console.WriteLine();
-                Console.WriteLine(item.Key);
-                Console.WriteLine();
+            //var productGroup = dataSource.Products.Select(d => d.Category).Where(u=>u.Length  );
 
-                if (i != productGroup.Count())
-                {
-                    foreach (var x in item.OrderBy(x => x.UnitsInStock))
-                    {
-                        Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
-                    }
-                }
-                else
-                {
-                    foreach (var x in item.OrderBy(x => x.UnitPrice))
-                    {
-                        Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
-                    }
-                }
+            //foreach (var x in productGroup)
+            //{
+            //    Console.WriteLine($"--{x.Key.cat}");
+            //    foreach (var y in x)
+            //    {
+            //        Console.WriteLine(y.UnitPrice);
+            //    }
+            //}
 
-                i++;
-            }
+            //foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
+            //{
+            //    Console.WriteLine();
+            //    Console.WriteLine(item.Key);
+            //    Console.WriteLine();
+
+            //    if (i != productGroup.Count())
+            //    {
+            //        foreach (var x in item.OrderBy(x => x.UnitsInStock))
+            //        {
+            //            Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        foreach (var x in item.OrderBy(x => x.UnitPrice))
+            //        {
+            //            Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
+            //        }
+            //    }
+
+            //    i++;
+            //}
         }
 
         [Category("Task 8")]
         [Title("Where - Task 8")]
         [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
         public void Linq8()
-        {  // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.
-            Console.WriteLine("Дешевые");
-            foreach (var item in dataSource.Products.Where(x=>x.UnitPrice > 0 && x.UnitPrice < 30))
-            {
-                Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
-            }
+        {  // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.   //исправил
+            //Console.WriteLine("Дешевые");
+            //foreach (var item in dataSource.Products.Where(x=>x.UnitPrice > 0 && x.UnitPrice < 30))
+            //{
+            //    Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+            //}
 
-            Console.WriteLine("Средние");
-            foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60))
-            {
-                Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
-            }
+            //Console.WriteLine("Средние");
+            //foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60))
+            //{
+            //    Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+            //}
 
-            Console.WriteLine("Дорогие");
-            foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 60))
+            //Console.WriteLine("Дорогие");
+            //foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 60))
+            //{
+            //    Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+            //}
+
+            var productGroup = dataSource.Products.GroupBy(p => new
             {
-                Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
+                cheap = "дешевые",
+                medium = "средние",
+                expensive = "дорогие"
+         
+            }).Select(t=>new
+            {
+                cheap = t.Key.cheap,
+                cheapList = t.Where(p=>p.UnitPrice > 0 && p.UnitPrice < 30),
+                medium = t.Key.medium,
+                mediumList = t.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60),
+                expensive = t.Key.expensive,
+                expensiveList = t.Where(x => x.UnitPrice >= 60)
+
+            });
+
+            foreach (var item in productGroup)
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.cheap);
+                Console.WriteLine();
+                foreach (var x in item.cheapList)
+                {
+                    Console.WriteLine($"{x.UnitPrice}--{x.ProductName}");
+                }
+                Console.WriteLine();
+                Console.WriteLine(item.medium);
+                Console.WriteLine();
+                foreach (var x in item.mediumList)
+                {
+                    Console.WriteLine($"{x.UnitPrice}--{x.ProductName}");
+                }
+                Console.WriteLine();
+                Console.WriteLine(item.expensive);
+                Console.WriteLine();
+                foreach (var x in item.expensiveList)
+                {
+                    Console.WriteLine($"{x.UnitPrice}--{x.ProductName}");
+                }
             }
         }
 
