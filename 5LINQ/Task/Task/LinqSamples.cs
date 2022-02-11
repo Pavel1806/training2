@@ -71,7 +71,6 @@ namespace SampleQueries
                 {
                     Console.WriteLine("Нет поставщиков");
                 }
-                
             }
 
             //foreach (var item in listCustomer) // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.         // Исправил
@@ -157,22 +156,33 @@ namespace SampleQueries
         [Description("Список клиентов с указанием, начиная с какого месяца какого года они стали клиентами")]
         public void Linq4_1()
         {
+            //var listOfSortedCustomers = dataSource.Customers.Select(x => new
+            //{
+            //    Customer = x.CompanyName,
+            //    Date = x.Orders.Length != 0 ? x.Orders.Where(s => s.OrderDate != null).Min() : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
+            //    Date = x.Orders.Where(s => s.OrderDate != null).Min(g => g.OrderDate)
+            //});
+
+
+            //переделал, 
+
+
             var listOfSortedCustomers = dataSource.Customers.Select(x => new
             {
                 Customer = x.CompanyName,
-                Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
-            });
+                Date = x.Orders.OrderBy(s => s.OrderDate).FirstOrDefault()
+            }).Where(y=>y.Date != null);
 
             foreach (var item in listOfSortedCustomers)
             {
-                Console.WriteLine($"{item.Customer}--{item.Date}");
+                Console.WriteLine($"{item.Customer}--{item.Date.OrderDate.Month}.{item.Date.OrderDate.Year}");
             }
         }
 
         [Category("Task 4")]
         [Title("Where - Task 4.2")]
         [Description("Список клиентов с указанием, начиная с какого месяца какого года они стали клиентами")]
-        public void Linq4_2() // TODO: Это не требовалось. Для самопроверки?
+        public void Linq4_2() // TODO: Это не требовалось. Для самопроверки?  //да
         {
             foreach (var item in dataSource.Customers)
             {
@@ -200,14 +210,19 @@ namespace SampleQueries
             {
                 Customer = x.CompanyName,
                 moneyTurnover = x.Orders.Sum(y=>y.Total),
-                Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
-            }).OrderByDescending(x=>x.Date.Year)
-                .ThenByDescending(t=>t.Date.Month)
-                .ThenByDescending(j=>j.moneyTurnover); // TODO: А где сортировка по имени клиента?
+                Date = x.Orders.OrderBy(s => s?.OrderDate).FirstOrDefault()
+                //Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
+            }).Where(s => s.Date != null).OrderByDescending(x=>x.Date.OrderDate.Year)            // переделал
+                .ThenByDescending(t=>t.Date.OrderDate.Month)
+                .ThenByDescending(j=>j.moneyTurnover).ThenByDescending(b=>b.Customer); // TODO: А где сортировка по имени клиента?
 
             foreach (var item in listOfSortedCustomers)
             {
-                Console.WriteLine($"{item.Date.Year}--{item.Date.Month}--{item.moneyTurnover}--{item.Customer}");
+                if (item.Date != null)
+                {
+                    Console.WriteLine($"{item.Date.OrderDate.Year}--{item.Date.OrderDate.Month}--{item.moneyTurnover}--{item.Customer}");
+                }
+                
             }
         }
 
@@ -217,8 +232,8 @@ namespace SampleQueries
         public void Linq6()
         {
             var listOfSortedCustomers = dataSource.Customers.Where(x =>
-                Int32.TryParse(x.PostalCode, out _) == false || x.Region == null || x.Phone.Contains("(") == false); // TODO: Contains это не про начинается. Как насчёт StartsWith? Для "== false" есть оператор "!"
-
+                Int32.TryParse(x.PostalCode, out _) != true || x.Region == null || x.Phone.StartsWith("(") != true); // TODO: Contains это не про начинается. Как насчёт StartsWith? Для "== false" есть оператор "!"
+                                                                                                                      // переделал
             foreach (var item in listOfSortedCustomers)
             {
                 Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
