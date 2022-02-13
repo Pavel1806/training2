@@ -197,8 +197,7 @@ namespace SampleQueries
         public void Linq6()
         {
             var listOfSortedCustomers = dataSource.Customers.Where(x =>
-                !int.TryParse(x.PostalCode, out _) || x.Region == null || !x.Phone.StartsWith("(")); // TODO: "!=true" это хуже чем "== false". Сравнивать значение логического типа (bool) c true или false - это "масло масленное".
-                                                                                                                     // переделал   // не понял куда его (!) поставить сначала
+                !int.TryParse(x.PostalCode, out _) || x.Region == null || !x.Phone.StartsWith("("));
             foreach (var item in listOfSortedCustomers)
             {
                 Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
@@ -268,26 +267,6 @@ namespace SampleQueries
         [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
         public void Linq8()
         {
-            //var productGroup = dataSource.Products.GroupBy(p => new
-            //{
-
-            //    cheap = "дешевые",
-            //    medium = "средние",
-            //    expensive = "дорогие",
-
-
-            //}).Select(t => new
-            //{
-            //    cheap = t.Key.cheap,
-            //    cheapList = t.Where(p => p.UnitPrice > 0 && p.UnitPrice < 30), // TODO: Linq Использование списков немного не то что хотелось бы увидеть. Используемый выше GroupBy сбивает с толку, по факту он же ни чего не группирует, тогда зачем он?
-            //                                                                   // GroupBy хотелось бы увидеть, но чтобы он полноценно группировал.
-            //    medium = t.Key.medium,
-            //    mediumList = t.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60),
-            //    expensive = t.Key.expensive,
-            //    expensiveList = t.Where(x => x.UnitPrice >= 60)
-
-            //});
-
             var productGroup = dataSource.Products.GroupBy(p => new
             {
                 cheap = p.UnitPrice > 0 && p.UnitPrice < 30,
