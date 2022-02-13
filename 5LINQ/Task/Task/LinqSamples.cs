@@ -197,8 +197,8 @@ namespace SampleQueries
         public void Linq6()
         {
             var listOfSortedCustomers = dataSource.Customers.Where(x =>
-                int.TryParse(x.PostalCode, out _) != true || x.Region == null || x.Phone.StartsWith("(") != true); // TODO: "!=true" это хуже чем "== false". Сравнивать значение логического типа (bool) c true или false - это "масло масленное".
-                                                                                                                     // переделал
+                !int.TryParse(x.PostalCode, out _) || x.Region == null || !x.Phone.StartsWith("(")); // TODO: "!=true" это хуже чем "== false". Сравнивать значение логического типа (bool) c true или false - это "масло масленное".
+                                                                                                                     // переделал   // не понял куда его (!) поставить сначала
             foreach (var item in listOfSortedCustomers)
             {
                 Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
@@ -211,39 +211,76 @@ namespace SampleQueries
         public void Linq7()
         {
 
-            var productGroup = dataSource.Products.GroupBy(d => d.Category).Select(r=> new
-            {
-                category= r.Key,
-                unitsInStock = r.OrderBy(t=>t.UnitsInStock), // TODO: Тут ожидалась группировка по признаку есть нас складе, нет на складе, а не сортировка.
-                unitPrice = r.OrderBy(u=>u.UnitPrice)
-            });
+            //var productGroup = dataSource.Products.GroupBy(d => d.Category).Select(r => new
+            //{
+            //    category = r.Key,
+            //    unitsInStock = r.Where(t => t.UnitsInStock > 0), // TODO: Тут ожидалась группировка по признаку есть нас складе, нет на складе, а не сортировка.
+            //    unitPrice = r.OrderBy(u => u.UnitPrice),
+            
 
-            int i = 1;
+            //});
 
-            foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
-                                                                    // // исправил, но вывод результатов остался таким же. Просто все выражения linq, убрал в запрос.
-            {
-                Console.WriteLine();
-                Console.WriteLine(item.category);
-                Console.WriteLine();
+            var productGroup = dataSource.Products.GroupBy((a) =>  a.Category)
+            ;
 
-                if (i != productGroup.Count()) // TODO: Что это такое? Linq должен вернуть данные которые можно вывести, без использования каких-то дополнительных правил.
-                {
-                    foreach (var x in item.unitsInStock)
-                    {
-                        Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
-                    }
-                }
-                else
-                {
-                    foreach (var x in item.unitPrice)
-                    {
-                        Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
-                    }
-                }
+            //Console.WriteLine(productGroup.category);
 
-                i++;
-            }
+            //foreach (var item in productGroup)
+            //{
+            //    Console.WriteLine(item.category);
+            //    foreach (var x in item.aaewr)
+            //    {
+            //        Console.WriteLine(x);
+            //    }
+                
+            //}
+
+
+            //Console.WriteLine(productGroup);
+
+
+            //foreach (var item in productGroup)
+            //{
+            //    Console.WriteLine($"{item.BeforeLast}");
+
+            //    foreach (var z in item.BeforeLast)
+            //    {
+            //        Console.WriteLine(z.Key);
+            //        foreach (var y in z)
+            //        {
+            //            Console.WriteLine(y.UnitPrice);
+            //        }
+            //    }
+            //}
+
+
+
+            //int i = 1;
+
+            //foreach (var item in productGroup) // TODO: Все данные возращаются в LINQ. foreach здесь ни к чему, только при выводе результатов допустим.
+            //                                                        // // исправил, но вывод результатов остался таким же. Просто все выражения linq, убрал в запрос.
+            //{
+            //    Console.WriteLine();
+            //    Console.WriteLine(item.category);
+            //    Console.WriteLine();
+
+            //    if (i != productGroup.Count()) // TODO: Что это такое? Linq должен вернуть данные которые можно вывести, без использования каких-то дополнительных правил.
+            //    {
+            //        foreach (var x in item.unitsInStock)
+            //        {
+            //            Console.WriteLine($"--{x.ProductName}--{x.UnitsInStock}");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        foreach (var x in item.unitPrice)
+            //        {
+            //            Console.WriteLine($"--{x.ProductName}--{x.UnitPrice}");
+            //        }
+            //    }
+
+            //    i++;
+            //}
         }
 
         [Category("Task 8")]
@@ -251,48 +288,72 @@ namespace SampleQueries
         [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
         public void Linq8()
         {
+            //var productGroup = dataSource.Products.GroupBy(p => new
+            //{
+
+            //    cheap = "дешевые",
+            //    medium = "средние",
+            //    expensive = "дорогие",
+
+
+            //}).Select(t=>new
+            //{
+            //    cheap = t.Key.cheap,
+            //    cheapList = t.Where(p=>p.UnitPrice > 0 && p.UnitPrice < 30), // TODO: Linq Использование списков немного не то что хотелось бы увидеть. Используемый выше GroupBy сбивает с толку, по факту он же ни чего не группирует, тогда зачем он?
+            //                                                                 // GroupBy хотелось бы увидеть, но чтобы он полноценно группировал.
+            //    medium = t.Key.medium,
+            //    mediumList = t.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60),
+            //    expensive = t.Key.expensive,
+            //    expensiveList = t.Where(x => x.UnitPrice >= 60)
+
+            //});
+
             var productGroup = dataSource.Products.GroupBy(p => new
             {
-                cheap = "дешевые",
-                medium = "средние",
-                expensive = "дорогие"
-         
-            }).Select(t=>new
-            {
-                cheap = t.Key.cheap,
-                cheapList = t.Where(p=>p.UnitPrice > 0 && p.UnitPrice < 30), // TODO: Linq Использование списков немного не то что хотелось бы увидеть. Используемый выше GroupBy сбивает с толку, по факту он же ни чего не группирует, тогда зачем он?
-                                                                             // GroupBy хотелось бы увидеть, но чтобы он полноценно группировал.
-                medium = t.Key.medium,
-                mediumList = t.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60),
-                expensive = t.Key.expensive,
-                expensiveList = t.Where(x => x.UnitPrice >= 60)
+                cheap = p.UnitPrice > 0 && p.UnitPrice < 30,
+                medium = p.UnitPrice >= 30 && p.UnitPrice < 60,
+                expensive = p.UnitPrice >= 60
 
+            }).Select(t => new
+            {
+                t.Key.cheap,
+                t.Key.medium,
+                t.Key.expensive,
+                product = t.Select(y=>y.ProductName)
             });
 
             foreach (var item in productGroup)
             {
-                Console.WriteLine();
-                Console.WriteLine(item.cheap);
-                Console.WriteLine();
-                foreach (var x in item.cheapList)
+                if (item.cheap)
                 {
-                    Console.WriteLine($"{x.UnitPrice}--{x.ProductName}");
+                    Console.WriteLine();
+                    Console.WriteLine("Дешевые");
+                    foreach (var x in item.product)
+                    {
+                        Console.WriteLine($"{x}");
+                    }
                 }
-                Console.WriteLine();
-                Console.WriteLine(item.medium);
-                Console.WriteLine();
-                foreach (var x in item.mediumList)
+                if (item.medium)
                 {
-                    Console.WriteLine($"{x.UnitPrice}--{x.ProductName}");
+                    Console.WriteLine();
+                    Console.WriteLine("Средние");
+                    foreach (var x in item.product)
+                    {
+                        Console.WriteLine($"{x}");
+                    }
                 }
-                Console.WriteLine();
-                Console.WriteLine(item.expensive);
-                Console.WriteLine();
-                foreach (var x in item.expensiveList)
+                if (item.expensive)
                 {
-                    Console.WriteLine($"{x.UnitPrice}--{x.ProductName}");
+                    Console.WriteLine();
+                    Console.WriteLine("Дорогие");
+                    foreach (var x in item.product)
+                    {
+                        Console.WriteLine($"{x}");
+                    }
                 }
+
             }
+
         }
 
         [Category("Task 9")]
