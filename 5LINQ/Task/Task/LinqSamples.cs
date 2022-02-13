@@ -209,16 +209,6 @@ namespace SampleQueries
         [Description("Сгруппированные все продукты по категориям, внутри – по наличию на складе, внутри последней группы по стоимости")]
         public void Linq7()
         {
-
-            //var productGroup = dataSource.Products.GroupBy(d => d.Category).Select(r => new
-            //{
-            //    category = r.Key,
-            //    unitsInStock = r.Where(t => t.UnitsInStock > 0), // TODO: Тут ожидалась группировка по признаку есть нас складе, нет на складе, а не сортировка.
-            //    unitPrice = r.OrderBy(u => u.UnitPrice),
-            
-
-            //});
-
             var productGroup = dataSource.Products.GroupBy((a) =>  a.Category).Select(f=>new
                 {
                     f.Key,
