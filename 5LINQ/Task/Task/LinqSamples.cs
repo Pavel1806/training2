@@ -72,30 +72,6 @@ namespace SampleQueries
                     Console.WriteLine("Нет поставщиков");
                 }
             }
-
-            //foreach (var item in listCustomer) // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.         // Исправил
-            //                                          // Т.е. сначала через LINQ получаем данные. А затем выводим на экран (тут можно использовать foreach).
-            //                                          // 2 шага, не надо их смешивать. Здесь и далее.
-            //{
-            //    var listOfSortedSuppliers = dataSource.Suppliers.Where(x => x.Country == item.Country).Where(y => y.City == item.City);
-                
-            //    Console.WriteLine();
-            //    Console.WriteLine($"Имя клиента {item.CompanyName}");
-            //    Console.WriteLine();
-
-            //    if (listOfSortedSuppliers.Count() != 0)
-            //    {
-            //        Console.WriteLine("Список поставщиков");
-            //        foreach (var x in listOfSortedSuppliers)
-            //        {
-            //            Console.WriteLine(x.SupplierName);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Поставщиков в той же стране и в том же городе, что и клиент, не найдено");
-            //    }
-            //}
         }
 
         [Category("Task 2")]
@@ -156,22 +132,11 @@ namespace SampleQueries
         [Description("Список клиентов с указанием, начиная с какого месяца какого года они стали клиентами")]
         public void Linq4_1()
         {
-            //var listOfSortedCustomers = dataSource.Customers.Select(x => new
-            //{
-            //    Customer = x.CompanyName,
-            //    Date = x.Orders.Length != 0 ? x.Orders.Where(s => s.OrderDate != null).Min() : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
-            //    Date = x.Orders.Where(s => s.OrderDate != null).Min(g => g.OrderDate)
-            //});
-
-
-            //переделал, 
-
-
             var listOfSortedCustomers = dataSource.Customers.Select(x => new
             {
                 Customer = x.CompanyName,
                 Date = x.Orders.OrderBy(s => s.OrderDate).FirstOrDefault()
-            }).Where(y=>y.Date != null);
+            }).Where(y=>y.Date != null); // TODO: ИМХО лучше сначала отфильтровать а потом вычислять (это может сократить расходование ресурсов), но так тоже принимается.
 
             foreach (var item in listOfSortedCustomers)
             {
@@ -211,10 +176,10 @@ namespace SampleQueries
                 Customer = x.CompanyName,
                 moneyTurnover = x.Orders.Sum(y=>y.Total),
                 Date = x.Orders.OrderBy(s => s?.OrderDate).FirstOrDefault()
-                //Date = x.Orders.Length != 0 ? x.Orders.Min(s => s.OrderDate) : new DateTime() // TODO: Если нет заказов то получается клиент стал клиентом в моент запуска программы. Не лучшая идея, как насчёт фильтра?
             }).Where(s => s.Date != null).OrderByDescending(x=>x.Date.OrderDate.Year)            // переделал
                 .ThenByDescending(t=>t.Date.OrderDate.Month)
-                .ThenByDescending(j=>j.moneyTurnover).ThenByDescending(b=>b.Customer); // TODO: А где сортировка по имени клиента?
+                .ThenByDescending(j=>j.moneyTurnover)
+                .ThenByDescending(b=>b.Customer);
 
             foreach (var item in listOfSortedCustomers)
             {
@@ -232,8 +197,8 @@ namespace SampleQueries
         public void Linq6()
         {
             var listOfSortedCustomers = dataSource.Customers.Where(x =>
-                Int32.TryParse(x.PostalCode, out _) != true || x.Region == null || x.Phone.StartsWith("(") != true); // TODO: Contains это не про начинается. Как насчёт StartsWith? Для "== false" есть оператор "!"
-                                                                                                                      // переделал
+                int.TryParse(x.PostalCode, out _) != true || x.Region == null || x.Phone.StartsWith("(") != true); // TODO: "!=true" это хуже чем "== false". Сравнивать значение логического типа (bool) c true или false - это "масло масленное".
+                                                                                                                     // переделал
             foreach (var item in listOfSortedCustomers)
             {
                 Console.WriteLine($"{item.PostalCode}--{item.Region}--{item.Phone}--{item.CompanyName}");
@@ -249,7 +214,7 @@ namespace SampleQueries
             var productGroup = dataSource.Products.GroupBy(d => d.Category).Select(r=> new
             {
                 category= r.Key,
-                unitsInStock = r.OrderBy(t=>t.UnitsInStock),
+                unitsInStock = r.OrderBy(t=>t.UnitsInStock), // TODO: Тут ожидалась группировка по признаку есть нас складе, нет на складе, а не сортировка.
                 unitPrice = r.OrderBy(u=>u.UnitPrice)
             });
 
@@ -262,7 +227,7 @@ namespace SampleQueries
                 Console.WriteLine(item.category);
                 Console.WriteLine();
 
-                if (i != productGroup.Count())
+                if (i != productGroup.Count()) // TODO: Что это такое? Linq должен вернуть данные которые можно вывести, без использования каких-то дополнительных правил.
                 {
                     foreach (var x in item.unitsInStock)
                     {
@@ -285,25 +250,7 @@ namespace SampleQueries
         [Title("Where - Task 8")]
         [Description("Сгруппированные товары по группам «дешевые», «средняя цена», «дорогие».")]
         public void Linq8()
-        {  // TODO: Понятно что использую foreach можно написать алгоритм. Но так мы не пользуемся преимуществами LINQ.   //исправил
-            //Console.WriteLine("Дешевые");
-            //foreach (var item in dataSource.Products.Where(x=>x.UnitPrice > 0 && x.UnitPrice < 30))
-            //{
-            //    Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
-            //}
-
-            //Console.WriteLine("Средние");
-            //foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60))
-            //{
-            //    Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
-            //}
-
-            //Console.WriteLine("Дорогие");
-            //foreach (var item in dataSource.Products.Where(x => x.UnitPrice >= 60))
-            //{
-            //    Console.WriteLine($"--{item.UnitPrice} -- {item.ProductName}");
-            //}
-
+        {
             var productGroup = dataSource.Products.GroupBy(p => new
             {
                 cheap = "дешевые",
@@ -313,7 +260,8 @@ namespace SampleQueries
             }).Select(t=>new
             {
                 cheap = t.Key.cheap,
-                cheapList = t.Where(p=>p.UnitPrice > 0 && p.UnitPrice < 30),
+                cheapList = t.Where(p=>p.UnitPrice > 0 && p.UnitPrice < 30), // TODO: Linq Использование списков немного не то что хотелось бы увидеть. Используемый выше GroupBy сбивает с толку, по факту он же ни чего не группирует, тогда зачем он?
+                                                                             // GroupBy хотелось бы увидеть, но чтобы он полноценно группировал.
                 medium = t.Key.medium,
                 mediumList = t.Where(x => x.UnitPrice >= 30 && x.UnitPrice < 60),
                 expensive = t.Key.expensive,
@@ -402,7 +350,7 @@ namespace SampleQueries
 
         [Category("Task 10")]
         [Title("Where - Task 10.2")]
-        [Description("Cреднегодовая статистика активности клиентов по месяцам за один год(1997)")] // TODO: Почему только за 1997? Впрочем формулировка противоречивая, пусть будет так. Но если получишь значения по месяцам без привязки к году, будет здорово.
+        [Description("Cреднегодовая статистика активности клиентов по месяцам за один год(1997)")]
         public void Linq10_2()
         {
             var dateGroups = dataSource.Customers.Select(x => new
