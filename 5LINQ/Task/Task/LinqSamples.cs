@@ -228,7 +228,7 @@ namespace SampleQueries
                         .Select(q=> new
                         {
                             q.Key,
-                            rewrgw= q.Select(l=> new{l.UnitPrice, l.ProductName}).OrderBy(x=>x.UnitPrice)
+                            rewrgw= q.Select(l=> new{l.UnitPrice, l.ProductName, l.UnitsInStock}).OrderBy(x=>x.UnitPrice)
                         })
                         
                 });
@@ -256,7 +256,7 @@ namespace SampleQueries
                     
                     foreach (var y in x.rewrgw)
                     {
-                        Console.WriteLine($"---{y.ProductName}--{y.UnitPrice}");
+                        Console.WriteLine($"---{y.ProductName}--{y.UnitsInStock}--{y.UnitPrice}");
                     }
                 }
             }
