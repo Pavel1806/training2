@@ -6,21 +6,31 @@ using System.Threading;
 
 namespace FileSystemControl
 {
+    // TODO: Неиспользуемый код, ещё ни разу не видел чтобы была необходимость обьявлять делегат таким образом
+    // Если нужен делегат метода который ничего не возвращает, то есть Action
     public delegate void MyDelegate();
     
+    // TODO: Комментарии к коду
     class FileControl
     {
         private string PathTracking;
         private string FolderTxtFiles;
         private string FolderDocxFiles;
         private string FolderDefaultFiles;
-
+        // TODO: Комментарии к коду
         public event EventHandler<EventArgs> CreateFile;
+        // TODO: Комментарии к коду
         public event EventHandler<FileSystemEventArgs> TheRuleOfCoincidence;
 
-        public FileControl(Dictionary<string, string> path)
+        // TODO: Комментарии к коду
+        public FileControl(Dictionary<string, string> path) // TODO: Неправильно название, коллекция содержит множество путей, а не один,
+                                                            // потому логичнее назвать её paths, кроме того уточнить что это за пути
+                                                            // directoriesPaths
         {
-            PathTracking = path["pathTracking"];
+            PathTracking = path["pathTracking"]; // TODO: "магические" значения которые используются много где в коде, лучше вынести в класс с константами
+                                                // "магиеческие" значения в этом случае: pathTracking, FolderTxtFiles и другие два.
+                                                // TODO: Кроме того, стиль их написания не должен отличаться, например pathTracking начинается с маленькой,
+                                                // а FolderTxtFiles с большой
             FolderTxtFiles = path["FolderTxtFiles"];
             FolderDocxFiles = path["FolderDocxFiles"];
             FolderDefaultFiles = path["FolderDefaultFiles"];
@@ -45,7 +55,13 @@ namespace FileSystemControl
             watcher.Renamed += Watcher_Renamed;
             watcher.EnableRaisingEvents = true;
 
-            Thread.Sleep(20*1000);
+            Thread.Sleep(20*1000); // TODO: "Магические" числа нужно вынести в класс с константами, но тут ещё другое
+                                    // Когда поток проснётся, приложение завершит работу. Важно понимать, что FileSystemWatcher наблюдает в своём потоке
+                                    // За папкой. Тем временем, можно в Program.cs написать что-то вроде
+                                    // Console.Write("Нажмите любую клавишу для завершения программы:");
+                                    // Console.ReadKey(true)
+                                    // И получается что "Главный" поток, по завершению которого завершается работа программы
+                                    // Будет висеть на курке клавиатуры пока поток FileSystemWatcher'а будет фоном следать за папкой.
         }
 
         private void Watcher_Changed(object sender, FileSystemEventArgs e)

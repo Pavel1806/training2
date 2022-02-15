@@ -9,8 +9,8 @@ namespace FileSystemControl
     {
         static void Main(string[] args)
         {
-            string pathTracking = Path.Join(Environment.CurrentDirectory, "FolderForTrackingFiles");
-            Dictionary<string, string> path= CreateDirectory.CreateTestDirectory(pathTracking);
+            string pathTracking = Path.Join(Environment.CurrentDirectory, "FolderForTrackingFiles"); // TODO: Path.Combine более распространённая практика
+            Dictionary<string, string> path= CreateDirectory.CreateTestDirectory(pathTracking); // TODO: Пробел после path - стиль очень важен.
 
             FileControl filecontole = new FileControl(path);
             filecontole.CreateFile += Fc_CreateFile;
