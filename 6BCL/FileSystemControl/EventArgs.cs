@@ -10,9 +10,6 @@ namespace FileSystemControl
     {
         public DateTime TimeCreate { get; set; }
         public FileSystemEventArgs eventArgs { get; set; }
-
-        public string TransferFolder { get; set; } // TODO: нигде не используется
-
         public EventArgs(FileSystemEventArgs ev)
         {
             eventArgs = ev;
