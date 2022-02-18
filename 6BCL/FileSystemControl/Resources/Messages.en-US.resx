@@ -126,4 +126,10 @@
   <data name="fileСreated" xml:space="preserve">
     <value>File created:</value>
   </data>
+  <data name="newName" xml:space="preserve">
+    <value>new name:</value>
+  </data>
+  <data name="oldName" xml:space="preserve">
+    <value>The file was renamed, the old name:</value>
+  </data>
 </root>

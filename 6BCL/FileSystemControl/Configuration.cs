@@ -11,24 +11,34 @@ namespace FileSystemControl
     public static class Configuration
     {
         /// <summary>
-        /// Метод для получения прослушиваемых папок
-        /// </summary>
-        /// <returns>DirectoryElementCollection</returns> // TODO: Комментарий не обьясняет суть возвращаемого значения
-        public static DirectoryElementCollection DirectoryListenTo()
-        {
-            var configuration = (SimpleConfigurationSection)ConfigurationManager.GetSection("simpleSection"); // TODO: Название секции ни о чём не говорит
-
-            return configuration.Directories;
-        }
-        /// <summary>
         /// Метод для получения шаблонов обработки
         /// </summary>
-        /// <returns>TemplateElementCollection</returns> // TODO: Комментарий не обьясняет суть возвращаемого значения
+        /// <returns>Шаблоны обработки файлов</returns>
         public static TemplateElementCollection FileProcessingTemplates()
         {
-            var configuration = (SimpleConfigurationSection)ConfigurationManager.GetSection("simpleSection"); // TODO: Название секции ни о чём не говорит
+            var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
 
-            return configuration.Templates;
+            return configuration.FileTrackingTemplates;
+        }
+        /// <summary>
+        /// Метод получения прослушиваемой папки
+        /// </summary>
+        /// <returns>Прослушиваемая папка</returns>
+        public static string FolderListenTo()
+        {
+            var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
+            
+            return configuration.FolderListen.FolderListen;
+        }
+        /// <summary>
+        /// Метод получения локализации
+        /// </summary>
+        /// <returns>если true, то возвращается русская локализация</returns>
+        public static bool LocalizationIsAddRu()
+        {
+            var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
+
+            return configuration.Localization.IsAddRu;
         }
     }
 }

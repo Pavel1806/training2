@@ -13,27 +13,31 @@ namespace FileSystemControl
     {
         static void Main(string[] args)
         {
-            // TODO: Лишний пробел в коде. Стиль важен, желательно визуально разделить обьявления переменных и if
-            var col = Configuration.DirectoryListenTo(); // TODO: Название col ни о чём не говорит :)
-            string pathTracking = null;
-            if (col.Count == 1) // TODO: Ненадёжная проверка, что если в коллекции будет больше чем 1 запись?
-            {
-                foreach (DirectoryElement item in col) // TODO: Что если в коллекции будет больше чем одна запись? Может нужно определить ту которая нужна
-                                                        // уникальным ключём?
-                {
-                    pathTracking = Path.Combine(Environment.CurrentDirectory, item.DirectoryName);
-                }
-            }
+            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
 
-            var templates = Configuration.FileProcessingTemplates();
+            if (Configuration.LocalizationIsAddRu())
+              CultureInfo.CurrentUICulture = new CultureInfo("ru-RU");
 
-            DirectoryHelper.CreateDirectory(pathTracking, templates);
+            var pathDirectoryTracking = Path.Combine(Environment.CurrentDirectory, Configuration.FolderListenTo());
 
-            FileControl filecontrole = new FileControl(pathTracking, templates); // TODO: Нарушен "СamelСase" в названии.
-            filecontrole.CreateFile += Fc_CreateFile;
-            filecontrole.TheRuleOfCoincidence += Fc_TheRuleOfCoincidence;
-            filecontrole.ControlDirectory();
+            var FileTrackingTemplates = Configuration.FileProcessingTemplates();
 
+            DirectoryHelper.CreateDirectory(pathDirectoryTracking, FileTrackingTemplates);
+
+            FileControl fileСontrol = new FileControl(pathDirectoryTracking, FileTrackingTemplates);
+
+            fileСontrol.CreateFile += Fc_CreateFile;
+            fileСontrol.TheRuleOfCoincidence += Fc_TheRuleOfCoincidence;
+            fileСontrol.RenameFile += Fc_RenameFile;
+            fileСontrol.ControlDirectory();
+
+            Console.ReadKey(true);
+        }
+
+        private static void Fc_RenameFile(object sender, RenamedEventArgs e)
+        {
+            Console.WriteLine($"{Messages.oldName} {e.OldName}");
+            Console.WriteLine($"{Messages.newName} {e.Name}");
         }
 
         private static void Fc_TheRuleOfCoincidence(object sender, FileSystemEventArgs e)
@@ -43,8 +47,6 @@ namespace FileSystemControl
 
         private static void Fc_CreateFile(object sender, EventArgs e)
         {
-            //CultureInfo.CurrentCulture = new CultureInfo("en-EN");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-EN"); // TODO: По условиям задачи культура должна регулироваться через конфигурацию
             Console.WriteLine($"{Messages.fileСreated} {e.eventArgs.Name}");
             Console.WriteLine($"{Messages.creationTime} {e.TimeCreate}");
         }

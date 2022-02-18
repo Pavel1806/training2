@@ -5,7 +5,9 @@ using System.Text;
 
 namespace FileSystemControl
 {
-    // TODO: Комментарии ко всем публичным методам
+   /// <summary>
+   /// Класс для создания объекта оповещений для событий
+   /// </summary>
     public class EventArgs
     {
         public DateTime TimeCreate { get; set; }

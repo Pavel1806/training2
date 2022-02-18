@@ -86,5 +86,23 @@ namespace FileSystemControl.Resources {
                 return ResourceManager.GetString("fileСreated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на новое название:.
+        /// </summary>
+        internal static string newName {
+            get {
+                return ResourceManager.GetString("newName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Файл переименовали, старое название:.
+        /// </summary>
+        internal static string oldName {
+            get {
+                return ResourceManager.GetString("oldName", resourceCulture);
+            }
+        }
     }
 }

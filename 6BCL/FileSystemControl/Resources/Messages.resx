@@ -126,4 +126,10 @@
   <data name="fileСreated" xml:space="preserve">
     <value>Файл создан:</value>
   </data>
+  <data name="newName" xml:space="preserve">
+    <value>новое название:</value>
+  </data>
+  <data name="oldName" xml:space="preserve">
+    <value>Файл переименовали, старое название:</value>
+  </data>
 </root>

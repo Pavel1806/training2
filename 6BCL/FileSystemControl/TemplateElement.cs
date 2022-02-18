@@ -22,16 +22,16 @@ namespace FileSystemControl
             get { return (string)base["templateFile"]; }
         }
 
-        [ConfigurationProperty("addingDateOrNumberTheOutputFile")]
-        public bool DateOrNumberTrue
+        [ConfigurationProperty("isAddDate")]
+        public bool IsAddDate
         {
-            get { return (bool)base["addingDateOrNumberTheOutputFile"]; }
+            get { return (bool)base["isAddDate"]; }
         }
 
-        [ConfigurationProperty("size")]
-        public int FileSize // TODO: Нигде не используется
+        [ConfigurationProperty("isAddId")]
+        public bool IsAddId
         {
-            get { return (int)base["size"]; }
+            get { return (bool)base["isAddId"]; }
         }
     }
 }

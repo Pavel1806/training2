@@ -12,20 +12,28 @@ namespace FileSystemControl
     /// </summary>
     static class DirectoryHelper
     {
-        // TODO: Добавить комментарии к коду.
-        static public void CreateDirectory(string pathTracking, TemplateElementCollection templates) // TODO: Переименовать pathTracking,
-                                                                                               // Есть ходовое название, например FileSystemWatcher
-                                                                                               // Можно назвать как-нибудь watchingDirectories
-                                                                                               // templates тоже нужно переименовать, поскольку название
-                                                                                               // ни о чём не говорит.
+        /// <summary>
+        /// Метод проверки или создания папок для проекта
+        /// </summary>
+        /// <param name="pathDirectoryTracking">Отслеживаемая папка</param>
+        /// <param name="FileTrackingTemplates">Шаблоны обработки файлов</param>
+        static public void CreateDirectory(string pathDirectoryTracking, TemplateElementCollection FileTrackingTemplates)
         {
-            
-            if (!Directory.Exists(pathTracking)) // TODO: Что если будет эта папка, но не будет её дочерних? Дочерние не создадуться? Замечание всё ещё актуально.
+
+            if (!Directory.Exists(pathDirectoryTracking))
             {
-                Directory.CreateDirectory(pathTracking);
-                foreach (TemplateElement item in templates)
+                Directory.CreateDirectory(pathDirectoryTracking);
+                foreach (TemplateElement item in FileTrackingTemplates)
                 {
-                    Directory.CreateDirectory(Path.Combine(pathTracking, item.DirectoryName));
+                    Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
+                }
+            }
+            else
+            {
+                foreach (TemplateElement item in FileTrackingTemplates)
+                {
+                    if(!Directory.Exists(Path.Combine(pathDirectoryTracking, item.DirectoryName)))
+                      Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
                 }
             }
         }

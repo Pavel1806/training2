@@ -7,20 +7,30 @@ using System.Threading;
 
 namespace FileSystemControl
 {
-    // TODO: Неиспользуемый код, ещё ни разу не видел чтобы была необходимость обьявлять делегат таким образом
-    // Если нужен делегат метода который ничего не возвращает, то есть Action. Всё ещё не вижу необходимости в этом делегате )
-    public delegate void MyDelegate();
-    
-    // TODO: Комментарии к коду, нужен комментарий к классу
+    /// <summary>
+    /// Класс для обработки файлов
+    /// </summary>
     class FileControl
     {
+        /// <summary>
+        /// Путь прослушиваемой папки
+        /// </summary>
         private string PathDirectoryTracking;
-        private TemplateElementCollection Templates; 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private TemplateElementCollection FileTrackingTemplates; 
 
         /// <summary>
         /// Событие создания файла
         /// </summary>
         public event EventHandler<EventArgs> CreateFile;
+
+        /// <summary>
+        /// Событие переименования файла
+        /// </summary>
+        public event EventHandler<RenamedEventArgs> RenameFile;
 
         /// <summary>
         /// Событие переноса фала в другую папку
@@ -31,11 +41,11 @@ namespace FileSystemControl
         /// Конструктор для создания объекта 
         /// </summary>
         /// <param name="pathDirectoryTracking">Путь к прослушиваемой папке</param>
-        /// <param name="templates">Шаблоны обработки</param>
-        public FileControl(string pathDirectoryTracking, TemplateElementCollection templates) // TODO: 
+        /// <param name="fileTrackingTemplates">Шаблоны обработки файлов</param>
+        public FileControl(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates) // TODO: 
         {
             PathDirectoryTracking = pathDirectoryTracking;
-            Templates= templates;
+            FileTrackingTemplates = fileTrackingTemplates;
         }
 
         public void ControlDirectory()
@@ -56,58 +66,67 @@ namespace FileSystemControl
             watcher.Changed += Watcher_Changed;
             watcher.Renamed += Watcher_Renamed;
             watcher.EnableRaisingEvents = true;
-
-            Console.ReadKey(true); // TODO: Перенести в Program.cs, класс FileControl не должен быть ответственнен за логику самой программы.
-
         }
 
         private void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
             OnTheRuleOfCoincidence(e);
         }
-        // TODO: Пробел между методами, стиль важен )
+
         private void Watcher_Renamed(object sender, RenamedEventArgs e)
         {
-            Console.WriteLine($"переименовали файл {e.OldName}"); // TODO: Перенести в ресурсы
-            Console.WriteLine($"теперь его название {e.Name}"); // TODO: Перенести в ресурсы
+            OnRenameFile(e);
         }
 
         private void Watcher_Created(object sender, FileSystemEventArgs ev)
         {
             EventArgs e = new EventArgs(ev);
 
-            FileInfo file = new FileInfo(ev.FullPath); // TODO: Нет никакой необходимости создавать обьект класса FileInfo
-
-            e.TimeCreate = file.CreationTime;
+            e.TimeCreate = File.GetCreationTime(ev.FullPath);
 
             OnCreateFile(e);
 
-            foreach (TemplateElement item in Templates)
+            foreach (TemplateElement item in FileTrackingTemplates)
             {
+                var sourceFile = Path.Combine(PathDirectoryTracking, ev.Name);
 
-                if (Regex.IsMatch(file.Name, item.Filter, RegexOptions.IgnoreCase))
+                var destPath = Path.Combine(PathDirectoryTracking, item.DirectoryName);
+
+                var destFileDate = Path.Combine(destPath, e.TimeCreate.ToString("d") + ev.Name);
+
+                int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, item.DirectoryName)).Length;
+
+                var destFileId = Path.Combine(destPath, (number + 1).ToString() + ev.Name);
+
+                var destFileDateAndId = Path.Combine(destPath, (number + 1).ToString()+ "." + e.TimeCreate.ToString("d") + ev.Name);
+
+                var destFile = Path.Combine(destPath, ev.Name);
+
+                if (Regex.IsMatch(ev.Name, item.Filter, RegexOptions.IgnoreCase))
                 {
-                    if (item.DateOrNumberTrue)
+                    if (!File.Exists(destFileDate))
                     {
-                        var path = Path.Combine(PathDirectoryTracking, item.DirectoryName);
-                        var t = Path.Combine(path,
-                            e.TimeCreate.Second.ToString() + e.TimeCreate.Day.ToString() +
-                            e.TimeCreate.Month.ToString() + e.TimeCreate.Year.ToString() + ev.Name); // TODO: Предлагаю использовать метод ToString у DateTime
-                                                                                                    // В него можно передать формат даты и времени
-                        FileInfo fileNew = new FileInfo(t); // TODO: Нет никакой необходимости создавать обьект класса FileInfo
-                        if (!fileNew.Exists)
-                            file.MoveTo(t);
+                        if (item.IsAddDate && item.IsAddId)
+                        {
+                            File.Move(sourceFile, destFileDateAndId);
+                        }
+
+                        if (item.IsAddDate && !item.IsAddId)
+                        {
+                            File.Move(sourceFile, destFileDate);
+                        }
+
+                        if (!item.IsAddId && item.IsAddId)
+                        {
+                            File.Move(sourceFile, destFileId);
+                        }
+
+                        if (!item.IsAddDate && !item.IsAddId)
+                        {
+                            File.Move(sourceFile, destFile);
+                        }
                     }
-                    else // TODO: Грубое дублирование логики
-                    {
-                        var path = Path.Combine(PathDirectoryTracking, item.DirectoryName);
-                        int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, item.DirectoryName)).Length;
-                        var t = Path.Combine(path,
-                            (number + 1).ToString() + ev.Name);
-                        FileInfo fileNew = new FileInfo(t);
-                        if (!fileNew.Exists)
-                            file.MoveTo(t);
-                    }
+                   
                     break;
                 }
             }
@@ -121,6 +140,11 @@ namespace FileSystemControl
         protected virtual void OnTheRuleOfCoincidence(FileSystemEventArgs e)
         {
             TheRuleOfCoincidence?.Invoke(this, e);
+        }
+
+        protected virtual void OnRenameFile(RenamedEventArgs e)
+        {
+            RenameFile?.Invoke(this, e);
         }
 
     }
