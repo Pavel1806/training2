@@ -8,40 +8,34 @@ using System.Threading;
 namespace FileSystemControl
 {
     // TODO: Неиспользуемый код, ещё ни разу не видел чтобы была необходимость обьявлять делегат таким образом
-    // Если нужен делегат метода который ничего не возвращает, то есть Action
+    // Если нужен делегат метода который ничего не возвращает, то есть Action. Всё ещё не вижу необходимости в этом делегате )
     public delegate void MyDelegate();
     
-    // TODO: Комментарии к коду
+    // TODO: Комментарии к коду, нужен комментарий к классу
     class FileControl
     {
         private string PathDirectoryTracking;
-        private TemplateElementCollection Templates;
+        private TemplateElementCollection Templates; 
 
-        // TODO: Комментарии к коду
         /// <summary>
         /// Событие создания файла
         /// </summary>
         public event EventHandler<EventArgs> CreateFile;
-        // TODO: Комментарии к коду
+
         /// <summary>
         /// Событие переноса фала в другую папку
         /// </summary>
         public event EventHandler<FileSystemEventArgs> TheRuleOfCoincidence;
 
-        // TODO: Комментарии к коду
         /// <summary>
         /// Конструктор для создания объекта 
         /// </summary>
         /// <param name="pathDirectoryTracking">Путь к прослушиваемой папке</param>
         /// <param name="templates">Шаблоны обработки</param>
-        public FileControl(string pathDirectoryTracking, TemplateElementCollection templates) // TODO: Неправильно название, коллекция содержит множество путей, а не один,
-                                                            // потому логичнее назвать её paths, кроме того уточнить что это за пути
-                                                            // directoriesPaths
+        public FileControl(string pathDirectoryTracking, TemplateElementCollection templates) // TODO: 
         {
-            PathDirectoryTracking = pathDirectoryTracking; // TODO: "магические" значения которые используются много где в коде, лучше вынести в класс с константами
-            Templates= templates;                              // "магиеческие" значения в этом случае: pathTracking, FolderTxtFiles и другие два.
-                                                                    // TODO: Кроме того, стиль их написания не должен отличаться, например pathTracking начинается с маленькой,
-                                                                    // а FolderTxtFiles с большой
+            PathDirectoryTracking = pathDirectoryTracking;
+            Templates= templates;
         }
 
         public void ControlDirectory()
@@ -63,14 +57,7 @@ namespace FileSystemControl
             watcher.Renamed += Watcher_Renamed;
             watcher.EnableRaisingEvents = true;
 
-            //Thread.Sleep(20*1000); // TODO: "Магические" числа нужно вынести в класс с константами, но тут ещё другое
-                                    // Когда поток проснётся, приложение завершит работу. Важно понимать, что FileSystemWatcher наблюдает в своём потоке
-                                    // За папкой. Тем временем, можно в Program.cs написать что-то вроде
-                                    // Console.Write("Нажмите любую клавишу для завершения программы:");
-                                    // Console.ReadKey(true)
-                                    // И получается что "Главный" поток, по завершению которого завершается работа программы
-                                    // Будет висеть на курке клавиатуры пока поток FileSystemWatcher'а будет фоном следать за папкой.
-            Console.ReadKey(true);
+            Console.ReadKey(true); // TODO: Перенести в Program.cs, класс FileControl не должен быть ответственнен за логику самой программы.
 
         }
 
@@ -78,17 +65,18 @@ namespace FileSystemControl
         {
             OnTheRuleOfCoincidence(e);
         }
+        // TODO: Пробел между методами, стиль важен )
         private void Watcher_Renamed(object sender, RenamedEventArgs e)
         {
-            Console.WriteLine($"переименовали файл {e.OldName}");
-            Console.WriteLine($"теперь его название {e.Name}");
+            Console.WriteLine($"переименовали файл {e.OldName}"); // TODO: Перенести в ресурсы
+            Console.WriteLine($"теперь его название {e.Name}"); // TODO: Перенести в ресурсы
         }
 
         private void Watcher_Created(object sender, FileSystemEventArgs ev)
         {
             EventArgs e = new EventArgs(ev);
 
-            FileInfo file = new FileInfo(ev.FullPath);
+            FileInfo file = new FileInfo(ev.FullPath); // TODO: Нет никакой необходимости создавать обьект класса FileInfo
 
             e.TimeCreate = file.CreationTime;
 
@@ -104,12 +92,13 @@ namespace FileSystemControl
                         var path = Path.Combine(PathDirectoryTracking, item.DirectoryName);
                         var t = Path.Combine(path,
                             e.TimeCreate.Second.ToString() + e.TimeCreate.Day.ToString() +
-                            e.TimeCreate.Month.ToString() + e.TimeCreate.Year.ToString() + ev.Name);
-                        FileInfo fileNew = new FileInfo(t);
+                            e.TimeCreate.Month.ToString() + e.TimeCreate.Year.ToString() + ev.Name); // TODO: Предлагаю использовать метод ToString у DateTime
+                                                                                                    // В него можно передать формат даты и времени
+                        FileInfo fileNew = new FileInfo(t); // TODO: Нет никакой необходимости создавать обьект класса FileInfo
                         if (!fileNew.Exists)
                             file.MoveTo(t);
                     }
-                    else
+                    else // TODO: Грубое дублирование логики
                     {
                         var path = Path.Combine(PathDirectoryTracking, item.DirectoryName);
                         int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, item.DirectoryName)).Length;

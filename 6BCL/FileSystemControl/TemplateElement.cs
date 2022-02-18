@@ -29,7 +29,7 @@ namespace FileSystemControl
         }
 
         [ConfigurationProperty("size")]
-        public int FileSize
+        public int FileSize // TODO: Нигде не используется
         {
             get { return (int)base["size"]; }
         }
