@@ -8,6 +8,7 @@ namespace FileSystemControl
     /// <summary>
     /// Класс для получения данных из конфигурации
     /// </summary> // TODO: Можно обойтись без этого класса, подумать как.
+    ///             // Можно отказаться от этого класса и тянуть напрямую значения из конфига
     public static class Configuration
     {
         /// <summary>
@@ -28,13 +29,13 @@ namespace FileSystemControl
         {
             var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
             
-            return configuration.FolderListen.FolderListen;
+            return configuration.FolderListen.FolderListen; // TODO: Очень странно выглядит, желательно переименовать примерно на configuration.FolderListen.Name
         }
         /// <summary>
         /// Метод получения локализации
         /// </summary>
         /// <returns>если true, то возвращается русская локализация</returns>
-        public static bool LocalizationIsAddRu()
+        public static bool LocalizationIsAddRu() // TODO: См. замечание в Program.cs
         {
             var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
 

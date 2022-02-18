@@ -13,14 +13,17 @@ namespace FileSystemControl
     {
         static void Main(string[] args)
         {
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            CultureInfo.CurrentUICulture = new CultureInfo("en-US"); // TODO: Несовсем корректный подход. В случае если будет
+                                                                     // больше чем 1 язык, то что делать? Не проще ли вынести в конфигурацию как раз
+                                                                     // это значение en-US?
 
             if (Configuration.LocalizationIsAddRu())
               CultureInfo.CurrentUICulture = new CultureInfo("ru-RU");
 
             var pathDirectoryTracking = Path.Combine(Environment.CurrentDirectory, Configuration.FolderListenTo());
 
-            var FileTrackingTemplates = Configuration.FileProcessingTemplates();
+            var FileTrackingTemplates = Configuration.FileProcessingTemplates(); // TODO: Стиль важен, локальная переменная выше начинается с маленькой буквы,
+                                                                                // А тут с большой...
 
             DirectoryHelper.CreateDirectory(pathDirectoryTracking, FileTrackingTemplates);
 

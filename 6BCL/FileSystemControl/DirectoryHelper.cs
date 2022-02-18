@@ -28,7 +28,7 @@ namespace FileSystemControl
                     Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
                 }
             }
-            else
+            else // TODO: Дублирование логики, необходимо упростить
             {
                 foreach (TemplateElement item in FileTrackingTemplates)
                 {

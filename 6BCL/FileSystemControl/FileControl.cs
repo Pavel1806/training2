@@ -17,7 +17,7 @@ namespace FileSystemControl
         /// </summary>
         private string PathDirectoryTracking;
 
-        /// <summary>
+        /// <summary> TODO: Комментарий :)
         /// 
         /// </summary>
         private TemplateElementCollection FileTrackingTemplates; 
@@ -86,9 +86,11 @@ namespace FileSystemControl
 
             OnCreateFile(e);
 
-            foreach (TemplateElement item in FileTrackingTemplates)
+            foreach (TemplateElement item in FileTrackingTemplates) // TODO: Изменить поиск подходящего шаблона на выражение Linq
             {
-                var sourceFile = Path.Combine(PathDirectoryTracking, ev.Name);
+                var sourceFile = Path.Combine(PathDirectoryTracking, ev.Name); // TODO: Получается мы будем создавать огромное количество ненужных переменных
+                                                                                // до момента пока не найдём подходящий шаблон. Получается лишняя логика ==
+                                                                                // излишняя нагрузка на процессор и оперативную память.
 
                 var destPath = Path.Combine(PathDirectoryTracking, item.DirectoryName);
 
@@ -102,10 +104,17 @@ namespace FileSystemControl
 
                 var destFile = Path.Combine(destPath, ev.Name);
 
-                if (Regex.IsMatch(ev.Name, item.Filter, RegexOptions.IgnoreCase))
+                if (Regex.IsMatch(ev.Name, item.Filter, RegexOptions.IgnoreCase)) // TODO: см условие выше
                 {
                     if (!File.Exists(destFileDate))
                     {
+                        // TODO: Всю логику ниже и выше необходимо упростить.
+                        // Это очень плохой подход. Почему бы не делать так?:
+                        // 1. Находим к какому шаблону подходит файл
+                        // 2. Проверяем, нужно ли добавить к финальному имени дату?:
+                        //   a. Да - добавляем дату к итоговому имени
+                        //   b. Нет - Не добавляем дату к итоговому имени, оставляем как есть
+                        //   ... Дальше додумать самостоятельно.
                         if (item.IsAddDate && item.IsAddId)
                         {
                             File.Move(sourceFile, destFileDateAndId);
