@@ -1,9 +1,12 @@
-﻿using System;
+﻿using FileSystemControl.ConfigurationProject;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace FileSystemControl
 {
@@ -17,8 +20,8 @@ namespace FileSystemControl
         /// </summary>
         private string PathDirectoryTracking;
 
-        /// <summary> TODO: Комментарий :)
-        /// 
+        /// <summary>
+        /// Шаблоны обработки файлов
         /// </summary>
         private TemplateElementCollection FileTrackingTemplates; 
 
@@ -85,60 +88,35 @@ namespace FileSystemControl
             e.TimeCreate = File.GetCreationTime(ev.FullPath);
 
             OnCreateFile(e);
+            
+            var template = FileTrackingTemplates.Cast<TemplateElement>().Where(f => Regex.IsMatch(ev.Name, f.Filter)).FirstOrDefault();
 
-            foreach (TemplateElement item in FileTrackingTemplates) // TODO: Изменить поиск подходящего шаблона на выражение Linq
-            {
-                var sourceFile = Path.Combine(PathDirectoryTracking, ev.Name); // TODO: Получается мы будем создавать огромное количество ненужных переменных
-                                                                                // до момента пока не найдём подходящий шаблон. Получается лишняя логика ==
-                                                                                // излишняя нагрузка на процессор и оперативную память.
+                    string destPathFile = null;
 
-                var destPath = Path.Combine(PathDirectoryTracking, item.DirectoryName);
+                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
 
-                var destFileDate = Path.Combine(destPath, e.TimeCreate.ToString("d") + ev.Name);
-
-                int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, item.DirectoryName)).Length;
-
-                var destFileId = Path.Combine(destPath, (number + 1).ToString() + ev.Name);
-
-                var destFileDateAndId = Path.Combine(destPath, (number + 1).ToString()+ "." + e.TimeCreate.ToString("d") + ev.Name);
-
-                var destFile = Path.Combine(destPath, ev.Name);
-
-                if (Regex.IsMatch(ev.Name, item.Filter, RegexOptions.IgnoreCase)) // TODO: см условие выше
-                {
-                    if (!File.Exists(destFileDate))
+                    if (template.IsAddDate)
                     {
-                        // TODO: Всю логику ниже и выше необходимо упростить.
-                        // Это очень плохой подход. Почему бы не делать так?:
-                        // 1. Находим к какому шаблону подходит файл
-                        // 2. Проверяем, нужно ли добавить к финальному имени дату?:
-                        //   a. Да - добавляем дату к итоговому имени
-                        //   b. Нет - Не добавляем дату к итоговому имени, оставляем как есть
-                        //   ... Дальше додумать самостоятельно.
-                        if (item.IsAddDate && item.IsAddId)
-                        {
-                            File.Move(sourceFile, destFileDateAndId);
-                        }
-
-                        if (item.IsAddDate && !item.IsAddId)
-                        {
-                            File.Move(sourceFile, destFileDate);
-                        }
-
-                        if (!item.IsAddId && item.IsAddId)
-                        {
-                            File.Move(sourceFile, destFileId);
-                        }
-
-                        if (!item.IsAddDate && !item.IsAddId)
-                        {
-                            File.Move(sourceFile, destFile);
-                        }
+                        destPathFile = e.TimeCreate.ToString("d") + ".";
                     }
-                   
-                    break;
-                }
-            }
+
+                    if (template.IsAddId)
+                    {
+                        destPathFile = (number + 1).ToString() + "." + destPathFile;
+                    }
+
+                    var sourceFile = Path.Combine(PathDirectoryTracking, ev.Name);
+
+                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + ev.Name);
+
+                    if (!File.Exists(destFile))
+                    {
+                        File.Move(sourceFile, destFile);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Файл с таким именем существует");
+                    }
         }
 
         protected virtual void OnCreateFile(EventArgs e)

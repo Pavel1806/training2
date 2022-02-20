@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileSystemControl.ConfigurationProject;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -16,26 +17,24 @@ namespace FileSystemControl
         /// Метод проверки или создания папок для проекта
         /// </summary>
         /// <param name="pathDirectoryTracking">Отслеживаемая папка</param>
-        /// <param name="FileTrackingTemplates">Шаблоны обработки файлов</param>
-        static public void CreateDirectory(string pathDirectoryTracking, TemplateElementCollection FileTrackingTemplates)
+        /// <param name="fileTrackingTemplates">Шаблоны обработки файлов</param>
+        static public void CreateDirectory(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates)
         {
 
             if (!Directory.Exists(pathDirectoryTracking))
             {
                 Directory.CreateDirectory(pathDirectoryTracking);
-                foreach (TemplateElement item in FileTrackingTemplates)
+                foreach (TemplateElement item in fileTrackingTemplates)
                 {
                     Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
                 }
             }
-            else // TODO: Дублирование логики, необходимо упростить
+            foreach (TemplateElement item in fileTrackingTemplates)
             {
-                foreach (TemplateElement item in FileTrackingTemplates)
-                {
-                    if(!Directory.Exists(Path.Combine(pathDirectoryTracking, item.DirectoryName)))
-                      Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
-                }
+                if(!Directory.Exists(Path.Combine(pathDirectoryTracking, item.DirectoryName)))
+                  Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
             }
+
         }
     }
 }

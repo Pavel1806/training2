@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading;
+using FileSystemControl.ConfigurationProject;
 using FileSystemControl.Resources;
+using System.Linq;
+using System.Linq.Expressions;
 
 
 namespace FileSystemControl
@@ -13,21 +17,19 @@ namespace FileSystemControl
     {
         static void Main(string[] args)
         {
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US"); // TODO: Несовсем корректный подход. В случае если будет
-                                                                     // больше чем 1 язык, то что делать? Не проще ли вынести в конфигурацию как раз
-                                                                     // это значение en-US?
 
-            if (Configuration.LocalizationIsAddRu())
-              CultureInfo.CurrentUICulture = new CultureInfo("ru-RU");
+            var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
 
-            var pathDirectoryTracking = Path.Combine(Environment.CurrentDirectory, Configuration.FolderListenTo());
+            if (configuration.Localization.IsAddEn)
+              CultureInfo.CurrentUICulture = new CultureInfo("en-US");
 
-            var FileTrackingTemplates = Configuration.FileProcessingTemplates(); // TODO: Стиль важен, локальная переменная выше начинается с маленькой буквы,
-                                                                                // А тут с большой...
+            var pathDirectoryTracking = Path.Combine(Environment.CurrentDirectory, configuration.FolderListen.FolderListen);
 
-            DirectoryHelper.CreateDirectory(pathDirectoryTracking, FileTrackingTemplates);
+            var fileTrackingTemplates = configuration.FileTrackingTemplates;
 
-            FileControl fileСontrol = new FileControl(pathDirectoryTracking, FileTrackingTemplates);
+            DirectoryHelper.CreateDirectory(pathDirectoryTracking, fileTrackingTemplates);
+
+            FileControl fileСontrol = new FileControl(pathDirectoryTracking, fileTrackingTemplates);
 
             fileСontrol.CreateFile += Fc_CreateFile;
             fileСontrol.TheRuleOfCoincidence += Fc_TheRuleOfCoincidence;

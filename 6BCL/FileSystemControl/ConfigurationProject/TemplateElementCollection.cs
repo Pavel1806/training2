@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 
-namespace FileSystemControl
+namespace FileSystemControl.ConfigurationProject
 {
     /// <summary>
     /// Класс получения списка шаблонов обработки
