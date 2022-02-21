@@ -50,7 +50,7 @@ namespace FileSystemControl
         /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
         /// </summary>
         private Dictionary<object, FileSystemEventArgs> listObjectAndArgs =
-            new Dictionary<object, FileSystemEventArgs>();
+            new Dictionary<object, FileSystemEventArgs>(); // TODO: Dicrionary здесь не лучшее решение.
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -103,7 +103,9 @@ namespace FileSystemControl
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            listObjectAndArgs.Add(sender, e);
+            listObjectAndArgs.Add(sender, e); // TODO: Это не работает в случае добавления больше 1 файла в папку.
+                                              // Отказаться от Dicrionary, обратить внимание на System.Collections.Concurrent
+                                              // пространство имён. :)
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -125,7 +127,7 @@ namespace FileSystemControl
         {
             lock (Locker)
             {
-                if (listObjectAndArgs.Count() != 0)
+                if (listObjectAndArgs.Count() != 0) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
                 {
                     var objectAndArgs = listObjectAndArgs.FirstOrDefault(p => p.Value != null);
 
