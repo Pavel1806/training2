@@ -93,7 +93,9 @@ namespace FileSystemControl
 
             OnCreateFile(e);
             
-            var template = FileTrackingTemplates.Cast<TemplateElement>().Where(f => Regex.IsMatch(ev.Name, f.Filter)).FirstOrDefault();
+            var template = FileTrackingTemplates.Cast<TemplateElement>()
+                .Where(f => Regex.IsMatch(ev.Name, f.Filter)).FirstOrDefault(); // TODO: можно условие из Where поместить в FirstOrDefault(...)
+                                                                                // TODO: Также необходимо предусмотреть случай когда не удалось найти правило.
             // TODO: Ниже у кода ненужный tab-отступ
                     string destPathFile = null;
 
