@@ -18,28 +18,18 @@ namespace FileSystemControl
         /// </summary>
         /// <param name="pathDirectoryTracking">Отслеживаемая папка</param>
         /// <param name="fileTrackingTemplates">Шаблоны обработки файлов</param>
-        static public void CreateDirectory(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates) // TODO: Метод создаёт много папок, но
-                                                                                                                            // в названии "Directory"
+        public static void CreateDirectories(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates)
         {
 
             if (!Directory.Exists(pathDirectoryTracking))
             {
                 Directory.CreateDirectory(pathDirectoryTracking);
-                foreach (TemplateElement item in fileTrackingTemplates)
-                {
-                    Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
-                }
             }
-            foreach (TemplateElement item in fileTrackingTemplates) // TODO: Дублирование логики необходимо исправить. :)
-                                                                    // По хорошему метод должен принимать коллекцию путей вроде "params string[] directoriesPaths"
-                                                                    // И в один foreach создавать их.
-                                                                    // В текущей реализации выходит, что мы сначала создаём корневую папку, затем создаём вложенные
-                                                                    // Выходим из if'а и снова пытаемся создавать вложенные.
+            foreach (TemplateElement item in fileTrackingTemplates)
             {
                 if(!Directory.Exists(Path.Combine(pathDirectoryTracking, item.DirectoryName)))
                   Directory.CreateDirectory(Path.Combine(pathDirectoryTracking, item.DirectoryName));
             }
-
         }
     }
 }

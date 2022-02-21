@@ -70,6 +70,15 @@ namespace FileSystemControl.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Файл с таким именем существует..
+        /// </summary>
+        internal static string fileExists {
+            get {
+                return ResourceManager.GetString("fileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Файл перенесли в папку.
         /// </summary>
         internal static string fileMovedFolder {
@@ -88,6 +97,15 @@ namespace FileSystemControl.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Локализация не найдена. Продолжаем работать в локализации по умолчанию..
+        /// </summary>
+        internal static string localizationEmpty {
+            get {
+                return ResourceManager.GetString("localizationEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на новое название:.
         /// </summary>
         internal static string newName {
@@ -102,6 +120,15 @@ namespace FileSystemControl.Resources {
         internal static string oldName {
             get {
                 return ResourceManager.GetString("oldName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Список шаблонов обработки пуст..
+        /// </summary>
+        internal static string templateEmpty {
+            get {
+                return ResourceManager.GetString("templateEmpty", resourceCulture);
             }
         }
     }

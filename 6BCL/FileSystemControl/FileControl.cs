@@ -6,7 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Linq;
-using System.Linq.Expressions;
+using FileSystemControl.Resources;
+using System.Threading.Tasks;
 
 namespace FileSystemControl
 {
@@ -28,7 +29,7 @@ namespace FileSystemControl
         /// <summary>
         /// Событие создания файла
         /// </summary>
-        public event EventHandler<EventArgs> CreateFile;
+        public event EventHandler<FileSystemEventArgs> CreateFile;
 
         /// <summary>
         /// Событие переименования файла
@@ -39,6 +40,11 @@ namespace FileSystemControl
         /// Событие переноса фала в другую папку
         /// </summary>
         public event EventHandler<FileSystemEventArgs> TheRuleOfCoincidence;
+
+        /// <summary>
+        /// Объект для обработки нескольких файлов
+        /// </summary>
+        private object Locker = new object();
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -81,51 +87,13 @@ namespace FileSystemControl
             OnRenameFile(e);
         }
 
-        private void Watcher_Created(object sender, FileSystemEventArgs ev) // TODO: Событие не должно обрабатывать логику. Причина этому в том, что
-                                                                            // Если событий будет много и они последовательно будут обрабатываться то
-                                                                            // Высока вероятность падения приложения. А это легко может произойти при массовом
-                                                                            // Копировании файлов в папку.
-                                                                            // Подумать и решить эту проблему. Замечание критической важности.
+        private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
-            EventArgs e = new EventArgs(ev);
-
-            e.TimeCreate = File.GetCreationTime(ev.FullPath);
-
             OnCreateFile(e);
-            
-            var template = FileTrackingTemplates.Cast<TemplateElement>()
-                .Where(f => Regex.IsMatch(ev.Name, f.Filter)).FirstOrDefault(); // TODO: можно условие из Where поместить в FirstOrDefault(...)
-                                                                                // TODO: Также необходимо предусмотреть случай когда не удалось найти правило.
-            // TODO: Ниже у кода ненужный tab-отступ
-                    string destPathFile = null;
-
-                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
-
-                    if (template.IsAddDate)
-                    {
-                        destPathFile = e.TimeCreate.ToString("d") + ".";
-                    }
-
-                    if (template.IsAddId)
-                    {
-                        destPathFile = (number + 1).ToString() + "." + destPathFile;
-                    }
-
-                    var sourceFile = Path.Combine(PathDirectoryTracking, ev.Name);
-
-                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + ev.Name);
-
-                    if (!File.Exists(destFile))
-                    {
-                        File.Move(sourceFile, destFile);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Файл с таким именем существует"); // TODO: Перенести в ресурсы
-                    }
+            Watcher_Created_Logic(sender, e);
         }
 
-        protected virtual void OnCreateFile(EventArgs e)
+        protected virtual void OnCreateFile(FileSystemEventArgs e)
         {
             CreateFile?.Invoke(this, e);
         }
@@ -140,5 +108,49 @@ namespace FileSystemControl
             RenameFile?.Invoke(this, e);
         }
 
+        private void Watcher_Created_Logic(object sender, FileSystemEventArgs e)
+        {
+            lock (Locker)
+            {
+                var timeCreate = File.GetCreationTime(e.FullPath);
+
+                var template = FileTrackingTemplates.Cast<TemplateElement>()
+                    .FirstOrDefault(f => Regex.IsMatch(e.Name, f.Filter));
+
+                if (template != null)
+                {
+                    string destPathFile = null;
+
+                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
+
+                    if (template.IsAddDate)
+                    {
+                        destPathFile = timeCreate.ToString("d") + ".";
+                    }
+
+                    if (template.IsAddId)
+                    {
+                        destPathFile = (number + 1).ToString() + "." + destPathFile;
+                    }
+
+                    var sourceFile = Path.Combine(PathDirectoryTracking, e.Name);
+
+                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + e.Name);
+
+                    if (!File.Exists(destFile))
+                    {
+                        File.Move(sourceFile, destFile);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{Messages.fileExists}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"{Messages.templateEmpty}");
+                }
+            }
+        }
     }
 }

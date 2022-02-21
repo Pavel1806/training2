@@ -120,16 +120,25 @@
   <data name="creationTime" xml:space="preserve">
     <value>Creation time:</value>
   </data>
+  <data name="fileExists" xml:space="preserve">
+    <value>A file with this name exists.</value>
+  </data>
   <data name="fileMovedFolder" xml:space="preserve">
     <value>The file was moved to a folder</value>
   </data>
   <data name="fileСreated" xml:space="preserve">
     <value>File created:</value>
   </data>
+  <data name="localizationEmpty" xml:space="preserve">
+    <value>Localization was not found. We continue to work in the default localization.</value>
+  </data>
   <data name="newName" xml:space="preserve">
     <value>new name:</value>
   </data>
   <data name="oldName" xml:space="preserve">
     <value>The file was renamed, the old name:</value>
+  </data>
+  <data name="templateEmpty" xml:space="preserve">
+    <value>The list of processing templates is empty.</value>
   </data>
 </root>

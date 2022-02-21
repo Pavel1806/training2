@@ -10,10 +10,15 @@ namespace FileSystemControl.ConfigurationProject
     /// </summary>
     public class LocalizationElement : ConfigurationElement
     {
-        [ConfigurationProperty("isAddEn")]
-        public bool IsAddEn
+        [ConfigurationProperty("enUS", IsKey = true)]
+        public string en_US
         {
-            get { return (bool) this["isAddEn"]; }
+            get { return (string)this["enUS"]; }
+        }
+        [ConfigurationProperty("ruRU")]
+        public string ru_RU
+        {
+            get { return (string)this["ruRU"]; }
         }
     }
 }

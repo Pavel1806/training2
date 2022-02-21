@@ -120,16 +120,25 @@
   <data name="creationTime" xml:space="preserve">
     <value>Время создания:</value>
   </data>
+  <data name="fileExists" xml:space="preserve">
+    <value>Файл с таким именем существует.</value>
+  </data>
   <data name="fileMovedFolder" xml:space="preserve">
     <value>Файл перенесли в папку</value>
   </data>
   <data name="fileСreated" xml:space="preserve">
     <value>Файл создан:</value>
   </data>
+  <data name="localizationEmpty" xml:space="preserve">
+    <value>Локализация не найдена. Продолжаем работать в локализации по умолчанию.</value>
+  </data>
   <data name="newName" xml:space="preserve">
     <value>новое название:</value>
   </data>
   <data name="oldName" xml:space="preserve">
     <value>Файл переименовали, старое название:</value>
+  </data>
+  <data name="templateEmpty" xml:space="preserve">
+    <value>Список шаблонов обработки пуст.</value>
   </data>
 </root>
