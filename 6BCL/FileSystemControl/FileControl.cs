@@ -50,7 +50,9 @@ namespace FileSystemControl
         /// <summary>
         /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
         /// </summary>
-        private ConcurrentQueue<FileSystemEventArgs> listObjectAndArgs = new ConcurrentQueue<FileSystemEventArgs>();
+        private ConcurrentQueue<FileSystemEventArgs> listObjectAndArgs 
+            = new ConcurrentQueue<FileSystemEventArgs>(); // TODO: Подумать как не передавать FileSystemEventArgs.
+                                                          // Пусть он освободит от себя память после завершения ивента.
 
         /// <summary>
         /// Конструктор для создания объекта 
