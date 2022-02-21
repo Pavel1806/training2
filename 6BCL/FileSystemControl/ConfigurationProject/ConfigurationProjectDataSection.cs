@@ -22,10 +22,10 @@ namespace FileSystemControl.ConfigurationProject
             get { return (FolderListenElement)this["folderListenTo"]; }
         }
 
-        [ConfigurationProperty("typesOfLocalization")]
+        [ConfigurationProperty("typeOfLocalization")]
         public LocalizationElement Localization
         {
-            get { return (LocalizationElement) this["typesOfLocalization"]; }
+            get { return (LocalizationElement) this["typeOfLocalization"]; }
         }
 
         [ConfigurationProperty("fileProcessingTemplates")]
