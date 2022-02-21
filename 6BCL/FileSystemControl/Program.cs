@@ -34,6 +34,8 @@ namespace FileSystemControl
             fileСontrol.RenameFile += Fc_RenameFile;
             fileСontrol.ControlDirectory();
 
+            fileСontrol.FileProcessingMethod();
+
             Console.ReadKey(true);
         }
 

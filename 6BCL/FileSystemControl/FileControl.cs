@@ -47,6 +47,12 @@ namespace FileSystemControl
         private object Locker = new object();
 
         /// <summary>
+        /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
+        /// </summary>
+        private Dictionary<object, FileSystemEventArgs> listObjectAndArgs =
+            new Dictionary<object, FileSystemEventArgs>();
+
+        /// <summary>
         /// Конструктор для создания объекта 
         /// </summary>
         /// <param name="pathDirectoryTracking">Путь к прослушиваемой папке</param>
@@ -77,6 +83,13 @@ namespace FileSystemControl
             watcher.EnableRaisingEvents = true;
         }
 
+       
+        public void FileProcessingMethod()
+        {
+            TimerCallback tm = new TimerCallback(WatcherCreatedLogic);
+
+            Timer timer = new Timer(tm, listObjectAndArgs, 0, 2000);
+        }
         private void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
             OnTheRuleOfCoincidence(e);
@@ -90,9 +103,7 @@ namespace FileSystemControl
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            Action<object, FileSystemEventArgs> LogiсAction;
-            LogiсAction = WatcherCreatedLogic; 
-            LogiсAction(sender, e);
+            listObjectAndArgs.Add(sender, e);
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -110,47 +121,54 @@ namespace FileSystemControl
             RenameFile?.Invoke(this, e);
         }
 
-        private void WatcherCreatedLogic(object sender, FileSystemEventArgs e)
+        private void WatcherCreatedLogic(object obj)
         {
             lock (Locker)
             {
-                var timeCreate = File.GetCreationTime(e.FullPath);
-
-                var template = FileTrackingTemplates.Cast<TemplateElement>()
-                    .FirstOrDefault(f => Regex.IsMatch(e.Name, f.Filter));
-
-                if (template != null)
+                if (listObjectAndArgs.Count() != 0)
                 {
-                    string destPathFile = null;
+                    var objectAndArgs = listObjectAndArgs.FirstOrDefault(p => p.Value != null);
 
-                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
+                    listObjectAndArgs.Remove(objectAndArgs.Key);
+                    
+                    var timeCreate = File.GetCreationTime(objectAndArgs.Value.FullPath);
 
-                    if (template.IsAddDate)
+                    var template = FileTrackingTemplates.Cast<TemplateElement>()
+                        .FirstOrDefault(f => Regex.IsMatch(objectAndArgs.Value.Name, f.Filter));
+
+                    if (template != null)
                     {
-                        destPathFile = timeCreate.ToString("d") + ".";
-                    }
+                        string destPathFile = null;
 
-                    if (template.IsAddId)
-                    {
-                        destPathFile = (number + 1).ToString() + "." + destPathFile;
-                    }
+                        int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
 
-                    var sourceFile = Path.Combine(PathDirectoryTracking, e.Name);
+                        if (template.IsAddDate)
+                        {
+                            destPathFile = timeCreate.ToString("d") + ".";
+                        }
 
-                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + e.Name);
+                        if (template.IsAddId)
+                        {
+                            destPathFile = (number + 1).ToString() + "." + destPathFile;
+                        }
 
-                    if (!File.Exists(destFile))
-                    {
-                        File.Move(sourceFile, destFile);
+                        var sourceFile = Path.Combine(PathDirectoryTracking, objectAndArgs.Value.Name);
+
+                        var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + objectAndArgs.Value.Name);
+
+                        if (!File.Exists(destFile))
+                        {
+                            File.Move(sourceFile, destFile);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"{Messages.fileExists}");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine($"{Messages.fileExists}");
+                        Console.WriteLine($"{Messages.templateEmpty}");
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"{Messages.templateEmpty}");
                 }
             }
         }
