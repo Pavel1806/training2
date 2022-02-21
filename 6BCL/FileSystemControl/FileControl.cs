@@ -8,6 +8,7 @@ using System.Threading;
 using System.Linq;
 using FileSystemControl.Resources;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace FileSystemControl
 {
@@ -49,8 +50,8 @@ namespace FileSystemControl
         /// <summary>
         /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
         /// </summary>
-        private Dictionary<object, FileSystemEventArgs> listObjectAndArgs =
-            new Dictionary<object, FileSystemEventArgs>(); // TODO: Dicrionary здесь не лучшее решение.
+        private ConcurrentDictionary<object, FileSystemEventArgs> listObjectAndArgs =
+            new ConcurrentDictionary<object, FileSystemEventArgs>(); // TODO: Dicrionary здесь не лучшее решение.
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -103,9 +104,13 @@ namespace FileSystemControl
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            listObjectAndArgs.Add(sender, e); // TODO: Это не работает в случае добавления больше 1 файла в папку.
-                                              // Отказаться от Dicrionary, обратить внимание на System.Collections.Concurrent
-                                              // пространство имён. :)
+            while (true)
+            {
+                if (listObjectAndArgs.TryAdd(sender, e))
+                {
+                    break;
+                }
+            }
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -125,52 +130,54 @@ namespace FileSystemControl
 
         private void WatcherCreatedLogic(object obj)
         {
-            lock (Locker)
+            //lock (Locker)
+            //{
+            var list = (ConcurrentDictionary<object, FileSystemEventArgs>)obj;
+            if (list.Count() != 0) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
             {
-                if (listObjectAndArgs.Count() != 0) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
+                var objectAndArgs = list.FirstOrDefault(p => p.Value != null);
+
+                var value =objectAndArgs.Value;
+                var key = objectAndArgs.Key;
+                var res = listObjectAndArgs.TryRemove(key, out value);
+                
+                var timeCreate = File.GetCreationTime(objectAndArgs.Value.FullPath);
+
+                var template = FileTrackingTemplates.Cast<TemplateElement>()
+                    .FirstOrDefault(f => Regex.IsMatch(value.Name, f.Filter));
+
+                if (template != null)
                 {
-                    var objectAndArgs = listObjectAndArgs.FirstOrDefault(p => p.Value != null);
+                    string destPathFile = null;
 
-                    listObjectAndArgs.Remove(objectAndArgs.Key);
-                    
-                    var timeCreate = File.GetCreationTime(objectAndArgs.Value.FullPath);
+                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
 
-                    var template = FileTrackingTemplates.Cast<TemplateElement>()
-                        .FirstOrDefault(f => Regex.IsMatch(objectAndArgs.Value.Name, f.Filter));
-
-                    if (template != null)
+                    if (template.IsAddDate)
                     {
-                        string destPathFile = null;
+                        destPathFile = timeCreate.ToString("d") + ".";
+                    }
 
-                        int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
+                    if (template.IsAddId)
+                    {
+                        destPathFile = (number + 1).ToString() + "." + destPathFile;
+                    }
 
-                        if (template.IsAddDate)
-                        {
-                            destPathFile = timeCreate.ToString("d") + ".";
-                        }
+                    var sourceFile = Path.Combine(PathDirectoryTracking, value.Name);
 
-                        if (template.IsAddId)
-                        {
-                            destPathFile = (number + 1).ToString() + "." + destPathFile;
-                        }
+                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + value.Name);
 
-                        var sourceFile = Path.Combine(PathDirectoryTracking, objectAndArgs.Value.Name);
-
-                        var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + objectAndArgs.Value.Name);
-
-                        if (!File.Exists(destFile))
-                        {
-                            File.Move(sourceFile, destFile);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"{Messages.fileExists}");
-                        }
+                    if (!File.Exists(destFile))
+                    {
+                       File.Move(sourceFile, destFile);
                     }
                     else
                     {
-                        Console.WriteLine($"{Messages.templateEmpty}");
+                        Console.WriteLine($"{Messages.fileExists}");
                     }
+                }
+                else
+                {
+                    Console.WriteLine($"{Messages.templateEmpty}");
                 }
             }
         }
