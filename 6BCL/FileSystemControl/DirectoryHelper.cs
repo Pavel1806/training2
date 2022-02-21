@@ -19,7 +19,7 @@ namespace FileSystemControl
         /// <param name="pathDirectoryTracking">Отслеживаемая папка</param>
         /// <param name="fileTrackingTemplates">Шаблоны обработки файлов</param>
         static public void CreateDirectory(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates) // TODO: Метод создаёт много папок, но
-                                                                                                                            // в названии Directories
+                                                                                                                            // в названии "Directory"
         {
 
             if (!Directory.Exists(pathDirectoryTracking))
