@@ -19,7 +19,8 @@ namespace FileSystemControl
         { 
             var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
 
-            CultureInfo.CurrentUICulture = new CultureInfo(configuration.Localization.ru_RU);
+            CultureInfo.CurrentUICulture = new CultureInfo(configuration.Localization.ru_RU); // TODO: Упростить, в этой реализации через конфигурацию
+                                                                                            // ничего не конфигурируется, всегда только русская локализация :)
 
             var pathDirectoryTracking = Path.Combine(Environment.CurrentDirectory, configuration.FolderListen.FolderListen);
 

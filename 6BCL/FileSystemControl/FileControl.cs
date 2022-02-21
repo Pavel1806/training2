@@ -90,7 +90,8 @@ namespace FileSystemControl
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            Watcher_Created_Logic(sender, e);
+            Watcher_Created_Logic(sender, e); // TODO: Это не решает проблему, логика всё так же выполняется в рамках события.
+                                                // Критическое замечание, необходимо исправить.
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -108,7 +109,7 @@ namespace FileSystemControl
             RenameFile?.Invoke(this, e);
         }
 
-        private void Watcher_Created_Logic(object sender, FileSystemEventArgs e)
+        private void Watcher_Created_Logic(object sender, FileSystemEventArgs e) // TODO: Почему изменился стиль именования метода? Стиль очень важен.
         {
             lock (Locker)
             {
