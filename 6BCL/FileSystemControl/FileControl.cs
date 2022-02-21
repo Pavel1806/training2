@@ -50,8 +50,7 @@ namespace FileSystemControl
         /// <summary>
         /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
         /// </summary>
-        private ConcurrentDictionary<object, FileSystemEventArgs> listObjectAndArgs =
-            new ConcurrentDictionary<object, FileSystemEventArgs>(); // TODO: Dicrionary здесь не лучшее решение.
+        private ConcurrentQueue<FileSystemEventArgs> listObjectAndArgs = new ConcurrentQueue<FileSystemEventArgs>();
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -84,7 +83,7 @@ namespace FileSystemControl
             watcher.EnableRaisingEvents = true;
         }
 
-       
+        
         public void FileProcessingMethod()
         {
             TimerCallback tm = new TimerCallback(WatcherCreatedLogic);
@@ -104,13 +103,8 @@ namespace FileSystemControl
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            while (true)
-            {
-                if (listObjectAndArgs.TryAdd(sender, e))
-                {
-                    break;
-                }
-            }
+            
+            listObjectAndArgs.Enqueue(e);
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -130,21 +124,22 @@ namespace FileSystemControl
 
         private void WatcherCreatedLogic(object obj)
         {
-            //lock (Locker)
-            //{
-            var list = (ConcurrentDictionary<object, FileSystemEventArgs>)obj;
+            var list = (ConcurrentQueue<FileSystemEventArgs>)obj;
+
             if (list.Count() != 0) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
             {
-                var objectAndArgs = list.FirstOrDefault(p => p.Value != null);
+                FileSystemEventArgs e;
 
-                var value =objectAndArgs.Value;
-                var key = objectAndArgs.Key;
-                var res = listObjectAndArgs.TryRemove(key, out value);
+                while (true)
+                {
+                    if (list.TryDequeue(out e))
+                        break;
+                }
                 
-                var timeCreate = File.GetCreationTime(objectAndArgs.Value.FullPath);
+                var timeCreate = File.GetCreationTime(e.FullPath);
 
                 var template = FileTrackingTemplates.Cast<TemplateElement>()
-                    .FirstOrDefault(f => Regex.IsMatch(value.Name, f.Filter));
+                    .FirstOrDefault(f => Regex.IsMatch(e.Name, f.Filter));
 
                 if (template != null)
                 {
@@ -162,9 +157,9 @@ namespace FileSystemControl
                         destPathFile = (number + 1).ToString() + "." + destPathFile;
                     }
 
-                    var sourceFile = Path.Combine(PathDirectoryTracking, value.Name);
+                    var sourceFile = Path.Combine(PathDirectoryTracking, e.Name);
 
-                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + value.Name);
+                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + e.Name);
 
                     if (!File.Exists(destFile))
                     {
