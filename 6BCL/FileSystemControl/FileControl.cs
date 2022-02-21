@@ -45,7 +45,7 @@ namespace FileSystemControl
         /// </summary>
         /// <param name="pathDirectoryTracking">Путь к прослушиваемой папке</param>
         /// <param name="fileTrackingTemplates">Шаблоны обработки файлов</param>
-        public FileControl(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates) // TODO: 
+        public FileControl(string pathDirectoryTracking, TemplateElementCollection fileTrackingTemplates)
         {
             PathDirectoryTracking = pathDirectoryTracking;
             FileTrackingTemplates = fileTrackingTemplates;
@@ -81,7 +81,11 @@ namespace FileSystemControl
             OnRenameFile(e);
         }
 
-        private void Watcher_Created(object sender, FileSystemEventArgs ev)
+        private void Watcher_Created(object sender, FileSystemEventArgs ev) // TODO: Событие не должно обрабатывать логику. Причина этому в том, что
+                                                                            // Если событий будет много и они последовательно будут обрабатываться то
+                                                                            // Высока вероятность падения приложения. А это легко может произойти при массовом
+                                                                            // Копировании файлов в папку.
+                                                                            // Подумать и решить эту проблему. Замечание критической важности.
         {
             EventArgs e = new EventArgs(ev);
 
@@ -90,7 +94,7 @@ namespace FileSystemControl
             OnCreateFile(e);
             
             var template = FileTrackingTemplates.Cast<TemplateElement>().Where(f => Regex.IsMatch(ev.Name, f.Filter)).FirstOrDefault();
-
+            // TODO: Ниже у кода ненужный tab-отступ
                     string destPathFile = null;
 
                     int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
@@ -115,7 +119,7 @@ namespace FileSystemControl
                     }
                     else
                     {
-                        Console.WriteLine("Файл с таким именем существует");
+                        Console.WriteLine("Файл с таким именем существует"); // TODO: Перенести в ресурсы
                     }
         }
 

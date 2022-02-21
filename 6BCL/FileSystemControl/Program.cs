@@ -16,12 +16,16 @@ namespace FileSystemControl
     class Program
     {
         static void Main(string[] args)
-        {
+        { // TODO: Лишний пробел в коде ниже
 
             var configuration = (ConfigurationProjectDataSection)ConfigurationManager.GetSection("projectDataSection");
 
             if (configuration.Localization.IsAddEn)
-              CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+              CultureInfo.CurrentUICulture = new CultureInfo("en-US"); // TODO: Нужно исправить, зачем определять язык булевым значением?
+                                                                        // Если языков будет 30 в приложении? На каждый язык булевое значение?
+                                                                        // Всегда, абсолютно всегда нужно думать о расширяемости приложения...
+                                                                        // О том как в будущем возможно нужно будет его доработать, возможно не тебе,
+                                                                        // А кому-то другому и ему прийдётся в корне менять подход к выбору языка...
 
             var pathDirectoryTracking = Path.Combine(Environment.CurrentDirectory, configuration.FolderListen.FolderListen);
 
