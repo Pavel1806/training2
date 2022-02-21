@@ -45,7 +45,7 @@ namespace FileSystemControl
         /// <summary>
         /// Объект для обработки нескольких файлов
         /// </summary>
-        private object Locker = new object();
+        private object Locker = new object(); // TODO: Нигде не используется
 
         /// <summary>
         /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
@@ -86,6 +86,7 @@ namespace FileSystemControl
         
         public void FileProcessingMethod()
         {
+            // Опционально: Можно сделать без таймера.
             TimerCallback tm = new TimerCallback(WatcherCreatedLogic);
 
             Timer timer = new Timer(tm, listObjectAndArgs, 0, 2000);
