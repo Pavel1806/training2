@@ -85,13 +85,12 @@ namespace FileSystemControl
             watcher.EnableRaisingEvents = true;
         }
 
-        
         public void FileProcessingMethod()
         {
             // Опционально: Можно сделать без таймера.
             TimerCallback tm = new TimerCallback(WatcherCreatedLogic);
 
-            Timer timer = new Timer(tm, listObjectAndArgs, 0, 2000);
+            Timer timer = new Timer(tm, ObjectAndArgs(), 0, 2000);
         }
         private void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
@@ -103,10 +102,19 @@ namespace FileSystemControl
             OnRenameFile(e);
         }
 
+        IEnumerable<FileSystemEventArgs> ObjectAndArgs()
+        {
+            foreach (var item in listObjectAndArgs)
+            {
+                FileSystemEventArgs ev = item;
+
+                yield return ev;
+            }
+        }
+        
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            
             listObjectAndArgs.Enqueue(e);
         }
 
@@ -125,69 +133,58 @@ namespace FileSystemControl
             RenameFile?.Invoke(this, e);
         }
 
-        private void WatcherCreatedLogic(object obj)
+        public void WatcherCreatedLogic(object obj)
         {
-            var list = (ConcurrentQueue<FileSystemEventArgs>)obj;
-
-            //MemoryStream fg = new MemoryStream();
-            //fg.
-
-            // TODO: Переделать алгоритм ниже:
-            // Он не оптимальный, работает с 1 файлом. Цикл while (true) очень опасен, если есть возможность
-            // его избежать - это нужно сделать. Потенциальные опасности которые несёт в себе цикл:
-            // a. Дедлок
-            // б. Утечка памяти
-            // Цикл while(true) может использоваться как основной цикл программы и то, желательно вместо true
-            // иметь некий state программы вроде while(currentProgramState != ProgramState.Stopped).
-            //
-            // Более того, если такой цикл крутится без каких-либо прерываний вроде Thread.Sleep(250) то он всегда грузит процессор.
-            // 
-            // Необходимо оптимизировать алгоритм ниже. Зайти в цикл хорошая идея если хочешь обработать все файлы в очереди,
-            // обрати внимание на свойство ConcurrentQueue.IsEmpty
-
-            if (!list.IsEmpty) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
+            var list = (IEnumerable<FileSystemEventArgs>)obj;
+            if (list.Count() != 0)
             {
-                FileSystemEventArgs e;
-
-                var t = list.TryDequeue(out e);
-
-                var timeCreate = File.GetCreationTime(e.FullPath);
-
-                var template = FileTrackingTemplates.Cast<TemplateElement>() 
-                    .FirstOrDefault(f => Regex.IsMatch(e.Name, f.Filter));
-
-                if (template != null)
+                foreach (var item in list)
                 {
-                    string destPathFile = null;
+                    var timeCreate = File.GetCreationTime(item.FullPath);
 
-                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
+                    var template = FileTrackingTemplates.Cast<TemplateElement>()
+                        .FirstOrDefault(f => Regex.IsMatch(item.Name, f.Filter));
 
-                    if (template.IsAddDate)
+                    if (template != null)
                     {
-                        destPathFile = timeCreate.ToString("d") + ".";
-                    }
+                        string destPathFile = null;
 
-                    if (template.IsAddId)
-                    {
-                        destPathFile = (number + 1).ToString() + "." + destPathFile;
-                    }
+                        int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
 
-                    var sourceFile = Path.Combine(PathDirectoryTracking, e.Name);
+                        if (template.IsAddDate)
+                        {
+                            destPathFile = timeCreate.ToString("d") + ".";
+                        }
 
-                    var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + e.Name);
+                        if (template.IsAddId)
+                        {
+                            destPathFile = (number + 1).ToString() + "." + destPathFile;
+                        }
 
-                    if (!File.Exists(destFile))
-                    {
-                       File.Move(sourceFile, destFile);
+                        var sourceFile = Path.Combine(PathDirectoryTracking, item.Name);
+
+                        var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + item.Name);
+
+                        if (File.Exists(sourceFile))
+                        {
+                            if (!File.Exists(destFile))
+                            {
+                                File.Move(sourceFile, destFile);
+                            }
+                            else
+                            {
+                                Console.WriteLine($"{Messages.fileExists}");
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                     else
                     {
-                        Console.WriteLine($"{Messages.fileExists}");
+                        Console.WriteLine($"{Messages.templateEmpty}");
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"{Messages.templateEmpty}");
                 }
             }
         }
