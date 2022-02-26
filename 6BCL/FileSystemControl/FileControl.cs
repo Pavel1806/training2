@@ -129,6 +129,9 @@ namespace FileSystemControl
         {
             var list = (ConcurrentQueue<FileSystemEventArgs>)obj;
 
+            //MemoryStream fg = new MemoryStream();
+            //fg.
+
             // TODO: Переделать алгоритм ниже:
             // Он не оптимальный, работает с 1 файлом. Цикл while (true) очень опасен, если есть возможность
             // его избежать - это нужно сделать. Потенциальные опасности которые несёт в себе цикл:
@@ -142,19 +145,15 @@ namespace FileSystemControl
             // Необходимо оптимизировать алгоритм ниже. Зайти в цикл хорошая идея если хочешь обработать все файлы в очереди,
             // обрати внимание на свойство ConcurrentQueue.IsEmpty
 
-            if (list.Count() != 0) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
+            if (!list.IsEmpty) // Получается каждый 2 секунды мы обрабатываем 1 файл. Подумать как оптимизировать этот процесс.
             {
                 FileSystemEventArgs e;
 
-                while (true)
-                {
-                    if (list.TryDequeue(out e))
-                        break;
-                }
-                
+                var t = list.TryDequeue(out e);
+
                 var timeCreate = File.GetCreationTime(e.FullPath);
 
-                var template = FileTrackingTemplates.Cast<TemplateElement>()
+                var template = FileTrackingTemplates.Cast<TemplateElement>() 
                     .FirstOrDefault(f => Regex.IsMatch(e.Name, f.Filter));
 
                 if (template != null)
