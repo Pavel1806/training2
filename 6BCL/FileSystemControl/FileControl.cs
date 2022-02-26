@@ -90,7 +90,8 @@ namespace FileSystemControl
             // Опционально: Можно сделать без таймера.
             TimerCallback tm = new TimerCallback(WatcherCreatedLogic);
 
-            Timer timer = new Timer(tm, ObjectAndArgs(), 0, 2000);
+            Timer timer = new Timer(tm, ObjectAndArgs(), 0, 2000); // TODO: Зачем передавать в качестве аргумента приватную перменную
+                                                                    // которая известна всему классу?
         }
         private void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
@@ -102,7 +103,8 @@ namespace FileSystemControl
             OnRenameFile(e);
         }
 
-        IEnumerable<FileSystemEventArgs> ObjectAndArgs()
+        IEnumerable<FileSystemEventArgs> ObjectAndArgs() // TODO: Неправильное название метода, метод называется существительными
+                                                        // Как правило метод должен называться глаголом, поскольку является действием.
         {
             foreach (var item in listObjectAndArgs)
             {
@@ -135,19 +137,21 @@ namespace FileSystemControl
 
         public void WatcherCreatedLogic(object obj)
         {
-            var list = (IEnumerable<FileSystemEventArgs>)obj;
-            if (list.Count() != 0)
+            var list = (IEnumerable<FileSystemEventArgs>)obj; // TODO: Необязательная передача аргумента которая известна всему классу.
+                                                            // TODO: Нейминг, коллекция называется list, это название ни о чём не говорит
+            if (list.Count() != 0) // TODO: Необязательная проверка, более того, весь код обёрнутый в if труднее читать, чем если бы было
+                                    // if (list.Count() != 0) return;
             {
-                foreach (var item in list)
+                foreach (var item in list) // TODO: Нейминг, list и item не говорящие названия
                 {
-                    var timeCreate = File.GetCreationTime(item.FullPath);
+                    var timeCreate = File.GetCreationTime(item.FullPath); // TODO: Нейминг важен, timeCreate(-ion) и creationTime разные вещи :)
 
                     var template = FileTrackingTemplates.Cast<TemplateElement>()
                         .FirstOrDefault(f => Regex.IsMatch(item.Name, f.Filter));
 
                     if (template != null)
                     {
-                        string destPathFile = null;
+                        string destPathFile = null; // TODO: Нейминг важен, destPathFile и destFilePath разные вещи :)
 
                         int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
 
@@ -164,6 +168,7 @@ namespace FileSystemControl
                         var sourceFile = Path.Combine(PathDirectoryTracking, item.Name);
 
                         var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + item.Name);
+                        // TODO: Зачем вторая переменная с целевым путём? Получается 2 значения с целевым путём, можно использовать одно.
 
                         if (File.Exists(sourceFile))
                         {
@@ -178,10 +183,11 @@ namespace FileSystemControl
                         }
                         else
                         {
-                            break;
+                            break; // TODO: Если хоть одного файла в коллекции не будет, то процесс завершиться, почему?
+                                    // Один неуспешно обработанный файл не должен влиять на работу всего процесса
                         }
                     }
-                    else
+                    else // TODO: можно обойтись без else, так получается "Спагетти-код", его труднее читать.
                     {
                         Console.WriteLine($"{Messages.templateEmpty}");
                     }
