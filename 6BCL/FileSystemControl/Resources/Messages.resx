@@ -126,6 +126,9 @@
   <data name="fileMovedFolder" xml:space="preserve">
     <value>Файл перенесли в папку</value>
   </data>
+  <data name="fileNotFoundSourceFolder" xml:space="preserve">
+    <value>Файл в исходной папке не найден.</value>
+  </data>
   <data name="fileСreated" xml:space="preserve">
     <value>Файл создан:</value>
   </data>

@@ -43,16 +43,14 @@ namespace FileSystemControl
         public event EventHandler<FileSystemEventArgs> TheRuleOfCoincidence;
 
         /// <summary>
-        /// Объект для обработки нескольких файлов
+        /// Поле для записи данных из события Watcher_Created
         /// </summary>
-        private object Locker = new object(); // TODO: Нигде не используется
+        private string DataFromEvent;
 
         /// <summary>
-        /// Словарь для созданных объектов и аргументов по событию Watcher_Changed
+        /// Поток для записи данных из события Watcher_Created
         /// </summary>
-        private ConcurrentQueue<FileSystemEventArgs> listObjectAndArgs 
-            = new ConcurrentQueue<FileSystemEventArgs>(); // TODO: Подумать как не передавать FileSystemEventArgs.
-                                                          // Пусть он освободит от себя память после завершения ивента.
+        private StringWriter sWriter;
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -63,6 +61,7 @@ namespace FileSystemControl
         {
             PathDirectoryTracking = pathDirectoryTracking;
             FileTrackingTemplates = fileTrackingTemplates;
+            sWriter = new StringWriter();
         }
 
         public void ControlDirectory()
@@ -90,8 +89,7 @@ namespace FileSystemControl
             // Опционально: Можно сделать без таймера.
             TimerCallback tm = new TimerCallback(WatcherCreatedLogic);
 
-            Timer timer = new Timer(tm, ObjectAndArgs(), 0, 2000); // TODO: Зачем передавать в качестве аргумента приватную перменную
-                                                                    // которая известна всему классу?
+            Timer timer = new Timer(tm, null, 0, 2000); 
         }
         private void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
@@ -103,21 +101,11 @@ namespace FileSystemControl
             OnRenameFile(e);
         }
 
-        IEnumerable<FileSystemEventArgs> ObjectAndArgs() // TODO: Неправильное название метода, метод называется существительными
-                                                        // Как правило метод должен называться глаголом, поскольку является действием.
-        {
-            foreach (var item in listObjectAndArgs)
-            {
-                FileSystemEventArgs ev = item;
-
-                yield return ev;
-            }
-        }
-        
         private void Watcher_Created(object sender, FileSystemEventArgs e) 
         {
             OnCreateFile(e);
-            listObjectAndArgs.Enqueue(e);
+
+            sWriter.Write(e.Name + "$" + e.FullPath + ";");
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -137,61 +125,73 @@ namespace FileSystemControl
 
         public void WatcherCreatedLogic(object obj)
         {
-            var list = (IEnumerable<FileSystemEventArgs>)obj; // TODO: Необязательная передача аргумента которая известна всему классу.
-                                                            // TODO: Нейминг, коллекция называется list, это название ни о чём не говорит
-            if (list.Count() != 0) // TODO: Необязательная проверка, более того, весь код обёрнутый в if труднее читать, чем если бы было
-                                    // if (list.Count() != 0) return;
+
+            DataFromEvent = sWriter.ToString();
+
+            if (String.IsNullOrEmpty(DataFromEvent))
+                return;
+
+            sWriter.Close();
+
+            sWriter = new StringWriter();
+
+            var sub = DataFromEvent.Split(";");
+
+            DataFromEvent = null;
+
+            for (int i = 0; i < sub.Length; i++)
             {
-                foreach (var item in list) // TODO: Нейминг, list и item не говорящие названия
+                var nameOrPath = sub[i].Split("$");
+                
+                string name = nameOrPath[0];
+                if (String.IsNullOrEmpty(name)) 
+                    break;
+
+                string fullpath = nameOrPath[1];
+                var creationTime = File.GetCreationTime(fullpath);
+
+                var template = FileTrackingTemplates.Cast<TemplateElement>()
+                    .FirstOrDefault(f => Regex.IsMatch(name, f.Filter));
+
+                if (template != null)
                 {
-                    var timeCreate = File.GetCreationTime(item.FullPath); // TODO: Нейминг важен, timeCreate(-ion) и creationTime разные вещи :)
+                    string destFile = null;
 
-                    var template = FileTrackingTemplates.Cast<TemplateElement>()
-                        .FirstOrDefault(f => Regex.IsMatch(item.Name, f.Filter));
+                    int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
 
-                    if (template != null)
+                    if (template.IsAddDate)
                     {
-                        string destPathFile = null; // TODO: Нейминг важен, destPathFile и destFilePath разные вещи :)
+                        destFile = creationTime.ToString("d") + ".";
+                    }
 
-                        int number = Directory.GetFiles(Path.Combine(PathDirectoryTracking, template.DirectoryName)).Length;
+                    if (template.IsAddId)
+                    {
+                        destFile = (number + 1).ToString() + "." + destFile;
+                    }
 
-                        if (template.IsAddDate)
+                    var sourceFile = Path.Combine(PathDirectoryTracking, name);
+
+                    destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destFile + name);
+
+                    if (File.Exists(sourceFile))
+                    {
+                        if (!File.Exists(destFile))
                         {
-                            destPathFile = timeCreate.ToString("d") + ".";
-                        }
-
-                        if (template.IsAddId)
-                        {
-                            destPathFile = (number + 1).ToString() + "." + destPathFile;
-                        }
-
-                        var sourceFile = Path.Combine(PathDirectoryTracking, item.Name);
-
-                        var destFile = Path.Combine(PathDirectoryTracking, template.DirectoryName, destPathFile + item.Name);
-                        // TODO: Зачем вторая переменная с целевым путём? Получается 2 значения с целевым путём, можно использовать одно.
-
-                        if (File.Exists(sourceFile))
-                        {
-                            if (!File.Exists(destFile))
-                            {
-                                File.Move(sourceFile, destFile);
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{Messages.fileExists}");
-                            }
+                            File.Move(sourceFile, destFile);
                         }
                         else
                         {
-                            break; // TODO: Если хоть одного файла в коллекции не будет, то процесс завершиться, почему?
-                                    // Один неуспешно обработанный файл не должен влиять на работу всего процесса
+                            Console.WriteLine($"{Messages.fileExists}");
                         }
                     }
-                    else // TODO: можно обойтись без else, так получается "Спагетти-код", его труднее читать.
+                    else
                     {
-                        Console.WriteLine($"{Messages.templateEmpty}");
+                        Console.WriteLine($"{Messages.fileNotFoundSourceFolder}");
                     }
                 }
+
+                if (template == null)
+                    Console.WriteLine($"{Messages.templateEmpty}");
             }
         }
     }

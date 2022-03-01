@@ -126,6 +126,9 @@
   <data name="fileMovedFolder" xml:space="preserve">
     <value>The file was moved to a folder</value>
   </data>
+  <data name="fileNotFoundSourceFolder" xml:space="preserve">
+    <value>The file was not found in the source folder.</value>
+  </data>
   <data name="fileСreated" xml:space="preserve">
     <value>File created:</value>
   </data>
