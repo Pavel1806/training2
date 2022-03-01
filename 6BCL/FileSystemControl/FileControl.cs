@@ -45,12 +45,12 @@ namespace FileSystemControl
         /// <summary>
         /// Поле для записи данных из события Watcher_Created
         /// </summary>
-        private string DataFromEvent;
+        private string DataFromEvent; // TODO: Это здесь не нужно, изменить подход
 
         /// <summary>
         /// Поток для записи данных из события Watcher_Created
         /// </summary>
-        private StringWriter sWriter;
+        private StringWriter sWriter; // TODO: Это здесь не нужно. Изменить подход
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -126,7 +126,8 @@ namespace FileSystemControl
         public void WatcherCreatedLogic(object obj)
         {
 
-            DataFromEvent = sWriter.ToString();
+            DataFromEvent = sWriter.ToString(); // TODO: Переделать подход. Это ужасно читаемо. Это не надёжно.
+                                                // Нет никакой необходимости отказываться от коллекций.
 
             if (String.IsNullOrEmpty(DataFromEvent))
                 return;
