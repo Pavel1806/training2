@@ -42,18 +42,10 @@ namespace FileSystemControl
         /// </summary>
         public event EventHandler<FileSystemEventArgs> TheRuleOfCoincidence;
 
+        /// <summary>
+        /// Коллекция для путей файлов
+        /// </summary>
         private ConcurrentQueue<string> listObjectAndArgs = new ConcurrentQueue<string>();
-
-
-        ///// <summary>
-        ///// Поле для записи данных из события Watcher_Created
-        ///// </summary>
-        //private string DataFromEvent; // TODO: Это здесь не нужно, изменить подход
-
-        ///// <summary>
-        ///// Поток для записи данных из события Watcher_Created
-        ///// </summary>
-        //private StringWriter sWriter; // TODO: Это здесь не нужно. Изменить подход
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -108,8 +100,7 @@ namespace FileSystemControl
         {
             OnCreateFile(e);
 
-            listObjectAndArgs.Enqueue(e.Name + ";" + e.FullPath); // TODO: FullPath кажется содержит в себе исчерпывающую информацию о
-                                                                    // имени и положении файла
+            listObjectAndArgs.Enqueue(e.FullPath);
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -132,34 +123,23 @@ namespace FileSystemControl
             if (listObjectAndArgs.IsEmpty)
                 return;
 
-            MemoryStream stream = new MemoryStream();
-            BinaryWriter writer = new BinaryWriter(stream);
+            ConcurrentQueue<string> objectAndArgs = new ConcurrentQueue<string>();
 
             foreach (var item in listObjectAndArgs)
             {
-                writer.Write(item);
+                objectAndArgs.Enqueue(item);
             }
 
             listObjectAndArgs.Clear();
 
-            writer.Close();
-
-            stream = new MemoryStream(stream.GetBuffer());
-
-            BinaryReader reader = new BinaryReader(stream);
-
-            string dataFromStream = null;
-
-            while (!String.IsNullOrEmpty(dataFromStream = reader.ReadString())) // TODO: Упростить логику выше и ниже,
-                                                                                // потоки здесь вообще не нужны. :)
+            foreach (var item in objectAndArgs)
             {
-                var nameOrPath = dataFromStream.Split(";");
+                string fullpath = item;
 
-                string name = nameOrPath[0];
-                if (String.IsNullOrEmpty(name))
-                    break;
+                FileInfo fileInfo = new FileInfo(item);
 
-                string fullpath = nameOrPath[1];
+                var name = fileInfo.Name;
+                
                 var creationTime = File.GetCreationTime(fullpath);
 
                 var template = FileTrackingTemplates.Cast<TemplateElement>()
@@ -205,6 +185,7 @@ namespace FileSystemControl
                 if (template == null)
                     Console.WriteLine($"{Messages.templateEmpty}");
             }
+            
         }
     }
 }
