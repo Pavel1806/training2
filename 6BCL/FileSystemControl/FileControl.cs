@@ -173,7 +173,9 @@ namespace FileSystemControl
                     }
                 }
 
-                if (template == null)
+                if (template == null) // TODO: Не совсем то имел ввиду, это можно вынести наверх и внутрь добавить continue,
+                                        // чтобы перейти к следующему файлу, а от if который сейчас template != null можно избавиться
+                                        // Так просто будет более читаемо :)
                     Console.WriteLine($"{Messages.templateEmpty}");
             }
         }
