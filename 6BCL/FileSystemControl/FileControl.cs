@@ -42,15 +42,18 @@ namespace FileSystemControl
         /// </summary>
         public event EventHandler<FileSystemEventArgs> TheRuleOfCoincidence;
 
-        /// <summary>
-        /// Поле для записи данных из события Watcher_Created
-        /// </summary>
-        private string DataFromEvent; // TODO: Это здесь не нужно, изменить подход
+        private ConcurrentQueue<string> listObjectAndArgs = new ConcurrentQueue<string>();
 
-        /// <summary>
-        /// Поток для записи данных из события Watcher_Created
-        /// </summary>
-        private StringWriter sWriter; // TODO: Это здесь не нужно. Изменить подход
+
+        ///// <summary>
+        ///// Поле для записи данных из события Watcher_Created
+        ///// </summary>
+        //private string DataFromEvent; // TODO: Это здесь не нужно, изменить подход
+
+        ///// <summary>
+        ///// Поток для записи данных из события Watcher_Created
+        ///// </summary>
+        //private StringWriter sWriter; // TODO: Это здесь не нужно. Изменить подход
 
         /// <summary>
         /// Конструктор для создания объекта 
@@ -61,7 +64,7 @@ namespace FileSystemControl
         {
             PathDirectoryTracking = pathDirectoryTracking;
             FileTrackingTemplates = fileTrackingTemplates;
-            sWriter = new StringWriter();
+            
         }
 
         public void ControlDirectory()
@@ -105,7 +108,7 @@ namespace FileSystemControl
         {
             OnCreateFile(e);
 
-            sWriter.Write(e.Name + "$" + e.FullPath + ";");
+            listObjectAndArgs.Enqueue(e.Name + ";" + e.FullPath);
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -125,27 +128,33 @@ namespace FileSystemControl
 
         public void WatcherCreatedLogic(object obj)
         {
-
-            DataFromEvent = sWriter.ToString(); // TODO: Переделать подход. Это ужасно читаемо. Это не надёжно.
-                                                // Нет никакой необходимости отказываться от коллекций.
-
-            if (String.IsNullOrEmpty(DataFromEvent))
+            if (listObjectAndArgs.IsEmpty)
                 return;
 
-            sWriter.Close();
+            MemoryStream stream = new MemoryStream();
+            BinaryWriter writer = new BinaryWriter(stream);
 
-            sWriter = new StringWriter();
-
-            var sub = DataFromEvent.Split(";");
-
-            DataFromEvent = null;
-
-            for (int i = 0; i < sub.Length; i++)
+            foreach (var item in listObjectAndArgs)
             {
-                var nameOrPath = sub[i].Split("$");
-                
+                writer.Write(item);
+            }
+
+            listObjectAndArgs.Clear();
+
+            writer.Close();
+
+            stream = new MemoryStream(stream.GetBuffer());
+
+            BinaryReader reader = new BinaryReader(stream);
+
+            string dataFromStream = null;
+
+            while (!String.IsNullOrEmpty(dataFromStream = reader.ReadString()))
+            {
+                var nameOrPath = dataFromStream.Split(";");
+
                 string name = nameOrPath[0];
-                if (String.IsNullOrEmpty(name)) 
+                if (String.IsNullOrEmpty(name))
                     break;
 
                 string fullpath = nameOrPath[1];
