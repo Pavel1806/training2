@@ -108,7 +108,8 @@ namespace FileSystemControl
         {
             OnCreateFile(e);
 
-            listObjectAndArgs.Enqueue(e.Name + ";" + e.FullPath);
+            listObjectAndArgs.Enqueue(e.Name + ";" + e.FullPath); // TODO: FullPath кажется содержит в себе исчерпывающую информацию о
+                                                                    // имени и положении файла
         }
 
         protected virtual void OnCreateFile(FileSystemEventArgs e)
@@ -149,7 +150,8 @@ namespace FileSystemControl
 
             string dataFromStream = null;
 
-            while (!String.IsNullOrEmpty(dataFromStream = reader.ReadString()))
+            while (!String.IsNullOrEmpty(dataFromStream = reader.ReadString())) // TODO: Упростить логику выше и ниже,
+                                                                                // потоки здесь вообще не нужны. :)
             {
                 var nameOrPath = dataFromStream.Split(";");
 
