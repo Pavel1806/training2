@@ -125,7 +125,7 @@ namespace FileSystemControl
 
             ConcurrentQueue<string> objectAndArgs = new ConcurrentQueue<string>();
 
-            foreach (var item in listObjectAndArgs)
+            foreach (var item in listObjectAndArgs) // TODO: Ненужное дублирование коллекции.
             {
                 objectAndArgs.Enqueue(item);
             }
