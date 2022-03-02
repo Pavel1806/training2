@@ -123,20 +123,11 @@ namespace FileSystemControl
             if (listObjectAndArgs.IsEmpty)
                 return;
 
-            ConcurrentQueue<string> objectAndArgs = new ConcurrentQueue<string>();
+            string fullpath = null;
 
-            foreach (var item in listObjectAndArgs) // TODO: Ненужное дублирование коллекции.
+            while (listObjectAndArgs.TryDequeue(out fullpath))
             {
-                objectAndArgs.Enqueue(item);
-            }
-
-            listObjectAndArgs.Clear();
-
-            foreach (var item in objectAndArgs)
-            {
-                string fullpath = item;
-
-                FileInfo fileInfo = new FileInfo(item);
+                FileInfo fileInfo = new FileInfo(fullpath);
 
                 var name = fileInfo.Name;
                 
@@ -185,7 +176,6 @@ namespace FileSystemControl
                 if (template == null)
                     Console.WriteLine($"{Messages.templateEmpty}");
             }
-            
         }
     }
 }
