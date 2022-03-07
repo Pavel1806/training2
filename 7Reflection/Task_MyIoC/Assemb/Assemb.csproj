@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="0.11.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyIoC\MyIoC.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IoCSample">
+      <HintPath>bin\Debug\netcoreapp3.1\patched.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

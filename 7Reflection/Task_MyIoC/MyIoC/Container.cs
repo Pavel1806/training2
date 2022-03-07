@@ -9,8 +9,11 @@ namespace MyIoC
 {
 	public class Container
 	{
-		public void AddAssembly(Assembly assembly)
-		{ }
+        public void AddAssembly(Assembly assembly)
+        {
+            
+
+		}
 
 		public void AddType(Type type)
 		{ }
