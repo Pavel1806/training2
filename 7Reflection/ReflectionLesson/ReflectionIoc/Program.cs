@@ -7,16 +7,17 @@ namespace ReflectionIoc
     {
         static void Main(string[] args)
         {
-            // TODO: Program.cs или любой другой файл, место где начинается инициализация программы. Считается самым "Грязным" в коде,
-            // поскольку зачастую в нём определяются все зависимости и многое-многое другое, что делает это место связанным со всеми
-            // или многими модулями программы.
-            //
-            // Мои ожидания, увидеть, что в этом методе Main определяются зависимости для IoC контейнера.
-            // В нём же запрашивается экземпляр какого-то класса и затем используется метод этого класса.
-            Example example = new Example();
+            var container = new ContainerDependency();
 
-            example.Metod();
+            container.SetAssembly(Assembly.GetExecutingAssembly());
 
+            container.CheckType(typeof(CustomerDAL), typeof(ICustomerDAL));
+
+            var castDAL = container.CreateInstance<ICustomerDAL>();
+
+            CustomerBLL customerBLL = new CustomerBLL(castDAL);
+
+            customerBLL.customerDAL.ConsoleWritline();
         }
     }
 }

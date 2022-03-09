@@ -4,14 +4,21 @@ using System.Text;
 
 namespace ReflectionIoc
 {
-    // TODO: Комментарии ко всем публичным методам и классам
-    [ImportConstructor]
-    class CustomerBLL // TODO: Нигде не используется
+    /// <summary>
+    /// Класс слоя бизнес логики
+    /// </summary>
+    class CustomerBLL
     {
-        // TODO: Комментарии ко всем публичным методам и классам
-        public CustomerBLL(ICustomerDAL dal, Logger logger) 
-        { 
-            
+        public ICustomerDAL customerDAL;
+
+        /// <summary>
+        /// Конструктор внедрения зависимостей
+        /// </summary>
+        /// <param name="customerDAL"> переменная класса слоя данных</param>
+        public CustomerBLL(ICustomerDAL customerDAL) 
+        {
+            this.customerDAL = customerDAL;
         }
+
     }
 }

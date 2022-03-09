@@ -4,14 +4,18 @@ using System.Text;
 
 namespace ReflectionIoc
 {
-    // TODO: Комментарии ко всем публичным методам и классам
+    /// <summary>
+    /// Класс слоя данных
+    /// </summary>
     [Export(typeof(ICustomerDAL))]
-    public class CustomerDAL : ICustomerDAL // TODO: В классе нет внедрения зависимостей через конструктор или свойства.
+    public class CustomerDAL : ICustomerDAL
     {
-        // TODO: Комментарии ко всем публичным методам и классам
-        public void ConsoleWritline() // TODO: Непонятное название
+        /// <summary>
+        /// Метод который выводит на консоль сообщение
+        /// </summary>
+        public void ConsoleWritline()
         {
-            Console.WriteLine("Привет");
+            Console.WriteLine("ПРивет");
         }
     }
 }

@@ -12,8 +12,6 @@ namespace ReflectionIoc
 	[AttributeUsage(AttributeTargets.Class)]
 	public class ImportConstructorAttribute : Attribute
 	{
-
-
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
@@ -29,11 +27,4 @@ namespace ReflectionIoc
 
 		public Type Contract { get; private set; }
 	}
-
-
-	//[Export]
-	//public class ContractBLL { }
-
-	//[Export]
-	//public class ContractDLL { }
 }

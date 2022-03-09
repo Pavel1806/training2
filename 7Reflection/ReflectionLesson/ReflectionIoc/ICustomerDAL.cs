@@ -4,10 +4,14 @@ using System.Text;
 
 namespace ReflectionIoc
 {
-    // TODO: Комментарии ко всем публичным методам и классам
+    /// <summary>
+    /// Интерфейс слоя данных
+    /// </summary>
     public interface ICustomerDAL
     {
-        // TODO: Комментарии ко всем публичным методам и классам
+        /// <summary>
+        /// Метод который выводит на консоль сообщение
+        /// </summary>
         public void ConsoleWritline();
     }
 }
