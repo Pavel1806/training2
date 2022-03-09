@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReflectionIoc", "ReflectionIoc\ReflectionIoc.csproj", "{1C56E93E-0791-470F-92CD-CD8E1BE214FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C56E93E-0791-470F-92CD-CD8E1BE214FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C56E93E-0791-470F-92CD-CD8E1BE214FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C56E93E-0791-470F-92CD-CD8E1BE214FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C56E93E-0791-470F-92CD-CD8E1BE214FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FBF344B0-39FA-4D97-BD20-74010F012364}
+	EndGlobalSection
+EndGlobal

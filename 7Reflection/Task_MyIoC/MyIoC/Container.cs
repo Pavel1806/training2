@@ -19,7 +19,9 @@ namespace MyIoC
 		{ }
 
 		public void AddType(Type type, Type baseType)
-		{ }
+		{ 
+		    
+		}
 
 		public object CreateInstance(Type type)
 		{
