@@ -5,11 +5,13 @@ using System.Reflection;
 
 namespace ReflectionIoc
 {
-    class Processing
+    // TODO: Комментарии ко всем публичным методам и классам
+    class Processing // TODO: Ни о чём не говорящее название для класса + можно обойтись без него, концепцию описал в Program.cs
     {
-        ICustomerDAL customer;
+        ICustomerDAL customer; // TODO: Некорректное название для поля, это ведь customerDAL, а не customer.
 
-        public ICustomerDAL Customer
+        // TODO: Комментарии ко всем публичным методам и классам
+        public ICustomerDAL Customer // TODO: Некорректное название для свойства, это ведь CustomerDAL, а не Customer.
         {
             get
             {
@@ -19,7 +21,9 @@ namespace ReflectionIoc
             }
         }
 
-        public ICustomerDAL InstanceClass()
+        // TODO: Комментарии ко всем публичным методам и классам
+        public ICustomerDAL InstanceClass() // TODO: Методы не должны называться существительными! Это действия - глаголы :)
+                                            // Более того, название ни о чём не говорит.
         {
             var container = new Container();
 

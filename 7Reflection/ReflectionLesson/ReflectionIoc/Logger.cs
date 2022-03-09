@@ -4,8 +4,9 @@ using System.Text;
 
 namespace ReflectionIoc
 {
+    // TODO: Комментарии ко всем публичным методам и классам
     [Export]
-    class Logger
+    class Logger // TODO: Нигде не используется
     {
 
     }
