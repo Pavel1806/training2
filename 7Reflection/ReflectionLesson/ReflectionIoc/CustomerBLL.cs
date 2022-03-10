@@ -7,18 +7,14 @@ namespace ReflectionIoc
     /// <summary>
     /// Класс слоя бизнес логики
     /// </summary>
-    class CustomerBLL
+    class CustomerBLL : ICustomerBLL
     {
-        public ICustomerDAL customerDAL;
-
         /// <summary>
-        /// Конструктор внедрения зависимостей
+        /// Метод выводит название класса
         /// </summary>
-        /// <param name="customerDAL"> переменная класса слоя данных</param>
-        public CustomerBLL(ICustomerDAL customerDAL) 
+        public void ConsoleWrite()
         {
-            this.customerDAL = customerDAL;
+            Console.Write("CustomerBLL");
         }
-
     }
 }

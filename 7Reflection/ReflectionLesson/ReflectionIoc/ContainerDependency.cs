@@ -13,7 +13,7 @@ namespace ReflectionIoc
 	{
 		Assembly assembly;
 
-		Type type;
+		Object type;
 
 		/// <summary>
 		/// Инициализация нового экземпляра класса Assembly
@@ -25,26 +25,25 @@ namespace ReflectionIoc
 		}
 
 		/// <summary>
-		/// Проверка типов и атрибутов
+		/// Создание экземпляра класса 
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="baseType"></param>
-		public void CheckType(Type type, Type baseType)
+		/// <typeparam name="T">дочерний класс</typeparam>
+		/// <typeparam name="V">реализуемый интерфейс</typeparam>
+		public void AddType<T, V>()
 		{
-			var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == baseType)).ToList();
+			var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
 
-			foreach(var item in types)
+			if(types.Count() == 0)
+				throw new Exception("");
+
+				foreach (var item in types)
             {
-				if (item != type)
-					throw new Exception($"{type} этот класс не реализует этот интерфейс {baseType}");
+				if (item != typeof(T))
+					continue;
 
-				var attributes = item.GetCustomAttributes();
+				var v = Activator.CreateInstance(item);
 
-				if (attributes.Count() == 0)
-					throw new Exception($"{type} этот класс не содержит атрибутов");
-
-				this.type = type;
-				break;
+				this.type = v;
 			}
 		}
 
@@ -54,8 +53,18 @@ namespace ReflectionIoc
 		/// <typeparam name="T">Тип нового экземпляра</typeparam>
 		/// <returns>Новый экземпляр типа T</returns>
 		public T CreateInstance<T>()
-		{ 
-			T t = (T)Activator.CreateInstance(type);
+		{
+			var types = assembly.GetTypes().Where(x => x == typeof(T)).ToList();
+
+			if (types.Count() == 0)
+				throw new Exception("");
+
+			T t = default(T);
+
+			foreach (var item in types)
+            {
+				t = (T)Activator.CreateInstance(item, new object[] { type });
+			}
 
 			return t;
 		}

@@ -7,15 +7,26 @@ namespace ReflectionIoc
     /// <summary>
     /// Класс слоя данных
     /// </summary>
-    [Export(typeof(ICustomerDAL))]
-    public class CustomerDAL : ICustomerDAL
+    public class CustomerDAL
     {
-        /// <summary>
-        /// Метод который выводит на консоль сообщение
-        /// </summary>
-        public void ConsoleWritline()
+        private ICustomerBLL customerBLL;
+        public CustomerDAL (ICustomerBLL customerBLL)
         {
-            Console.WriteLine("ПРивет");
+            this.customerBLL = customerBLL;
+        }
+        /// <summary>
+        /// Метод выводит название класса СustomerBLL
+        /// </summary>
+        public void ConsoleWrite()
+        {
+            customerBLL.ConsoleWrite();
+        }
+        /// <summary>
+        /// Метод выводит название данного класса
+        /// </summary>
+        public void ConsoleWriteline()
+        {
+            Console.WriteLine("CustomerDAL");
         }
     }
 }
