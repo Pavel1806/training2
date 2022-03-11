@@ -7,6 +7,7 @@ namespace ReflectionIoc
     /// <summary>
     /// Класс слоя бизнес логики
     /// </summary>
+    [Export(typeof(ICustomerDAL))]
     class CustomerBLL : ICustomerBLL
     {
         /// <summary>

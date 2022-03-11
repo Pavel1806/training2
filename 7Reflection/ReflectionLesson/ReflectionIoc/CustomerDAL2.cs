@@ -4,21 +4,14 @@ using System.Text;
 
 namespace ReflectionIoc
 {
-    /// <summary>
-    /// Класс слоя данных
-    /// </summary>
-    [ImportConstructor]
-    public class CustomerDAL
+    class CustomerDAL2
     {
         private ICustomerBLL customerBLL;
 
-        private ICustomerBLL2 customerBLL2;
-
         private ICustomerBLL3 customerBLL3;
-        public CustomerDAL (ICustomerBLL customerBLL, ICustomerBLL2 customerBLL2, ICustomerBLL3 customerBLL3)
+        public CustomerDAL2(ICustomerBLL customerBLL, ICustomerBLL3 customerBLL3)
         {
             this.customerBLL = customerBLL;
-            this.customerBLL2 = customerBLL2;
             this.customerBLL3 = customerBLL3;
         }
         /// <summary>
@@ -34,11 +27,6 @@ namespace ReflectionIoc
         public void ConsoleWriteline()
         {
             Console.WriteLine("CustomerDAL");
-        }
-
-        public void CWrite()
-        {
-            customerBLL2.CWrite();
         }
 
         public void ConWrite()
