@@ -29,7 +29,8 @@ namespace ReflectionIoc
 		/// </summary>
 		/// <typeparam name="T">дочерний класс</typeparam>
 		/// <typeparam name="V">реализуемый интерфейс</typeparam>
-		public void AddType<T, V>()
+		public void AddType<T, V>() // TODO: Метод ничего не добавляет, а устанавливает значение приватной переменной коллекции
+									// В идеале этот метод должен добавлять маппинг "Контракт/Интерфейс/Абстракция - реализация"
 		{
 			var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
 
@@ -52,7 +53,11 @@ namespace ReflectionIoc
 		/// </summary>
 		/// <typeparam name="T">Тип нового экземпляра</typeparam>
 		/// <returns>Новый экземпляр типа T</returns>
-		public T CreateInstance<T>()
+		public T CreateInstance<T>() // TODO: Метод не рабочий в 98% случаев где понадобится
+									// Поскольку что если нам понадобится внедрить несколько классов
+									// В конструктор? Один, три или пять?
+									// + По условию задачи, внедрение должно быть относительно аттрибутов
+									// Тут аттриюуты не задействуются :)
 		{
 			var types = assembly.GetTypes().Where(x => x == typeof(T)).ToList();
 
