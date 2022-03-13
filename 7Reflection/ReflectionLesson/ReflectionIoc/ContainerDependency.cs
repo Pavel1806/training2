@@ -36,24 +36,37 @@ namespace ReflectionIoc
 		/// <typeparam name="V">реализуемый интерфейс</typeparam>
 		public void AddType<T, V>()
 		{
-			var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
+			var type = typeof(T);
 
-			if (types.Count() == 0)
-				throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
+			var attributes = type.CustomAttributes;
 
-			foreach (var item in types)
+			if (attributes.Count() == 0)
+				throw new Exception($"У {typeof(T)} нет никаких атрибутов");
+
+			foreach (var attribute in attributes)
             {
 
-				if (item != typeof(T))
-					throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
-
-				var instance = (T)Activator.CreateInstance(item);
-
-				var name = item.Name;
-				
-				this.combinedType.Add(name, instance);
+				if (attribute.AttributeType.Name.IndexOf("Export") == -1)
+					throw new Exception($"У {typeof(T)} нет нужного атрибута");
 			}
-		}
+
+            var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
+
+            if (types.Count() == 0)
+                throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
+
+            foreach (var item in types)
+            {
+                if (item != typeof(T))
+                    throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
+
+                var instance = (T)Activator.CreateInstance(item);
+
+                var name = item.Name;
+
+                this.combinedType.Add(name, instance);
+            }
+        }
 
 		/// <summary>
 		/// Создание нового экземпляра класса типа T
@@ -62,50 +75,55 @@ namespace ReflectionIoc
 		/// <returns>Новый экземпляр типа T</returns>
 		public T CreateInstance<T>() 
 		{
-			var types = assembly.GetTypes().Where(x => x == typeof(T)).ToList();
+			var type = typeof(T);
 
-			if (types.Count() == 0)
-				throw new Exception("");
+            if (type == null)
+                throw new Exception($"Такого типа класса не существует");
 
-			T t = default(T);
+            var attributes = type.CustomAttributes;
 
-			foreach (var item in types)
+            foreach(var attribute in attributes)
             {
-				var ctors = item.GetConstructors();
+                if (attribute.AttributeType.Name.IndexOf("ImportConstructor") == -1)
+                    throw new Exception($"У {typeof(T)} нет нужного атрибута");
+            }
 
-				foreach(var ctor in ctors)
+            T t = default(T);
+
+		    var ctors = type.GetConstructors();
+
+            foreach (var ctor in ctors)
+            {
+                var paramsCtor = ctor.GetParameters();
+
+                List<object> listParam = new List<object>();
+
+                foreach (var param in paramsCtor)
                 {
-					var paramsCtor = ctor.GetParameters();
+                    var typesParam = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == param.ParameterType)).ToList();
 
-					List<object> listParam = new List<object>();
-
-					foreach (var param in paramsCtor)
+                    foreach (var typeParam in typesParam)
                     {
-						var typesParam = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == param.ParameterType)).ToList();
+                        foreach (var k in combinedType)
+                        {
+                            if (typeParam.Name == k.Key)
+                            {
+                                listParam.Add(k.Value);
+                            }
+                        }
+                    }
+                }
 
-						foreach(var typeParam in typesParam)
-						{
-							foreach (var k in combinedType)
-							{
-								if (typeParam.Name == k.Key)
-								{
-									listParam.Add(k.Value);
-								}
-							}							
-						}
-					}
+                Object[] arrayParam = new object[listParam.Count];
 
-					Object[] vs = new object[listParam.Count];
+                for (int i = 0; i < arrayParam.Count(); i++)
+                {
+                    arrayParam[i] = listParam[i];
+                }
 
-					for(int i =0; i< vs.Count(); i++)
-                    {
-						vs[i] = listParam[i];
-					}
-
-					t = (T)Activator.CreateInstance(item, vs);
-				}
-			}
-			return t;
+                t = (T)Activator.CreateInstance(type, arrayParam);
+            }
+            return t;
 		}
 	}
 }
