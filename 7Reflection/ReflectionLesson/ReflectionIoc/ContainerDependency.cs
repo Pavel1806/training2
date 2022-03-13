@@ -29,7 +29,7 @@ namespace ReflectionIoc
 			assembly = assembl;
 		}
 
-		/// <summary>
+		/// <summary> // TODO: Некорректный комментарий
 		/// Создание экземпляра класса 
 		/// </summary>
 		/// <typeparam name="T">дочерний класс</typeparam>
@@ -43,10 +43,10 @@ namespace ReflectionIoc
 			if (attributes.Count() == 0)
 				throw new Exception($"У {typeof(T)} нет никаких атрибутов");
 
-			foreach (var attribute in attributes)
+			foreach (var attribute in attributes) // TODO: Можно заменить на выражение Linq
             {
 
-				if (attribute.AttributeType.Name.IndexOf("Export") == -1)
+				if (attribute.AttributeType.Name.IndexOf("Export") == -1) //TODO: В этом случае лучше использовать Contains 
 					throw new Exception($"У {typeof(T)} нет нужного атрибута");
 			}
 
@@ -64,7 +64,14 @@ namespace ReflectionIoc
 
                 var name = item.Name;
 
-                this.combinedType.Add(name, instance);
+                this.combinedType.Add(name, instance); // TODO: Ошибка, инстанс обьекта должен создаваться в момент, когда у контейнера запрашивают его
+                                                       // Например, бывают контейнеры, в ASP .Net Core с этим встретишься, когда есть разные способы внедрения
+                                                       // 1. Singletone - паттерн, когда обьект класса может быть только в единичном экземпляре на всю программу
+                                                       // 2. Для каждого контроллера создаётся свой уникальный обьект
+                                                       // 3. Для каждого запроса создаётся свой уникальный обьект
+                                                       // Описанные выше способы внедрения зависимостей предлагаются ASP .Net Core, но
+                                                       // В целом, суть всегда одна, есть метод маппинга, а есть метод создания инстанса класса
+                                                       // где также создаются обьекты-зависимости.
             }
         }
 
@@ -82,9 +89,9 @@ namespace ReflectionIoc
 
             var attributes = type.CustomAttributes;
 
-            foreach(var attribute in attributes)
+            foreach(var attribute in attributes) // Можно заменить на выражение Linq
             {
-                if (attribute.AttributeType.Name.IndexOf("ImportConstructor") == -1)
+                if (attribute.AttributeType.Name.IndexOf("ImportConstructor") == -1) //TODO: В этом случае лучше использовать Contains 
                     throw new Exception($"У {typeof(T)} нет нужного атрибута");
             }
 
@@ -104,7 +111,7 @@ namespace ReflectionIoc
 
                     foreach (var typeParam in typesParam)
                     {
-                        foreach (var k in combinedType)
+                        foreach (var k in combinedType) // TODO: Описал проблему и почему такой подход неверен в методе выше.
                         {
                             if (typeParam.Name == k.Key)
                             {
