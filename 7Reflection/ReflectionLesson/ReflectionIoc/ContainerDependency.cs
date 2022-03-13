@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,11 +14,11 @@ namespace ReflectionIoc
 	{
 		Assembly assembly;
 
-		Dictionary<string, Object> combinedType;
+		List<string> listClass;
 
 		public ContainerDependency()
         {
-			combinedType = new Dictionary<string, Object>();
+            listClass = new List<string>();
         }
 
 		/// <summary>
@@ -43,13 +44,10 @@ namespace ReflectionIoc
 			if (attributes.Count() == 0)
 				throw new Exception($"У {typeof(T)} нет никаких атрибутов");
 
-			foreach (var attribute in attributes) // TODO: Можно заменить на выражение Linq
-            {
+            var attribute = attributes.Where(x => x.AttributeType.Equals(typeof(ExportAttribute)));
 
-				if (attribute.AttributeType.Name.IndexOf("Export") == -1) //TODO: В этом случае лучше использовать Contains 
-                                                                          // А ещё лучше, для сравнения типов использовать метод Equals
-                    throw new Exception($"У {typeof(T)} нет нужного атрибута");
-			}
+            if (attribute.Count() == 0)
+                throw new Exception($"У {typeof(T)} нет нужного атрибута");
 
             var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
 
@@ -61,18 +59,9 @@ namespace ReflectionIoc
                 if (item != typeof(T))
                     throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
 
-                var instance = (T)Activator.CreateInstance(item);
+                var fname = item.FullName;
 
-                var name = item.Name;
-
-                this.combinedType.Add(name, instance); // TODO: Ошибка, инстанс обьекта должен создаваться в момент, когда у контейнера запрашивают его
-                                                       // Например, бывают контейнеры, в ASP .Net Core с этим встретишься, когда есть разные способы внедрения
-                                                       // 1. Singletone - паттерн, когда обьект класса может быть только в единичном экземпляре на всю программу
-                                                       // 2. Для каждого контроллера создаётся свой уникальный обьект
-                                                       // 3. Для каждого запроса создаётся свой уникальный обьект
-                                                       // Описанные выше способы внедрения зависимостей предлагаются ASP .Net Core, но
-                                                       // В целом, суть всегда одна, есть метод маппинга, а есть метод создания инстанса класса
-                                                       // где также создаются обьекты-зависимости.
+                this.listClass.Add(fname);
             }
         }
 
@@ -90,12 +79,10 @@ namespace ReflectionIoc
 
             var attributes = type.CustomAttributes;
 
-            foreach(var attribute in attributes) // Можно заменить на выражение Linq
-            {
-                if (attribute.AttributeType.Name.IndexOf("ImportConstructor") == -1) //TODO: В этом случае лучше использовать Contains
-                                                                                     // А ещё лучше, для сравнения типов использовать метод Equals
-                    throw new Exception($"У {typeof(T)} нет нужного атрибута");
-            }
+            var attribute = attributes.Where(x => x.AttributeType.Equals(typeof(ImportConstructorAttribute)));
+            
+            if (attribute.Count() == 0)
+                 throw new Exception($"У {typeof(T)} нет нужного атрибута");
 
             T t = default(T);
 
@@ -105,21 +92,21 @@ namespace ReflectionIoc
             {
                 var paramsCtor = ctor.GetParameters();
 
-                List<object> listParam = new List<object>();
-
+                List<string> listParam = new List<string>();
+                
                 foreach (var param in paramsCtor)
                 {
                     var typesParam = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == param.ParameterType)).ToList();
 
                     foreach (var typeParam in typesParam)
                     {
-                        foreach (var k in combinedType) // TODO: Описал проблему и почему такой подход неверен в методе выше.
+                        foreach (var fullNameType in listClass)
                         {
-                            if (typeParam.Name == k.Key)
+                            if (typeParam.FullName == fullNameType)
                             {
-                                listParam.Add(k.Value);
+                                listParam.Add(fullNameType);
                             }
-                        }
+                        } 
                     }
                 }
 
@@ -127,7 +114,11 @@ namespace ReflectionIoc
 
                 for (int i = 0; i < arrayParam.Count(); i++)
                 {
-                    arrayParam[i] = listParam[i];
+                    Type? myType = Type.GetType(listParam[i], false, true);
+
+                    var instance = Activator.CreateInstance(myType);
+
+                    arrayParam[i] = instance;
                 }
 
                 t = (T)Activator.CreateInstance(type, arrayParam);

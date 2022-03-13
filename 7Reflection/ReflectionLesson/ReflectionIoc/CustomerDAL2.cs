@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ReflectionIoc
 {
+    [ImportConstructor]
     class CustomerDAL2
     {
         private ICustomerBLL customerBLL;
