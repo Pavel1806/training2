@@ -47,7 +47,8 @@ namespace ReflectionIoc
             {
 
 				if (attribute.AttributeType.Name.IndexOf("Export") == -1) //TODO: В этом случае лучше использовать Contains 
-					throw new Exception($"У {typeof(T)} нет нужного атрибута");
+                                                                          // А ещё лучше, для сравнения типов использовать метод Equals
+                    throw new Exception($"У {typeof(T)} нет нужного атрибута");
 			}
 
             var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
@@ -91,7 +92,8 @@ namespace ReflectionIoc
 
             foreach(var attribute in attributes) // Можно заменить на выражение Linq
             {
-                if (attribute.AttributeType.Name.IndexOf("ImportConstructor") == -1) //TODO: В этом случае лучше использовать Contains 
+                if (attribute.AttributeType.Name.IndexOf("ImportConstructor") == -1) //TODO: В этом случае лучше использовать Contains
+                                                                                     // А ещё лучше, для сравнения типов использовать метод Equals
                     throw new Exception($"У {typeof(T)} нет нужного атрибута");
             }
 
