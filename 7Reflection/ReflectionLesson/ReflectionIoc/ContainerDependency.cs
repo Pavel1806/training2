@@ -14,9 +14,10 @@ namespace ReflectionIoc
 	{
 		Assembly assembly;
 
-		List<string> listClass;
+		List<string> listClass; // TODO: Нигде не используется
 
-        Dictionary<object, object> dictionaryClass;
+        Dictionary<object, object> dictionaryClass; // TODO: Сигнатура object, object очень опасна для Dictionary
+                                                    // Требуется конкретизировать. 
 
         public ContainerDependency()
         {
@@ -45,22 +46,38 @@ namespace ReflectionIoc
 
 			var attributes = type.CustomAttributes;
 
-			if (attributes.Any(x=>x.AttributeType.FullName.Count() == 0))
-				throw new Exception($"У {typeof(T)} нет никаких атрибутов");
+			if (attributes.Any(x=>x.AttributeType.FullName.Count() == 0)) // TODO: Предлагаю поменять на более понятную проверку через Any()
+                                                                          // А вообще что проверяется в x.AttributeType.FillName.Count()?
+                                                                          // Есть много других оптимальных способов проверки, этот наименее удачный
+                                                                          // Поскольку в зависимости от реализации, Count() может буквально считать все символы
+                                                                          // Хотя вероятно там вызывается string.Length, но всё же, проверка выглядит не очень. :)
+                throw new Exception($"У {typeof(T)} нет никаких атрибутов");
 
             var attribute = attributes.Where(x => x.AttributeType.Equals(typeof(ExportAttribute)));
 
-            if (attribute.Any(x => x.AttributeType.FullName.Count() == 0))
+            if (attribute.Any(x => x.AttributeType.FullName.Count() == 0))// TODO: Предлагаю поменять на более понятную проверку через Any()
+                                                                          // А вообще что проверяется в x.AttributeType.FillName.Count()?
+                                                                          // Есть много других оптимальных способов проверки, этот наименее удачный
+                                                                          // Поскольку в зависимости от реализации, Count() может буквально считать все символы
+                                                                          // Хотя вероятно там вызывается string.Length, но всё же, проверка выглядит не очень. :)
                 throw new Exception($"У {typeof(T)} нет нужного атрибута");
 
             var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V)));
             
-            if (types.Any(x => x.Name.Count() == 0))
+            if (types.Any(x => x.Name.Count() == 0))// TODO: Предлагаю поменять на более понятную проверку через Any()
+                                                    // А вообще что проверяется в x.AttributeType.FillName.Count()?
+                                                    // Есть много других оптимальных способов проверки, этот наименее удачный
+                                                    // Поскольку в зависимости от реализации, Count() может буквально считать все символы
+                                                    // Хотя вероятно там вызывается string.Length, но всё же, проверка выглядит не очень. :)
                 throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
 
             var type1 = types.Where(x => x.Equals(typeof(T)));
 
-            if (type1.Any(x=>x.Name.Count() == 0))
+            if (type1.Any(x=>x.Name.Count() == 0))// TODO: Предлагаю поменять на более понятную проверку через Any()
+                                                  // А вообще что проверяется в x.AttributeType.FillName.Count()?
+                                                  // Есть много других оптимальных способов проверки, этот наименее удачный
+                                                  // Поскольку в зависимости от реализации, Count() может буквально считать все символы
+                                                  // Хотя вероятно там вызывается string.Length, но всё же, проверка выглядит не очень. :)
                 throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
 
             dictionaryClass.Add(typeof(T), typeof(V));            
