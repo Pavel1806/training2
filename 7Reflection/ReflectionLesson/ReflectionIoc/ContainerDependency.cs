@@ -16,16 +16,20 @@ namespace ReflectionIoc
 
 		List<string> listClass;
 
-		public ContainerDependency()
+        Dictionary<object, object> dictionaryClass;
+
+        public ContainerDependency()
         {
             listClass = new List<string>();
+            dictionaryClass = new Dictionary<object, object>();
         }
+        
 
-		/// <summary>
-		/// Инициализация нового экземпляра класса Assembly
-		/// </summary>
-		/// <param name="assembl"></param>
-		public void SetAssembly(Assembly assembl) 										 
+        /// <summary>
+        /// Инициализация нового экземпляра класса Assembly
+        /// </summary>
+        /// <param name="assembl"></param>
+        public void SetAssembly(Assembly assembl) 										 
 		{
 			assembly = assembl;
 		}
@@ -41,28 +45,25 @@ namespace ReflectionIoc
 
 			var attributes = type.CustomAttributes;
 
-			if (attributes.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
+			if (attributes.Any(x=>x.AttributeType.FullName.Count() == 0))
 				throw new Exception($"У {typeof(T)} нет никаких атрибутов");
 
             var attribute = attributes.Where(x => x.AttributeType.Equals(typeof(ExportAttribute)));
 
-            if (attribute.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
+            if (attribute.Any(x => x.AttributeType.FullName.Count() == 0))
                 throw new Exception($"У {typeof(T)} нет нужного атрибута");
 
-            var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
-
-            if (types.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
+            var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V)));
+            
+            if (types.Any(x => x.Name.Count() == 0))
                 throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
 
-            foreach (var item in types)
-            {
-                if (item != typeof(T))
-                    throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
+            var type1 = types.Where(x => x.Equals(typeof(T)));
 
-                var fname = item.FullName;
+            if (type1.Any(x=>x.Name.Count() == 0))
+                throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
 
-                this.listClass.Add(fname); // TODO: Придумать как добавлять маппинг (key, value пара например) T на V
-            }
+            dictionaryClass.Add(typeof(T), typeof(V));            
         }
 
 		/// <summary>
@@ -92,7 +93,7 @@ namespace ReflectionIoc
             {
                 var paramsCtor = ctor.GetParameters();
 
-                List<string> listParam = new List<string>();
+                List<object> listParam = new List<object>();
                 
                 foreach (var param in paramsCtor)
                 {
@@ -100,11 +101,13 @@ namespace ReflectionIoc
 
                     foreach (var typeParam in typesParam)
                     {
-                        foreach (var fullNameType in listClass)
+                        foreach (var nameType in dictionaryClass)
                         {
-                            if (typeParam.FullName == fullNameType)
+                            var name = Type.GetType(nameType.Key.ToString(), false, true).Name;
+
+                            if (typeParam.Name == name)
                             {
-                                listParam.Add(fullNameType);
+                                listParam.Add(nameType.Key);
                             }
                         } 
                     }
@@ -114,7 +117,7 @@ namespace ReflectionIoc
 
                 for (int i = 0; i < arrayParam.Count(); i++)
                 {
-                    Type? myType = Type.GetType(listParam[i], false, true);
+                    Type? myType = Type.GetType(listParam[i].ToString(), false, true);
 
                     var instance = Activator.CreateInstance(myType);
 
