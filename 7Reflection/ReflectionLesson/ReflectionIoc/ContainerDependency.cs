@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using AutoMapper; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,17 +41,17 @@ namespace ReflectionIoc
 
 			var attributes = type.CustomAttributes;
 
-			if (attributes.Count() == 0)
+			if (attributes.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
 				throw new Exception($"У {typeof(T)} нет никаких атрибутов");
 
             var attribute = attributes.Where(x => x.AttributeType.Equals(typeof(ExportAttribute)));
 
-            if (attribute.Count() == 0)
+            if (attribute.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
                 throw new Exception($"У {typeof(T)} нет нужного атрибута");
 
             var types = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(t => t == typeof(V))).ToList();
 
-            if (types.Count() == 0)
+            if (types.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
                 throw new Exception($"{typeof(T)} не реализует {typeof(V)}");
 
             foreach (var item in types)
@@ -61,7 +61,7 @@ namespace ReflectionIoc
 
                 var fname = item.FullName;
 
-                this.listClass.Add(fname);
+                this.listClass.Add(fname); // TODO: Придумать как добавлять маппинг (key, value пара например) T на V
             }
         }
 
@@ -81,8 +81,8 @@ namespace ReflectionIoc
 
             var attribute = attributes.Where(x => x.AttributeType.Equals(typeof(ImportConstructorAttribute)));
             
-            if (attribute.Count() == 0)
-                 throw new Exception($"У {typeof(T)} нет нужного атрибута");
+            if (attribute.Count() == 0) // TODO: Предлагаю поменять на более понятную проверку через Any()
+                throw new Exception($"У {typeof(T)} нет нужного атрибута");
 
             T t = default(T);
 
