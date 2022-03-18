@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 
@@ -12,26 +13,7 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
         
         public void WriteXML() // Отсутсвуют комментарии
         {
-            List<Book> books = new List<Book>() // TODO: Почему здесь происходит инициализация сущностей которые будут записаны в XML?
-                                                // Класс несущий ответственность за запись никак не должен быть ответственнен за инициализацию сущностей.
-            {
-                new Book()
-                {City = "Москва", Title = "Война и мир", NumberPages = 123, Isbn = "978-5-699-12014-7", Note ="Осталось 2 шт.", 
-                    Publisher="Литрес", YearPublication = 1856, Author = new Author{ Name = "Лев", SerName="Толстой"} },
-            };
-
-            List<Newspaper> newspapers = new List<Newspaper>()
-            {
-                new Newspaper(){ Title = "Труд", City="Москва", Isbn="978-5-699-27290-7", Date = DateTime.Now, Number = 5, 
-                    NumberPages = 245, Note="Тираж 5000", Publisher="Московский комсомолец", YearPublication = 2020}
-            };
-
-            List<Patent> patents = new List<Patent>() 
-            { 
-                new Patent() 
-                {Title="Окно", Country = "Россия", DateApplicationSubmission = DateTime.Now, DatePublication= DateTime.Now, NumberPages=3489, 
-                    RegistrationNumber=5, Note="Продлен до 2025 года", Deviser=new Deviser(){ Name="Александр", SerName="Александров"} } 
-            };
+            DataSource dataSource = new DataSource();
 
             XmlWriterSettings settings = new XmlWriterSettings();
 
@@ -41,10 +23,8 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
             writer.WriteStartElement("catalog");
 
-            foreach (var book in books) // TODO: Ручной подход к инициализации XML для сущности в этом случае некорректен
-                                        // Необходимо переделать
+            foreach (var book in dataSource.Books) 
             {
-
                 writer.WriteStartElement("book");
 
                 writer.WriteAttributeString("title", book.Title);
@@ -99,10 +79,8 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
                
             }
 
-            foreach (var newspaper in newspapers) // TODO: Ручной подход к инициализации XML для сущности в этом случае некорректен
-                                                 // Необходимо переделать
+            foreach (var newspaper in dataSource.Newspapers) 
             {
-
                 writer.WriteStartElement("newspaper");
 
                 writer.WriteAttributeString("title", newspaper.Title);
@@ -141,10 +119,8 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
             }
 
-            foreach (var patent in patents) // TODO: Ручной подход к инициализации XML для сущности в этом случае некорректен
-                                           // Необходимо переделать
+            foreach (var patent in dataSource.Patents)
             {
-
                 writer.WriteStartElement("patent");
 
                 writer.WriteAttributeString("title", patent.Title);
@@ -196,13 +172,112 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
-
             }
 
             writer.WriteEndElement();
             writer.Flush();
             writer.Close();
+        }
 
+       public void ReadXML()
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+
+            settings.IgnoreComments = true;
+
+            settings.IgnoreWhitespace = true;
+
+            XmlReader reader = XmlReader.Create("Trial.xml", settings);
+
+            reader.ReadToFollowing("catalog");
+
+            while (true)
+            {
+                reader.ReadToDescendant("book");
+
+                var i = reader.GetAttribute("title");
+
+                Console.WriteLine(i);
+
+                var t = reader.ReadToDescendant("City");
+
+                var u = reader.ReadElementContentAsString();
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                //reader.ReadToNextSibling("Author");
+
+                reader.ReadToDescendant("Name");
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                reader.ReadEndElement();
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                reader.ReadEndElement();
+
+                if (reader.LocalName != "book")
+                    break;
+            }
+
+            while(true)
+            {
+                Console.WriteLine(reader.GetAttribute("title"));
+
+                reader.ReadToDescendant("City");
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                reader.ReadEndElement();
+
+                if (reader.LocalName != "newspaper")
+                    break;
+            }
+
+            while (true)
+             {
+                Console.WriteLine(reader.GetAttribute("title"));
+
+                reader.ReadToDescendant("Country");
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                reader.ReadToDescendant("Name");
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                reader.ReadEndElement();
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                Console.WriteLine(reader.ReadElementContentAsString());
+
+                reader.ReadEndElement();
+
+                if (reader.LocalName != "patent")
+                    break;
+            }
         }
     }
 }
