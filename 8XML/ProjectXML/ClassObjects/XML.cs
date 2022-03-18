@@ -51,6 +51,40 @@ namespace ClassObjects
 
                 writer.WriteEndElement();
 
+                writer.WriteStartElement("Isbn");
+
+                writer.WriteString(book.Isbn);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Note");
+
+                writer.WriteString(book.Note);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Author");
+
+                writer.WriteStartElement("Name");
+
+                writer.WriteString(book.Author.Name);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Sernamw");
+
+                writer.WriteString(book.Author.SerName);
+
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Publisher");
+
+                writer.WriteString(book.Publisher);
+
+                writer.WriteEndElement();
+
                 writer.WriteStartElement("NumberPages");
 
                 writer.WriteString(book.NumberPages.ToString());
@@ -71,6 +105,24 @@ namespace ClassObjects
                 writer.WriteStartElement("City");
 
                 writer.WriteString(newspaper.City);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Isbn");
+
+                writer.WriteString(newspaper.Isbn);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Number");
+
+                writer.WriteString(newspaper.Number.ToString());
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("YearPublication");
+
+                writer.WriteString(newspaper.YearPublication.ToString());
 
                 writer.WriteEndElement();
 
