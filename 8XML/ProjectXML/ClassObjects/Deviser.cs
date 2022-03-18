@@ -6,7 +6,7 @@ namespace ClassObjects
 {
     class Deviser
     {
-        string Name { get; set; }
-        string SerName { get; set; }
+        public string Name { get; set; }
+        public string SerName { get; set; }
     }
 }

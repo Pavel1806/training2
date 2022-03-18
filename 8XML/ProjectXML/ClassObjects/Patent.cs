@@ -6,13 +6,13 @@ namespace ClassObjects
 {
     class Patent
     {
-        string Title { get; set; }
-        Deviser Deviser { get; set; }
-        string Country { get; set; }
-        int RegistrationNumber { get; set; }
-        DateTime DateApplicationSubmission { get; set; }
-        DateTime DatePublication { get; set; }
-        int NumberPages { get; set; }
-        string Note { get; set; }
+        public string Title { get; set; }
+        public Deviser Deviser { get; set; }
+        public string Country { get; set; }
+        public int RegistrationNumber { get; set; }
+        public DateTime DateApplicationSubmission { get; set; }
+        public DateTime DatePublication { get; set; }
+        public int NumberPages { get; set; }
+        public string Note { get; set; }
     }
 }

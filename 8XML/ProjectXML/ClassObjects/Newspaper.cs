@@ -6,14 +6,14 @@ namespace ClassObjects
 {
     class Newspaper
     {
-        string Title { get; set; }
-        string City { get; set; }
-        string Publisher { get; set; }
-        int YearPublication { get; set; }
-        int NumberPages { get; set; }
-        string Note { get; set; }
-        int Number { get; set; }
-        DateTime Date { get; set; }
-        string Isbn { get; set; }
+       public string Title { get; set; }
+        public string City { get; set; }
+        public string Publisher { get; set; }
+        public int YearPublication { get; set; }
+        public int NumberPages { get; set; }
+        public string Note { get; set; }
+        public int Number { get; set; }
+        public DateTime Date { get; set; }
+        public string Isbn { get; set; }
     }
 }

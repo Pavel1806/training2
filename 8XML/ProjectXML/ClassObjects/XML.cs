@@ -10,10 +10,24 @@ namespace ClassObjects
         
         public void WriteXML()
         {
-            List<Book> Books = new List<Book>()
+            List<Book> books = new List<Book>()
             {
-                new Book(){City = "Москва", Title = "Война и мир", NumberPages = 123 },
-                new Book(){City = "Питер", Title = "Отцы и дети", NumberPages = 376 }
+                new Book()
+                {City = "Москва", Title = "Война и мир", NumberPages = 123, Isbn = "978-5-699-12014-7", Note ="Осталось 2 шт.", 
+                    Publisher="Литрес", YearPublication = 1856, Author = new Author{ Name = "Лев", SerName="Толстой"} },
+            };
+
+            List<Newspaper> newspapers = new List<Newspaper>()
+            {
+                new Newspaper(){ Title = "Труд", City="Москва", Isbn="978-5-699-27290-7", Date = DateTime.Now, Number = 5, 
+                    NumberPages = 245, Note="Тираж 5000", Publisher="Московский комсомолец", YearPublication = 2020}
+            };
+
+            List<Patent> patents = new List<Patent>() 
+            { 
+                new Patent() 
+                {Title="Окно", Country = "Россия", DateApplicationSubmission = DateTime.Now, DatePublication= DateTime.Now, NumberPages=3489, 
+                    RegistrationNumber=5, Note="Продлен до 2025 года", Deviser=new Deviser(){ Name="Александр", SerName="Александров"} } 
             };
 
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -22,30 +36,109 @@ namespace ClassObjects
 
             XmlWriter writer = XmlWriter.Create("Trial.xml", settings);
 
-            writer.WriteStartElement("books");
+            writer.WriteStartElement("catalog");
 
-            foreach (var item in Books)
+            foreach (var book in books)
             {
 
                 writer.WriteStartElement("book");
 
-                writer.WriteAttributeString("title",item.Title);
-                //writer.WriteString(item.Title);
+                writer.WriteAttributeString("title", book.Title);
 
                 writer.WriteStartElement("City");
 
-                writer.WriteString(item.City);
+                writer.WriteString(book.City);
 
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("NumberPages");
 
-                writer.WriteString(item.NumberPages.ToString());
+                writer.WriteString(book.NumberPages.ToString());
 
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
                
+            }
+
+            foreach (var newspaper in newspapers)
+            {
+
+                writer.WriteStartElement("newspaper");
+
+                writer.WriteAttributeString("title", newspaper.Title);
+
+                writer.WriteStartElement("City");
+
+                writer.WriteString(newspaper.City);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("NumberPages");
+
+                writer.WriteString(newspaper.NumberPages.ToString());
+
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+
+            }
+
+            foreach (var patent in patents)
+            {
+
+                writer.WriteStartElement("patent");
+
+                writer.WriteAttributeString("title", patent.Title);
+
+                writer.WriteStartElement("Country");
+
+                writer.WriteString(patent.Country);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("DateApplicationSubmission");
+
+                writer.WriteString(patent.DateApplicationSubmission.ToString());
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("RegistrationNumber");
+
+                writer.WriteString(patent.RegistrationNumber.ToString());
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Deviser");
+
+                writer.WriteStartElement("Name");
+
+                writer.WriteString(patent.Deviser.Name);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("SerName");
+
+                writer.WriteString(patent.Deviser.SerName);
+
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("Note");
+
+                writer.WriteString(patent.Note);
+
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("NumberPages");
+
+                writer.WriteString(patent.NumberPages.ToString());
+
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+
             }
 
             writer.WriteEndElement();
