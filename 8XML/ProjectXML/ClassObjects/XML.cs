@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace ClassObjects
+namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чём не говорит. Необходимо переделать.
 {
-    public class XML
+    public class XML // TODO: Ни о чём не говорящее название, отсутсвуют комментарии
+                    // TODO: В классе отсутствует метод чтения
+                    // TODO: В проекте нет ничего определяющего конкретный формат для XML и никаких валидаций читаемого XML соответственно.
     {
         
-        public void WriteXML()
+        public void WriteXML() // Отсутсвуют комментарии
         {
-            List<Book> books = new List<Book>()
+            List<Book> books = new List<Book>() // TODO: Почему здесь происходит инициализация сущностей которые будут записаны в XML?
+                                                // Класс несущий ответственность за запись никак не должен быть ответственнен за инициализацию сущностей.
             {
                 new Book()
                 {City = "Москва", Title = "Война и мир", NumberPages = 123, Isbn = "978-5-699-12014-7", Note ="Осталось 2 шт.", 
@@ -38,7 +41,8 @@ namespace ClassObjects
 
             writer.WriteStartElement("catalog");
 
-            foreach (var book in books)
+            foreach (var book in books) // TODO: Ручной подход к инициализации XML для сущности в этом случае некорректен
+                                        // Необходимо переделать
             {
 
                 writer.WriteStartElement("book");
@@ -95,7 +99,8 @@ namespace ClassObjects
                
             }
 
-            foreach (var newspaper in newspapers)
+            foreach (var newspaper in newspapers) // TODO: Ручной подход к инициализации XML для сущности в этом случае некорректен
+                                                 // Необходимо переделать
             {
 
                 writer.WriteStartElement("newspaper");
@@ -136,7 +141,8 @@ namespace ClassObjects
 
             }
 
-            foreach (var patent in patents)
+            foreach (var patent in patents) // TODO: Ручной подход к инициализации XML для сущности в этом случае некорректен
+                                           // Необходимо переделать
             {
 
                 writer.WriteStartElement("patent");
