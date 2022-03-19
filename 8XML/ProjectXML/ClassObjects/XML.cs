@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -19,7 +20,9 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
             settings.Indent = true;
 
-            XmlWriter writer = XmlWriter.Create("Trial.xml", settings);
+            StreamWriter streamWriter = new StreamWriter("Trial.xml", false);
+
+            XmlWriter writer = XmlWriter.Create(streamWriter, settings);
 
             writer.WriteStartElement("catalog");
 
@@ -75,8 +78,7 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
                 writer.WriteEndElement();
 
-                writer.WriteEndElement();
-               
+                writer.WriteEndElement();              
             }
 
             foreach (var newspaper in dataSource.Newspapers) 
@@ -116,7 +118,6 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
                 writer.WriteEndElement();
 
                 writer.WriteEndElement();
-
             }
 
             foreach (var patent in dataSource.Patents)
@@ -133,7 +134,7 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
                 writer.WriteStartElement("DateApplicationSubmission");
 
-                writer.WriteString(patent.DateApplicationSubmission.ToString());
+                writer.WriteValue(patent.DateApplicationSubmission);
 
                 writer.WriteEndElement();
 
@@ -177,6 +178,8 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
             writer.WriteEndElement();
             writer.Flush();
             writer.Close();
+
+            streamWriter.Close();
         }
 
        public void ReadXML()
@@ -187,41 +190,50 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
             settings.IgnoreWhitespace = true;
 
-            XmlReader reader = XmlReader.Create("Trial.xml", settings);
+            List<Book> books = new List<Book>();
+            List<Newspaper> newspapers = new List<Newspaper>();
+            List<Patent> patents = new List<Patent>();
+
+            StreamReader streamReader = new StreamReader("Trial.xml");
+
+            XmlReader reader = XmlReader.Create(streamReader, settings);
 
             reader.ReadToFollowing("catalog");
 
             while (true)
             {
-                reader.ReadToDescendant("book");
+                Author author = new Author();
 
-                var i = reader.GetAttribute("title");
+                Book book = new Book() { Author = author};
 
-                Console.WriteLine(i);
+                if (reader.LocalName != "book")
+                    reader.ReadToDescendant("book");
+                
+                book.Title = reader.GetAttribute("title");
 
-                var t = reader.ReadToDescendant("City");
+                reader.ReadToDescendant("City");
 
-                var u = reader.ReadElementContentAsString();
+                book.City = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                book.Isbn = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
-
-                //reader.ReadToNextSibling("Author");
+                book.Note = reader.ReadElementContentAsString();
 
                 reader.ReadToDescendant("Name");
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                author.Name = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                author.SerName = reader.ReadElementContentAsString();
+
+                reader.ReadEndElement();
+
+                book.Publisher = reader.ReadElementContentAsString();
+
+                book.NumberPages = reader.ReadElementContentAsInt();
 
                 reader.ReadEndElement();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
-
-                Console.WriteLine(reader.ReadElementContentAsString());
-
-                reader.ReadEndElement();
+                books.Add(book);
 
                 if (reader.LocalName != "book")
                     break;
@@ -229,21 +241,25 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
             while(true)
             {
-                Console.WriteLine(reader.GetAttribute("title"));
+                Newspaper newspaper = new Newspaper();
+
+                newspaper.Title = reader.GetAttribute("title");
 
                 reader.ReadToDescendant("City");
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                newspaper.City = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                newspaper.Isbn = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                newspaper.Number = reader.ReadElementContentAsInt();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                newspaper.YearPublication = reader.ReadElementContentAsInt();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                newspaper.NumberPages = reader.ReadElementContentAsInt();
 
                 reader.ReadEndElement();
+
+                newspapers.Add(newspaper);
 
                 if (reader.LocalName != "newspaper")
                     break;
@@ -251,33 +267,43 @@ namespace ClassObjects // TODO: Имя проекта "ClassObject" ни о чё
 
             while (true)
              {
-                Console.WriteLine(reader.GetAttribute("title"));
+
+                Deviser deviser = new Deviser();
+
+                Patent patent = new Patent() { Deviser = deviser };
+
+                patent.Title = reader.GetAttribute("title");
 
                 reader.ReadToDescendant("Country");
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                patent.Country = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                patent.DateApplicationSubmission = reader.ReadElementContentAsDateTime();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                patent.RegistrationNumber = reader.ReadElementContentAsInt();
 
                 reader.ReadToDescendant("Name");
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                deviser.Name = reader.ReadElementContentAsString();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
+                deviser.SerName = reader.ReadElementContentAsString();
+
+                reader.ReadEndElement();
+
+                patent.Note= reader.ReadElementContentAsString();
+
+                patent.NumberPages = reader.ReadElementContentAsInt();
 
                 reader.ReadEndElement();
 
-                Console.WriteLine(reader.ReadElementContentAsString());
-
-                Console.WriteLine(reader.ReadElementContentAsString());
-
-                reader.ReadEndElement();
+                patents.Add(patent);
 
                 if (reader.LocalName != "patent")
                     break;
             }
+
+            reader.Close();
+            streamReader.Close();
         }
     }
 }

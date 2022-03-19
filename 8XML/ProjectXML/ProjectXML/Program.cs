@@ -10,7 +10,7 @@ namespace ProjectXML
                                         // Никакого консольного приложения не нужно.
         {
             XML xml = new XML();
-            //xml.WriteXML();
+            xml.WriteXML();
             xml.ReadXML();
         }
     }
