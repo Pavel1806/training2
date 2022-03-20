@@ -5,14 +5,13 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 
-namespace LessonXml // TODO: Имя проекта "ClassObject" ни о чём не говорит. Необходимо переделать.
+namespace LessonXml
 {
-    public class ProcessingXML // TODO: Ни о чём не говорящее название, отсутсвуют комментарии
-                               // TODO: В классе отсутствует метод чтения
-                               // TODO: В проекте нет ничего определяющего конкретный формат для XML и никаких валидаций читаемого XML соответственно.
+    public class ProcessingXML 
     {
         object lockerWrite = new object();
         object lockerRead = new object();
+
         public void WriteXML() // Отсутсвуют комментарии
         {
             lock (lockerWrite)
