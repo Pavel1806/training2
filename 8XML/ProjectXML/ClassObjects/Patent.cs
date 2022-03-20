@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClassObjects
+namespace LessonXml
 {
     //TODO: Комментарии ко всем классам и публичным свойствам
     //TODO: Сущности можно перенести в отдельную папку со своим namespace'ом, проект выглядит как каша 
-    class Patent
+    public class Patent
     {
         public string Title { get; set; }
         public Deviser Deviser { get; set; }
@@ -16,5 +16,10 @@ namespace ClassObjects
         public DateTime DatePublication { get; set; }
         public int NumberPages { get; set; }
         public string Note { get; set; }
+
+        public Patent(string title)
+        {
+            Title = title;
+        }
     }
 }

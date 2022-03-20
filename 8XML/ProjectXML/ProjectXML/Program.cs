@@ -1,4 +1,4 @@
-﻿using ClassObjects;
+﻿using LessonXml;
 using System;
 
 
@@ -9,9 +9,24 @@ namespace ProjectXML
         static void Main(string[] args) // TODO: В условиях задачи есть требование к написанию библиотеки и тестов к ней.
                                         // Никакого консольного приложения не нужно.
         {
-            XML xml = new XML();
+            ProcessingXML xml = new ProcessingXML();
             xml.WriteXML();
-            xml.ReadXML();
+
+            foreach (var item in xml.ReadXmlBook())
+            {
+                Console.WriteLine(item.Title);
+            }
+
+            foreach (var item in xml.ReadXmlNewspaper())
+            {
+                Console.WriteLine(item.Title);
+            }
+
+            foreach (var item in xml.ReadXmlPatent())
+            {
+                Console.WriteLine(item.Title);
+            }
+
         }
     }
 }

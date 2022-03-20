@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassObjects\ClassObjects.csproj" />
+    <ProjectReference Include="..\ClassObjects\LessonXml.csproj" />
   </ItemGroup>
 
 </Project>

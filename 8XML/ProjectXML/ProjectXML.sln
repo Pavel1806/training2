@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectXML", "ProjectXML\ProjectXML.csproj", "{18DCA6F7-73E9-466C-BC12-DB8E61829212}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectXML", "ProjectXML\ProjectXML.csproj", "{18DCA6F7-73E9-466C-BC12-DB8E61829212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassObjects", "ClassObjects\ClassObjects.csproj", "{AE91EFC9-D68B-49C5-B6F0-9A162B2293CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LessonXml", "ClassObjects\LessonXml.csproj", "{AE91EFC9-D68B-49C5-B6F0-9A162B2293CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
