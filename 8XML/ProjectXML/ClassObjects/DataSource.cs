@@ -10,6 +10,9 @@ namespace LessonXml
 		private List<Newspaper> newspapers;
 		private List<Patent> patents;
 
+		/// <summary>
+		/// База данных книг
+		/// </summary>
 		public List<Book> Books
 		{
 			get
@@ -20,7 +23,9 @@ namespace LessonXml
 				return books;
 			}
 		}
-
+		/// <summary>
+		/// База данных газет
+		/// </summary>
 		public List<Newspaper> Newspapers
 		{
 			get
@@ -31,7 +36,9 @@ namespace LessonXml
 				return newspapers;
 			}
 		}
-
+		/// <summary>
+		/// База данных патентов
+		/// </summary>
 		public List<Patent> Patents
 		{
 			get

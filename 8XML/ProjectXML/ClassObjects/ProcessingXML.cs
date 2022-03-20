@@ -7,11 +7,17 @@ using System.Xml;
 
 namespace LessonXml
 {
+    /// <summary>
+    /// Класс обработки XML
+    /// </summary>
     public class ProcessingXML 
     {
-        object lockerWrite = new object();
-        object lockerRead = new object();
+        private object lockerWrite = new object();
+        private object lockerRead = new object();
 
+        /// <summary>
+        /// Метод для записи в данных в XML
+        /// </summary>
         public void WriteXML() // Отсутсвуют комментарии
         {
             lock (lockerWrite)
@@ -203,6 +209,10 @@ namespace LessonXml
             }
         }
 
+        /// <summary>
+        /// Метод для чтения объектов Book из XML
+        /// </summary>
+        /// <returns>Объект Book</returns>
         public IEnumerable<Book> ReadXmlBook()
         {
             lock (lockerRead)
@@ -262,7 +272,10 @@ namespace LessonXml
                 streamReader.Close();
             }          
         }
-
+        /// <summary>
+        /// Метод для чтения объектов Newspaper из XML
+        /// </summary>
+        /// <returns>Объект Newspaper</returns>
         public IEnumerable<Newspaper> ReadXmlNewspaper()
         {
             lock(lockerRead)
@@ -312,7 +325,10 @@ namespace LessonXml
                 streamReader.Close();
             }
         }
-
+        /// <summary>
+        /// Метод для чтения объектов Patent из XML
+        /// </summary>
+        /// <returns>Объект Patent</returns>
         public IEnumerable<Patent> ReadXmlPatent()
         {
             lock (lockerRead)
