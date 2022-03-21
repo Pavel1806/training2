@@ -7,7 +7,7 @@ namespace LessonXml
    /// <summary>
    /// Модель газета
    /// </summary>
-    public class Newspaper
+    public class Newspaper // TODO: Пробел между свойством и комментарием сделать красивее :)
     {
         /// <summary>
         /// Название газеты

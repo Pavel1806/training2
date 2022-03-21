@@ -7,7 +7,7 @@ namespace LessonXml
    /// <summary>
    /// Модель патент
    /// </summary>
-    public class Patent
+    public class Patent // TODO: Пробел между свойством и комментарием сделать красивее :)
     {
         /// <summary>
         /// Название патента

@@ -4,13 +4,13 @@ using System.Text;
 
 namespace LessonXml
 {
-    class DataSource
+    class DataSource // TODO: Необходим комментарий к классу
     {
 		private List<Book> books;
 		private List<Newspaper> newspapers;
 		private List<Patent> patents;
 
-		/// <summary>
+		/// <summary> // TODO: Некорректный комментарий, это не база данных, а коллекция
 		/// База данных книг
 		/// </summary>
 		public List<Book> Books
@@ -23,7 +23,7 @@ namespace LessonXml
 				return books;
 			}
 		}
-		/// <summary>
+		/// <summary> // TODO: Некорректный комментарий, это не база данных, а коллекция
 		/// База данных газет
 		/// </summary>
 		public List<Newspaper> Newspapers
@@ -36,7 +36,7 @@ namespace LessonXml
 				return newspapers;
 			}
 		}
-		/// <summary>
+		/// <summary> // TODO: Некорректный комментарий, это не база данных, а коллекция
 		/// База данных патентов
 		/// </summary>
 		public List<Patent> Patents
@@ -50,7 +50,9 @@ namespace LessonXml
 			}
 		}
 
-		void createLists()
+		void createLists() // TODO: Нарушен стиль написания имени метода.
+							// TODO: Предлагаю разбить этот метод на 3 отдельных метода
+							// Для каждого типа сущности отдельно
         {
 			books = new List<Book>()
 			{

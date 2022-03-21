@@ -28,7 +28,9 @@ namespace LessonXml
 
                 settings.Indent = true;
 
-                StreamWriter streamWriter = new StreamWriter("Trial.xml", false);
+                StreamWriter streamWriter = new StreamWriter("Trial.xml", false); // TODO: Привязка к конкретному потоку, по условиям задачи
+                                                                                  // "Рекомендуется не привязываться к тому, что источником могут быть
+                                                                                  // только файлы, вместо них используйте произвольные потоки"
 
                 XmlWriter writer = XmlWriter.Create(streamWriter, settings);
 
@@ -50,7 +52,8 @@ namespace LessonXml
 
                 writer.WriteEndAttribute();
 
-                foreach (var book in dataSource.Books)
+                foreach (var book in dataSource.Books) // TODO: Сделать отдельный метод для записи сущности книги в XML
+                                                       // Код трудно читаем
                 {
                     writer.WriteStartElement("book");
 
@@ -105,7 +108,8 @@ namespace LessonXml
                     writer.WriteEndElement();
                 }
 
-                foreach (var newspaper in dataSource.Newspapers)
+                foreach (var newspaper in dataSource.Newspapers) // TODO: Сделать отдельный метод для записи сущности газеты в XML
+                                                                 // Код трудно читаем
                 {
                     writer.WriteStartElement("newspaper");
 
@@ -144,7 +148,8 @@ namespace LessonXml
                     writer.WriteEndElement();
                 }
 
-                foreach (var patent in dataSource.Patents)
+                foreach (var patent in dataSource.Patents) // TODO: Сделать отдельный метод для записи сущности патента в XML
+                                                            // Код трудно читаем
                 {
                     writer.WriteStartElement("patent");
 
@@ -213,7 +218,7 @@ namespace LessonXml
         /// Метод для чтения объектов Book из XML
         /// </summary>
         /// <returns>Объект Book</returns>
-        public IEnumerable<Book> ReadXmlBook()
+        public IEnumerable<Book> ReadXmlBook() // TODO: Во всех методах чтения нет валидации формата
         {
             lock (lockerRead)
             {
@@ -223,7 +228,9 @@ namespace LessonXml
 
                 settings.IgnoreWhitespace = true;
 
-                StreamReader streamReader = new StreamReader("Trial.xml");
+                StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
+                                                                           // "Рекомендуется не привязываться к тому, что источником могут быть
+                                                                           // только файлы, вместо них используйте произвольные потоки"
 
                 XmlReader reader = XmlReader.Create(streamReader, settings);
 
@@ -276,7 +283,7 @@ namespace LessonXml
         /// Метод для чтения объектов Newspaper из XML
         /// </summary>
         /// <returns>Объект Newspaper</returns>
-        public IEnumerable<Newspaper> ReadXmlNewspaper()
+        public IEnumerable<Newspaper> ReadXmlNewspaper() // TODO: Во всех методах чтения нет валидации формата
         {
             lock(lockerRead)
             {
@@ -286,7 +293,9 @@ namespace LessonXml
 
                 settings.IgnoreWhitespace = true;
 
-                StreamReader streamReader = new StreamReader("Trial.xml");
+                StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
+                                                                           // "Рекомендуется не привязываться к тому, что источником могут быть
+                                                                           // только файлы, вместо них используйте произвольные потоки"
 
                 XmlReader reader = XmlReader.Create(streamReader, settings);
 
@@ -329,7 +338,7 @@ namespace LessonXml
         /// Метод для чтения объектов Patent из XML
         /// </summary>
         /// <returns>Объект Patent</returns>
-        public IEnumerable<Patent> ReadXmlPatent()
+        public IEnumerable<Patent> ReadXmlPatent() // TODO: Во всех методах чтения нет валидации формата
         {
             lock (lockerRead)
             {
@@ -339,7 +348,9 @@ namespace LessonXml
 
                 settings.IgnoreWhitespace = true;
 
-                StreamReader streamReader = new StreamReader("Trial.xml");
+                StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
+                                                                           // "Рекомендуется не привязываться к тому, что источником могут быть
+                                                                           // только файлы, вместо них используйте произвольные потоки"
 
                 XmlReader reader = XmlReader.Create(streamReader, settings);
 
