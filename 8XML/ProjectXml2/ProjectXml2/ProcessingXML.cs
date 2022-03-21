@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ProjectXml2.Model;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Xml;
 
-namespace LessonXml
+
+namespace ProjectXml2
 {
     /// <summary>
     /// Класс обработки XML
@@ -13,6 +16,7 @@ namespace LessonXml
     {
         private object lockerWrite = new object();
         private object lockerRead = new object();
+
 
         /// <summary>
         /// Метод для записи в данных в XML
@@ -400,4 +404,3 @@ namespace LessonXml
         }
     }
 }
-

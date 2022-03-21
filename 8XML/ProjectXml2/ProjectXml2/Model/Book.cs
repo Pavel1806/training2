@@ -2,51 +2,53 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LessonXml
+namespace ProjectXml2.Model
 {
     /// <summary>
-    /// Модель газета
+    /// Модель книга
     /// </summary>
-    public class Newspaper // TODO: Пробел между свойством и комментарием сделать красивее :)
+    public class Book
     {
         /// <summary>
-        /// Название газеты
+        /// Название книги
         /// </summary>
-       public string Title { get; set; }
+        public string Title { get; set; }
+        /// <summary>
+        /// Автор
+        /// </summary>
+        public Author Author { get; set; }
+
         /// <summary>
         /// Город издания
         /// </summary>
         public string City { get; set; }
+
         /// <summary>
-        /// Издатель
+        /// Издание
         /// </summary>
         public string Publisher { get; set; }
+
         /// <summary>
-        /// Год публикации
+        /// Год издания
         /// </summary>
         public int YearPublication { get; set; }
+
         /// <summary>
         /// Количество страниц
         /// </summary>
         public int NumberPages { get; set; }
+
         /// <summary>
         /// Примечание
         /// </summary>
         public string Note { get; set; }
-        /// <summary>
-        /// Количество страниц
-        /// </summary>
-        public int Number { get; set; }
-        /// <summary>
-        /// Дата издания
-        /// </summary>
-        public DateTime Date { get; set; }
+
         /// <summary>
         /// Международный стандартный номер серийного издания 
         /// </summary>
         public string Isbn { get; set; }
 
-        public Newspaper(string title)
+        public Book(string title)
         {
             Title = title;
         }

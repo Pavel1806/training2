@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LessonXml
+namespace ProjectXml2.Model
 {
     /// <summary>
     /// Модель газета
     /// </summary>
-    public class Newspaper // TODO: Пробел между свойством и комментарием сделать красивее :)
+    public class Newspaper
     {
         /// <summary>
         /// Название газеты
         /// </summary>
-       public string Title { get; set; }
+        public string Title { get; set; }
         /// <summary>
         /// Город издания
         /// </summary>
