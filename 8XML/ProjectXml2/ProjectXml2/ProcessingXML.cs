@@ -16,6 +16,7 @@ namespace ProjectXml2
     {
         private object lockerWrite = new object();
         private object lockerRead = new object();
+        MemoryStream memoryStream = new MemoryStream();
 
 
         /// <summary>
@@ -31,11 +32,7 @@ namespace ProjectXml2
 
                 settings.Indent = true;
 
-                StreamWriter streamWriter = new StreamWriter("Trial.xml", false); // TODO: Привязка к конкретному потоку, по условиям задачи
-                                                                                  // "Рекомендуется не привязываться к тому, что источником могут быть
-                                                                                  // только файлы, вместо них используйте произвольные потоки"
-
-                XmlWriter writer = XmlWriter.Create(streamWriter, settings);
+                XmlWriter writer = XmlWriter.Create(memoryStream, settings);
 
                 writer.WriteStartElement("catalog");
 
@@ -212,8 +209,6 @@ namespace ProjectXml2
                 writer.Flush();
 
                 writer.Close();
-
-                streamWriter.Close();
             }
         }
 
@@ -231,11 +226,9 @@ namespace ProjectXml2
 
                 settings.IgnoreWhitespace = true;
 
-                StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
-                                                                           // "Рекомендуется не привязываться к тому, что источником могут быть
-                                                                           // только файлы, вместо них используйте произвольные потоки"
+                memoryStream.Position = 0;
 
-                XmlReader reader = XmlReader.Create(streamReader, settings);
+                XmlReader reader = XmlReader.Create(memoryStream, settings);
 
                 reader.ReadToFollowing("catalog");
 
@@ -279,7 +272,6 @@ namespace ProjectXml2
                 }
 
                 reader.Close();
-                streamReader.Close();
             }
         }
         /// <summary>
@@ -296,11 +288,9 @@ namespace ProjectXml2
 
                 settings.IgnoreWhitespace = true;
 
-                StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
-                                                                           // "Рекомендуется не привязываться к тому, что источником могут быть
-                                                                           // только файлы, вместо них используйте произвольные потоки"
+                memoryStream.Position = 0; 
 
-                XmlReader reader = XmlReader.Create(streamReader, settings);
+                XmlReader reader = XmlReader.Create(memoryStream, settings);
 
                 reader.ReadToFollowing("catalog");
 
@@ -334,7 +324,9 @@ namespace ProjectXml2
                 }
 
                 reader.Close();
-                streamReader.Close();
+
+                //memoryStream.Close();
+                //streamReader.Close();
             }
         }
         /// <summary>
@@ -351,11 +343,11 @@ namespace ProjectXml2
 
                 settings.IgnoreWhitespace = true;
 
-                StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
-                                                                           // "Рекомендуется не привязываться к тому, что источником могут быть
-                                                                           // только файлы, вместо них используйте произвольные потоки"
+                //StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
+                // "Рекомендуется не привязываться к тому, что источником могут быть
+                memoryStream.Position = 0;                                                            // только файлы, вместо них используйте произвольные потоки"
 
-                XmlReader reader = XmlReader.Create(streamReader, settings);
+                XmlReader reader = XmlReader.Create(memoryStream, settings);
 
                 reader.ReadToFollowing("catalog");
 
@@ -399,7 +391,9 @@ namespace ProjectXml2
                 }
 
                 reader.Close();
-                streamReader.Close();
+
+                //memoryStream.Close();
+                //streamReader.Close();
             }
         }
     }
