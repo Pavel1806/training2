@@ -391,7 +391,7 @@ namespace ProjectXml2
                 }
 
                 reader.Close();
-
+                string t = "";
                 //memoryStream.Close();
                 //streamReader.Close();
             }
