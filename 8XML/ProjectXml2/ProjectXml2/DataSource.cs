@@ -10,8 +10,8 @@ namespace ProjectXml2
 		private List<Newspaper> newspapers;
 		private List<Patent> patents;
 
-		/// <summary> // TODO: Некорректный комментарий, это не база данных, а коллекция
-		/// База данных книг
+		/// <summary>
+		/// Коллекция книг
 		/// </summary>
 		public List<Book> Books
 		{
@@ -23,8 +23,8 @@ namespace ProjectXml2
 				return books;
 			}
 		}
-		/// <summary> // TODO: Некорректный комментарий, это не база данных, а коллекция
-		/// База данных газет
+		/// <summary>
+		/// Коллекция газет
 		/// </summary>
 		public List<Newspaper> Newspapers
 		{
@@ -36,8 +36,8 @@ namespace ProjectXml2
 				return newspapers;
 			}
 		}
-		/// <summary> // TODO: Некорректный комментарий, это не база данных, а коллекция
-		/// База данных патентов
+		/// <summary>
+		/// Коллекция патентов
 		/// </summary>
 		public List<Patent> Patents
 		{

@@ -20,9 +20,9 @@ namespace ProjectXml2
 
 
         /// <summary>
-        /// Метод для записи в данных в XML
+        /// Метод для записи данных в XML
         /// </summary>
-        public void WriteXML() // Отсутсвуют комментарии
+        public void WriteXML()
         {
             lock (lockerWrite)
             {
@@ -324,9 +324,6 @@ namespace ProjectXml2
                 }
 
                 reader.Close();
-
-                //memoryStream.Close();
-                //streamReader.Close();
             }
         }
         /// <summary>
@@ -343,9 +340,7 @@ namespace ProjectXml2
 
                 settings.IgnoreWhitespace = true;
 
-                //StreamReader streamReader = new StreamReader("Trial.xml"); // TODO: Привязка к конкретному потоку, по условиям задачи
-                // "Рекомендуется не привязываться к тому, что источником могут быть
-                memoryStream.Position = 0;                                                            // только файлы, вместо них используйте произвольные потоки"
+                memoryStream.Position = 0;
 
                 XmlReader reader = XmlReader.Create(memoryStream, settings);
 
@@ -391,8 +386,6 @@ namespace ProjectXml2
                 }
 
                 reader.Close();
-                //memoryStream.Close();
-                //streamReader.Close();
             }
         }
     }

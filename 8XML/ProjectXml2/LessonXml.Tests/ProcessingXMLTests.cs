@@ -17,8 +17,6 @@ namespace LessonXml.Tests
 
             xml.WriteXML();
 
-            int actual = 0; // TODO: Ненужная переменная
-
             var col = new List<string>();
 
             foreach (var item in xml.ReadXmlBook())
@@ -26,13 +24,9 @@ namespace LessonXml.Tests
                 col.Add(item.Title);
             }
 
-            actual = col.Count;
+            int actual = col.Count;
 
-            int expected = 2;   // TODO: Зачастую структура теста выглядит как:
-                                // 1. Инициализация
-                                // 2. Действия
-                                // 3. Ожидания
-                                // Инициализацию вынести вверх.
+            int expected = 2;
 
             Assert.AreEqual(expected, actual);
         }
@@ -42,9 +36,8 @@ namespace LessonXml.Tests
         {
             ProcessingXML xml = new ProcessingXML();
 
+            xml.WriteXML();
             xml.ReadXmlBook();
-
-            int actual = 0; // TODO: Ненужная переменная
 
             var col = new List<string>();
 
@@ -53,13 +46,9 @@ namespace LessonXml.Tests
                 col.Add(item.Title);
             }
 
-            actual = col.Count;
+            int actual = col.Count;
 
-            int expected = 2; // TODO: Зачастую структура теста выглядит как:
-                              // 1. Инициализация
-                              // 2. Действия
-                              // 3. Ожидания
-                              // Инициализацию вынести вверх.
+            int expected = 2;
 
             Assert.AreEqual(expected, actual);
         }
@@ -69,9 +58,8 @@ namespace LessonXml.Tests
         {
             ProcessingXML xml = new ProcessingXML();
 
+            xml.WriteXML();
             xml.ReadXmlNewspaper();
-
-            int actual = 0; // TODO: Ненужная переменная
 
             var col = new List<string>();
 
@@ -80,13 +68,9 @@ namespace LessonXml.Tests
                 col.Add(item.Title);
             }
 
-            actual = col.Count;
+            int actual = col.Count;
 
-            int expected = 2; // TODO: Зачастую структура теста выглядит как:
-                              // 1. Инициализация
-                              // 2. Действия
-                              // 3. Ожидания
-                              // Инициализацию вынести вверх.
+            int expected = 2;
 
             Assert.AreEqual(expected, actual);
         }
@@ -96,9 +80,8 @@ namespace LessonXml.Tests
         {
             ProcessingXML xml = new ProcessingXML();
 
+            xml.WriteXML();
             xml.ReadXmlPatent();
-
-            int actual = 0; // TODO: Ненужная переменная
 
             var col = new List<string>();
 
@@ -107,13 +90,9 @@ namespace LessonXml.Tests
                 col.Add(item.Title);
             }
 
-            actual = col.Count;
+            int actual = col.Count;
 
-            int expected = 2; // TODO: Зачастую структура теста выглядит как:
-                              // 1. Инициализация
-                              // 2. Действия
-                              // 3. Ожидания
-                              // Инициализацию вынести вверх.
+            int expected = 2;
 
             Assert.AreEqual(expected, actual);
         }
