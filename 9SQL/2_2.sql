@@ -29,3 +29,5 @@ SELECT City, CompanyName
 FROM Customers
 WHERE City IN (SELECT City FROM Customers GROUP BY City HAVING COUNT(*) > 1)
 ORDER BY City
+
+--6
