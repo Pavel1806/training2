@@ -24,8 +24,8 @@ SELECT CompanyName AS Buyer, CONCAT(FirstName,' ',LastName) AS Seller, Customers
 FROM Customers, Employees 
 WHERE Customers.City = Employees.City
 
---5 медндекюмн
-SELECT City, COUNT(City)
+--5
+SELECT City, CompanyName
 FROM Customers
-GROUP BY City
-HAVING COUNT(City) > 1
+WHERE City IN (SELECT City FROM Customers GROUP BY City HAVING COUNT(*) > 1)
+ORDER BY City
