@@ -1,4 +1,4 @@
-USE Northwind_Extended_v1_1
+USE Northwind_Extended_v1_3
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[EmployeeCreditCards]') AND type in (N'U'))
 
 BEGIN
