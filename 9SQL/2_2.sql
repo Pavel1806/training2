@@ -31,3 +31,6 @@ WHERE City IN (SELECT City FROM Customers GROUP BY City HAVING COUNT(*) > 1)
 ORDER BY City
 
 --6
+SELECT CONCAT(e.FirstName,' ' , e.LastName) AS Employee ,CONCAT(f.FirstName,' ' , f.LastName) AS Boss
+FROM Employees AS e
+LEFT JOIN Employees AS f ON f.EmployeeID = e.ReportsTo
