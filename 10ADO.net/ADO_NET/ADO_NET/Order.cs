@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ADO_NET
 {
@@ -17,6 +18,7 @@ namespace ADO_NET
         public string ShipRegion { get; set; }
         public string ShipCountry { get; set; }
         public Status OrderStatus { get; set; }
+        public List<OrderDetails> orderDetails { get; set; } = new List<OrderDetails>();
 
         public enum Status
         {

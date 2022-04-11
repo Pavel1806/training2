@@ -8,7 +8,7 @@ namespace ADO_NET
         {
             IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
             //orderRepository.GetAll();
-            orderRepository.GetOrder(11077);
+            orderRepository.GetOrder(10785);
         }
     }
 }

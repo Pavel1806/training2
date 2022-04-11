@@ -87,7 +87,7 @@ namespace ADO_NET
 
                 SqlCommand command = new SqlCommand();
 
-                command.CommandText = $"SELECT * FROM Orders WHERE OrderID ={id}";
+                command.CommandText = $"SELECT * FROM Orders WHERE OrderID = {id}";
 
                 command.Connection = connection;
 
@@ -96,7 +96,7 @@ namespace ADO_NET
                 reader.Read();
 
                 if (reader.HasRows == false)
-                    throw new Exception();
+                    throw new Exception("В таблице Orders из базы данных, нет данных");
 
 
                 order.CustomerID = DBNull.Value.Equals(reader.GetValue(1)) ? null : (string)reader.GetValue(1);
@@ -137,10 +137,31 @@ namespace ADO_NET
                         order.OrderStatus = Order.Status.Completed;
                     }
                 }
-                
+                reader.Close();
+
+                SqlCommand command1 = new SqlCommand();
+
+                command1.CommandText = $"SELECT * FROM [Order Details] AS OD JOIN Products ON OD.ProductID = Products.ProductID WHERE OD.OrderID = {id}";
+                command1.Connection = connection;
+
+                SqlDataReader reader1 = command1.ExecuteReader();
+
+                if (reader1.HasRows == false)
+                    throw new Exception("В таблице Order Details из базы данных, нет данных");
+
+                while (reader1.Read())
+                {
+                    OrderDetails orderDetails = new OrderDetails(new Product());
+                    
+                    orderDetails.Product.ProductId = (int)reader1.GetValue(1);
+                    orderDetails.Quantity = (Int16)reader1.GetValue(3);
+                    orderDetails.Product.ProductName = DBNull.Value.Equals(reader1.GetValue(6)) ? null : (string)reader1.GetValue(6);
+                    orderDetails.Product.QuantityPerUnit = DBNull.Value.Equals(reader1.GetValue(9)) ? null : (string)reader1.GetValue(9);
+
+                    order.orderDetails.Add(orderDetails);
+                }
             }
              return order;
-
         }
     }
 }
