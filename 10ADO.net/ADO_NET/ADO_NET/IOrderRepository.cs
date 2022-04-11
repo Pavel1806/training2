@@ -7,5 +7,7 @@ namespace ADO_NET
     public interface IOrderRepository
     {
         IEnumerable<Order> GetAll();
+
+        Order GetOrder(int id);
     }
 }

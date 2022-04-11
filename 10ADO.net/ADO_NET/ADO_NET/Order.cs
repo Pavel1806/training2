@@ -16,5 +16,13 @@ namespace ADO_NET
         public string ShipCity { get; set; }
         public string ShipRegion { get; set; }
         public string ShipCountry { get; set; }
+        public Status OrderStatus { get; set; }
+
+        public enum Status
+        {
+            New,
+            AtWork,
+            Completed
+        }
     }
 }
