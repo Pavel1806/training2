@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ADO_NET
+namespace ADO_NET.Model
 {
     public class OrderDetails
     {
@@ -17,5 +17,11 @@ namespace ADO_NET
         {
             Product = product;
         }
+
+        public OrderDetails()
+        {
+          
+        }
+
     }
 }

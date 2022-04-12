@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ADO_NET.Model;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
@@ -12,6 +13,22 @@ namespace ADO_NET
         public OrderRepository(string connectionString)
         {
             ConnectionString = connectionString;
+        }
+
+
+        public void CreateOrder(Order order)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand();
+
+                command.CommandText = $"INSERT INTO Orders (OrderDate, ShipCity) VALUES (GETDATE(), 'Москва')";
+                command.Connection = connection;
+                int number = command.ExecuteNonQuery();
+                Console.WriteLine("Добавлено объектов: {0}", number);
+            }
         }
 
         public IEnumerable<Order> GetAll()
@@ -34,8 +51,7 @@ namespace ADO_NET
                 {
                     Order order = new Order();
 
-                    order.CustomerID = DBNull.Value.Equals(reader.GetValue(1)) ? null : (string)reader.GetValue(1);
-                    order.EmployeeID = (int)reader.GetValue(2);
+                   
                     order.OrderID = (int)reader.GetValue(0);
 
                     if (!DBNull.Value.Equals(reader.GetValue(3)))
@@ -50,7 +66,6 @@ namespace ADO_NET
                     { order.ShippedDate = (DateTime)reader.GetValue(5); }
                     else { order.ShippedDate = null; }
 
-                    order.ShipVia = (int)reader.GetValue(6);
                     order.ShipName = DBNull.Value.Equals(reader.GetValue(8)) ? null : (string)reader.GetValue(8);
                     order.ShipAddress = DBNull.Value.Equals(reader.GetValue(9)) ? null : (string)reader.GetValue(9);
                     order.ShipCity = DBNull.Value.Equals(reader.GetValue(10)) ? null : (string)reader.GetValue(10);
@@ -98,14 +113,16 @@ namespace ADO_NET
                 if (reader.HasRows == false)
                     throw new Exception("В таблице Orders из базы данных, нет данных");
 
-
-                order.CustomerID = DBNull.Value.Equals(reader.GetValue(1)) ? null : (string)reader.GetValue(1);
-                order.EmployeeID = (int)reader.GetValue(2);
                 order.OrderID = (int)reader.GetValue(0);
+
+                Console.WriteLine(reader.GetValue(3));
+                Console.WriteLine(reader.GetValue(3).GetType());
 
                 if (!DBNull.Value.Equals(reader.GetValue(3)))
                 { order.OrderDate = (DateTime)reader.GetValue(3); }
                 else { order.OrderDate = null; }
+
+                
 
                 if (!DBNull.Value.Equals(reader.GetValue(4)))
                 { order.RequiredDate = (DateTime)reader.GetValue(4); }
@@ -115,7 +132,6 @@ namespace ADO_NET
                 { order.ShippedDate = (DateTime)reader.GetValue(5); }
                 else { order.ShippedDate = null; }
 
-                order.ShipVia = (int)reader.GetValue(6);
                 order.ShipName = DBNull.Value.Equals(reader.GetValue(8)) ? null : (string)reader.GetValue(8);
                 order.ShipAddress = DBNull.Value.Equals(reader.GetValue(9)) ? null : (string)reader.GetValue(9);
                 order.ShipCity = DBNull.Value.Equals(reader.GetValue(10)) ? null : (string)reader.GetValue(10);
