@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace ADO_NET.Model
+namespace ADO_NET_DAL.Model
 {
-     class Order
+    public class Order
     {
         public int OrderID { get; set; }
         public DateTime? OrderDate { get; set; }
         public DateTime? RequiredDate { get; set; }
         public DateTime? ShippedDate { get; set; }
-        //public int ShipVia { get; set; }
         public string ShipName { get; set; }
         public string ShipAddress { get; set; }
         public string ShipCity { get; set; }

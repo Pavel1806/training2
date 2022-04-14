@@ -1,12 +1,13 @@
-﻿using ADO_NET.Model;
+﻿using ADO_NET.Interfaces;
+using ADO_NET.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace ADO_NET
+namespace ADO_NET.Repositories
 {
-    class OrderRepository : IOrderRepository
+    class OrderRepository : IRepository<Order>
     {
         private readonly string ConnectionString;  
 
@@ -16,18 +17,62 @@ namespace ADO_NET
         }
 
 
-        public void CreateOrder(Order order)
+        public void Create(Order order)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
-                connection.Open();
+                //try
+                //{
+                    connection.Open();
 
-                SqlCommand command = new SqlCommand();
+                    SqlCommand command = new SqlCommand();
 
-                command.CommandText = $"INSERT INTO Orders (OrderDate, ShipCity) VALUES (GETDATE(), 'Москва')";
-                command.Connection = connection;
-                int number = command.ExecuteNonQuery();
-                Console.WriteLine("Добавлено объектов: {0}", number);
+                    command.CommandText = $"INSERT INTO Orders (OrderDate, ShipCity) VALUES (GETDATE(), 'Москва'); SELECT SCOPE_IDENTITY() as [SCOPE_IDENTITY]";
+
+                    command.Connection = connection;
+
+                    decimal number = (decimal)command.ExecuteScalar();
+
+                    int orderId = (int)number;
+
+                    foreach (var item in order.orderDetails)
+                    {
+                        IRepository<Product> repository = new ProductRepository(ConnectionString);
+
+                        Product product = repository.GetById(item.ProductId);
+
+                        item.UnitPrice = product.UnitPrice;
+                        item.OrderId = orderId;
+
+                        if (item.Quantity > product.UnitsInStock)
+                            throw new Exception("На складе продукта не хватает");
+
+                        SqlCommand command1 = new SqlCommand();
+
+                        command1.CommandText = $"INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity) VALUES (@OrderId, @ProductId, @UnitPrice, @Quantity)";
+
+                        command1.Connection = connection;
+
+                    SqlParameter OrderIdParam = new SqlParameter("@OrderId", item.OrderId);
+                    command1.Parameters.Add(OrderIdParam);
+
+                    SqlParameter ProductIdParam = new SqlParameter("@ProductId", item.ProductId);
+                    command1.Parameters.Add(ProductIdParam);
+
+                    SqlParameter UnitPriceParam = new SqlParameter("@UnitPrice", item.UnitPrice);
+                    command1.Parameters.Add(UnitPriceParam);
+
+                    SqlParameter QuantityParam = new SqlParameter("@Quantity", item.Quantity);
+                    command1.Parameters.Add(QuantityParam);
+
+                    int p = command1.ExecuteNonQuery();
+                    }
+                //}
+                //catch
+                //{
+
+                //}
+                
             }
         }
 
@@ -93,7 +138,7 @@ namespace ADO_NET
             return Orders;
         }
 
-        public Order GetOrder(int id)
+        public Order GetById(int id)
         {
             Order order = new Order();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -157,7 +202,9 @@ namespace ADO_NET
 
                 SqlCommand command1 = new SqlCommand();
 
-                command1.CommandText = $"SELECT * FROM [Order Details] AS OD JOIN Products ON OD.ProductID = Products.ProductID WHERE OD.OrderID = {id}";
+                command1.CommandText = $"SELECT OD.ProductID, OrderID, OD.UnitPrice, Quantity, ProductName, QuantityPerUnit, UnitsInStock, Products.UnitPrice " +
+                    $"FROM [Order Details] AS OD " +
+                    $"JOIN Products ON OD.ProductID = Products.ProductID WHERE OD.OrderID = {id}";
                 command1.Connection = connection;
 
                 SqlDataReader reader1 = command1.ExecuteReader();
@@ -168,16 +215,62 @@ namespace ADO_NET
                 while (reader1.Read())
                 {
                     OrderDetails orderDetails = new OrderDetails(new Product());
-                    
-                    orderDetails.Product.ProductId = (int)reader1.GetValue(1);
+                    //Product product = new Product();
+
+                    orderDetails.UnitPrice = (decimal)reader1.GetValue(2);
+                    orderDetails.ProductId = (int)reader1.GetValue(0);
+                    orderDetails.Product.ProductId = orderDetails.ProductId;
                     orderDetails.Quantity = (Int16)reader1.GetValue(3);
-                    orderDetails.Product.ProductName = DBNull.Value.Equals(reader1.GetValue(6)) ? null : (string)reader1.GetValue(6);
-                    orderDetails.Product.QuantityPerUnit = DBNull.Value.Equals(reader1.GetValue(9)) ? null : (string)reader1.GetValue(9);
+                    orderDetails.Product.ProductName = DBNull.Value.Equals(reader1.GetValue(4)) ? null : (string)reader1.GetValue(4);
+                    orderDetails.Product.QuantityPerUnit = DBNull.Value.Equals(reader1.GetValue(5)) ? null : (string)reader1.GetValue(5);
+                    orderDetails.Product.UnitsInStock = (Int16)reader1.GetValue(6);
+                    orderDetails.Product.UnitPrice = (decimal)reader1.GetValue(7);
 
                     order.orderDetails.Add(orderDetails);
                 }
             }
              return order;
+        }
+
+        public void Update(Order orderNew)
+        {
+           Order orderOld = GetById(orderNew.OrderID);
+
+            if (orderOld.OrderStatus != Order.Status.New)
+                throw new Exception("Заказ менять нельзя");
+
+            foreach(var Old in orderOld.orderDetails)
+            {
+                foreach(var New in orderNew.orderDetails)
+                {
+                    if(Old.ProductId == New.ProductId)
+                    {
+                        if(Old.Quantity - New.Quantity == 0 )
+                        {
+
+                        }
+                        else if(Old.Quantity - New.Quantity < 0)
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                        orderNew.orderDetails.Remove(New);
+                        break;
+                    }
+                    
+                }
+
+                foreach(var New in orderNew.orderDetails)
+                {
+                    
+                    orderOld.orderDetails.Add(New);
+
+
+                }
+            }
         }
     }
 }
