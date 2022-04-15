@@ -113,6 +113,8 @@ namespace ADO_NET_DAL.Repositories
             }
         }
 
+        
+
         public IEnumerable<Order> GetAll()
         {
             List<Order> Orders = new List<Order>();
@@ -271,45 +273,136 @@ namespace ADO_NET_DAL.Repositories
             return order;
         }
 
-        public void Update(ViewOrder orderNew)
+        public void Update(ViewOrder viewOrder)
         {
-            Order orderOld = GetById(orderNew.OrderID);
+            Order orderOld = GetById(viewOrder.OrderID);
 
-            if (orderOld.OrderStatus != Order.Status.New)
-                throw new Exception("Заказ менять нельзя");
+            //if (orderOld.OrderStatus != Order.Status.New)
+            //    throw new Exception("Заказ менять нельзя");
 
-            foreach (var Old in orderOld.orderDetails)
+            Order orderNew = new Order();
+
+            foreach(var Old in orderOld.orderDetails)
             {
-                foreach (var New in orderNew.orderDetails)
+                foreach(var New in viewOrder.orderDetails)
                 {
-                    if (Old.ProductId == New.ProductId)
+                    if(Old.ProductId == New.ProductId)
                     {
-                        if (Old.Quantity - New.Quantity == 0)
-                        {
-                              
-                        }
-                        else if (Old.Quantity - New.Quantity < 0)
-                        {
+                        orderNew.orderDetails.Add(new OrderDetails() 
+                        { 
+                            ProductId = New.ProductId,
+                            OrderId = Old.OrderId,
+                            Quantity = New.Quantity,
+                            UnitPrice = Old.UnitPrice
+                        });
 
-                        }
-                        else
-                        {
+                        viewOrder.orderDetails.Remove(New);
 
-                        }
-                        orderNew.orderDetails.Remove(New);
-                        break; 
-                    }
-
-                }
-
-                foreach (var New in orderNew.orderDetails)
-                {
-
-                    //orderOld.orderDetails.Add();
-
-
+                        break;
+                    } 
                 }
             }
+
+            ProductRepository repository = new ProductRepository(ConnectionString);
+
+            foreach (var New in viewOrder.orderDetails)
+            {
+                Product product = repository.GetById(New.ProductId);
+
+                orderNew.orderDetails.Add(new OrderDetails()
+                {
+                    ProductId = New.ProductId,
+                    OrderId = orderOld.OrderID,
+                    Quantity = New.Quantity,
+                    UnitPrice = product.UnitPrice
+                });
+            }
+
+            orderNew.OrderID = orderOld.OrderID;
+
+            OrderRepository orderRepository = new OrderRepository(ConnectionString);
+
+            orderRepository.DeleteOrderDetails(orderOld);
+
+            orderRepository.CreateOrderDetails(orderNew);
+        }
+        private int DeleteOrderDetails(Order order)
+        {
+            IProductRepository repository = new ProductRepository(ConnectionString);
+
+            foreach (var item in order.orderDetails)
+            {
+                Product product = repository.GetById(item.ProductId);
+
+                repository.IncreaseUnitsInStock(product.ProductId, item.Quantity);
+            }
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand();
+                
+                command.CommandText = $"DELETE [Order Details] WHERE OrderID = {order.OrderID}";
+
+                command.Connection = connection;
+
+                int p = command.ExecuteNonQuery();
+
+                return p;
+            }
+        }
+
+        private int CreateOrderDetails(Order order)
+        {
+            int result = 0;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                Dictionary<int, int> productIdQuantity = new Dictionary<int, int>();
+
+                foreach (var item in order.orderDetails)
+                {
+                    IProductRepository repository = new ProductRepository(ConnectionString);
+
+                    Product product = repository.GetById(item.ProductId);
+
+                    OrderDetails orderDetails = new OrderDetails();
+
+                    var unitPrice = product.UnitPrice;
+
+                    if (item.Quantity > product.UnitsInStock)
+                        throw new Exception("На складе продукта не хватает");
+
+                    productIdQuantity[product.ProductId] = item.Quantity;
+
+                    repository.DecreaseUnitsInStock(product.ProductId, item.Quantity);
+
+                    SqlCommand command = new SqlCommand();
+
+                    command.CommandText = $"INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity) VALUES (@OrderId, @ProductId, @UnitPrice, @Quantity)";
+
+                    command.Connection = connection;
+
+                    SqlParameter OrderIdParam = new SqlParameter("@OrderId", order.OrderID);
+                    command.Parameters.Add(OrderIdParam);
+
+                    SqlParameter ProductIdParam = new SqlParameter("@ProductId", item.ProductId);
+                    command.Parameters.Add(ProductIdParam);
+
+                    SqlParameter UnitPriceParam = new SqlParameter("@UnitPrice", unitPrice);
+                    command.Parameters.Add(UnitPriceParam);
+
+                    SqlParameter QuantityParam = new SqlParameter("@Quantity", item.Quantity);
+                    command.Parameters.Add(QuantityParam);
+
+                    result = command.ExecuteNonQuery();
+                }
+            }
+
+            return result;
         }
     }
 }

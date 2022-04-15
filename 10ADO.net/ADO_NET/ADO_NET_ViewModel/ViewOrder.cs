@@ -5,7 +5,7 @@ namespace ADO_NET_ViewModel
 {
     public class ViewOrder
     {
-        public int OrderID { get;}
+        public int OrderID { get; set; }
         public string ShipName { get; set; }
         public string ShipAddress { get; set; }
         public string ShipCity { get; set; }

@@ -90,5 +90,34 @@ namespace ADO_NET_TESTs
 
             Assert.AreNotEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void Update()
+        {
+
+            IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
+
+            orderRepository.Update(new ViewOrder()
+            {
+                OrderID = 10250,
+                ShipAddress = "",
+                ShipCity = "",
+                ShipCountry = "",
+                ShipName = "",
+                ShipRegion = "",
+                orderDetails = new List<ViewOrderDetails>()
+                    {
+                        new ViewOrderDetails(){ ProductId=41, Quantity=10},
+                        new ViewOrderDetails(){ ProductId=65, Quantity=10},
+                        new ViewOrderDetails(){ ProductId=51, Quantity=10},
+                        new ViewOrderDetails(){ ProductId=3, Quantity=10},
+                        new ViewOrderDetails(){ ProductId=4, Quantity=10}
+                    }
+            });
+
+            //Assert.AreNotEqual(expected, actual);
+        }
+
+
     }
 }
