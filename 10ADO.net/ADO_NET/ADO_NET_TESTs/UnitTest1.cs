@@ -55,9 +55,10 @@ namespace ADO_NET_TESTs
 
 
         [TestMethod]
-        public void GetAll()
+        public void Create_1()
         {
             IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
+
 
             orderRepository.Create(new ViewOrder()
             {
@@ -68,11 +69,26 @@ namespace ADO_NET_TESTs
                 ShipRegion = "",
                 orderDetails = new List<ViewOrderDetails>()
                     {
-                        new ViewOrderDetails(){ ProductId=23, Quantity=1},
-                        new ViewOrderDetails(){ ProductId=45, Quantity=1},
-                        new ViewOrderDetails(){ ProductId=56, Quantity=1}
+                        new ViewOrderDetails(){ ProductId=1, Quantity=1},
+                        new ViewOrderDetails(){ ProductId=2, Quantity=1},
+                        new ViewOrderDetails(){ ProductId=3, Quantity=14}
                     }
             });
+
+
+        }
+
+        [TestMethod]
+        public void Delete_Not_Null()
+        {
+
+            IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
+
+            int actual = orderRepository.Delete(11092);
+
+            int expected = 0;
+
+            Assert.AreNotEqual(expected, actual);
         }
     }
 }

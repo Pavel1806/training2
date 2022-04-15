@@ -13,5 +13,7 @@ namespace ADO_NET_DAL.Interfaces
         void Create(ViewOrder order);
 
         void Update(ViewOrder order);
+
+        int Delete(int id);
     }
 }

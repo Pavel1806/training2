@@ -54,9 +54,36 @@ namespace ADO_NET_DAL.Repositories
             return product;
         }
 
-        public void Update(Product t)
+        public void DecreaseUnitsInStock(int productid, int quantity)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand();
+
+                command.CommandText = $"UPDATE Products SET UnitsInStock = UnitsInStock - {quantity} WHERE ProductID = {productid}";
+
+                command.Connection = connection;
+
+                int result = command.ExecuteNonQuery();
+            }
+        }
+
+        public void IncreaseUnitsInStock(int productid, int quantity)
+        {
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand();
+
+                command.CommandText = $"UPDATE Products SET UnitsInStock = UnitsInStock + {quantity} WHERE ProductID = {productid}";
+
+                command.Connection = connection;
+
+                int result = command.ExecuteNonQuery();
+            }
         }
     }
 }

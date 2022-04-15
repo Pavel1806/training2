@@ -9,8 +9,8 @@ namespace ADO_NET_DAL.Interfaces
     {
         IEnumerable<Product> GetAll();
         Product GetById(int id);
-        void Create(Product product);
+        void DecreaseUnitsInStock(int productid, int quantity);
 
-        void Update(Product product);
+        void IncreaseUnitsInStock(int productid, int quantity);
     }
 }
