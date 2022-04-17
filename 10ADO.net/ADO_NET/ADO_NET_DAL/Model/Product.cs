@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ADO_NET_DAL.Model
 {
+    /// <summary>
+    /// Продукт
+    /// </summary>
     public class Product
     {
         public int ProductId { get; set; }

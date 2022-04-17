@@ -7,6 +7,9 @@ using System.Text;
 
 namespace ADO_NET_DAL.Repositories
 {
+    /// <summary>
+    /// 
+    /// </summary>
     class ProductRepository : IProductRepository
     {
         private readonly string ConnectionString;
@@ -14,16 +17,21 @@ namespace ADO_NET_DAL.Repositories
         {
             ConnectionString = connectionString;
         }
-        public void Create(Product product)
-        {
-            throw new NotImplementedException();
-        }
 
+        /// <summary>
+        /// Получение всех продуктов
+        /// </summary>
+        /// <returns>Продукты</returns>
         public IEnumerable<Product> GetAll()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Получение продукта по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор</param>
+        /// <returns>Один продукт</returns>
         public Product GetById(int id)
         {
             Product product = new Product();
@@ -54,6 +62,11 @@ namespace ADO_NET_DAL.Repositories
             return product;
         }
 
+        /// <summary>
+        /// Уменьшение количества продуктов на складе
+        /// </summary>
+        /// <param name="productid">идентификатор продукта</param>
+        /// <param name="quantity">количество на которое надо умешить количество продуктов</param>
         public void DecreaseUnitsInStock(int productid, int quantity)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -70,6 +83,11 @@ namespace ADO_NET_DAL.Repositories
             }
         }
 
+        /// <summary>
+        /// Увеличение количества продуктов на складе
+        /// </summary>
+        /// <param name="productid">идентификатор продукта</param>
+        /// <param name="quantity">количество на которое надо увеличить количество продуктов</param>
         public void IncreaseUnitsInStock(int productid, int quantity)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))

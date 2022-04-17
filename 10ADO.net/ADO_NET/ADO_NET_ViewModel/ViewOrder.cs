@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace ADO_NET_ViewModel
 {
+    /// <summary>
+    /// Ордер, приходящий из интерфейса
+    /// </summary>
     public class ViewOrder
     {
         public int OrderID { get; set; }

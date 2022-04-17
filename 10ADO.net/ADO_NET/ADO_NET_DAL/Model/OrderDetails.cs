@@ -5,6 +5,9 @@ using System.Text;
 
 namespace ADO_NET_DAL.Model
 {
+    /// <summary>
+    /// Продукт, входящие в ордер
+    /// </summary>
     public class OrderDetails
     {
         public int OrderDetailsId { get; set; }

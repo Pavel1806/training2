@@ -17,7 +17,10 @@ namespace ADO_NET_DAL.Repositories
             ConnectionString = connectionString;
         }
 
-
+        /// <summary>
+        /// Метод создания Order
+        /// </summary>
+        /// <param name="viewOrder">Order который приходит из интерфейса</param>
         public void Create(ViewOrder viewOrder)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -93,6 +96,11 @@ namespace ADO_NET_DAL.Repositories
             }
         }
 
+        /// <summary>
+        /// Метод удаления Order
+        /// </summary>
+        /// <param name="id">Идентификатор Order</param>
+        /// <returns></returns>
         public int Delete(int id)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -111,6 +119,10 @@ namespace ADO_NET_DAL.Repositories
             }
         }
 
+        /// <summary>
+        /// Получение всех Order
+        /// </summary>
+        /// <returns>Все Order</returns>
         public IEnumerable<Order> GetAll()
         {
             List<Order> Orders = new List<Order>();
@@ -173,6 +185,11 @@ namespace ADO_NET_DAL.Repositories
             return Orders;
         }
 
+        /// <summary>
+        /// Получение Order по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор Order</param>
+        /// <returns></returns>
         public Order GetById(int id)
         {
             
@@ -269,6 +286,10 @@ namespace ADO_NET_DAL.Repositories
             return order;
         }
 
+        /// <summary>
+        /// Изменение Order
+        /// </summary>
+        /// <param name="viewOrder">Order который приходит из интерфейса</param>
         public void Update(ViewOrder viewOrder)
         {
             Order orderOld = GetById(viewOrder.OrderID);
@@ -334,6 +355,12 @@ namespace ADO_NET_DAL.Repositories
             }
  
         }
+
+        /// <summary>
+        /// Удаление OrderDetails
+        /// </summary>
+        /// <param name="order">Order у которого надо удалить OrderDetails</param>
+        /// <returns></returns>
         private int DeleteOrderDetails(Order order)
         {
             IProductRepository repository = new ProductRepository(ConnectionString);
@@ -361,6 +388,11 @@ namespace ADO_NET_DAL.Repositories
             }
         }
 
+        /// <summary>
+        /// Создание OrderDetails
+        /// </summary>
+        /// <param name="order">Order в котором надо создать OrderDetails</param>
+        /// <returns></returns>
         private int CreateOrderDetails(Order order)
         {
             int result = 0;

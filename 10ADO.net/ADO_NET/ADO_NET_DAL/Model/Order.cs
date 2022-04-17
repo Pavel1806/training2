@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ADO_NET_DAL.Model
 {
+    /// <summary>
+    /// Ордер
+    /// </summary>
     public class Order
     {
         public int OrderID { get; set; }
