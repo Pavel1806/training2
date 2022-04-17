@@ -40,8 +40,6 @@ namespace ADO_NET_DAL.Repositories
 
                     orderId = (int)number;
 
-                    
-
                     foreach (var item in viewOrder.orderDetails)
                     {
                         IProductRepository repository = new ProductRepository(ConnectionString);
@@ -112,8 +110,6 @@ namespace ADO_NET_DAL.Repositories
                 return p;
             }
         }
-
-        
 
         public IEnumerable<Order> GetAll()
         {
@@ -282,7 +278,9 @@ namespace ADO_NET_DAL.Repositories
 
             Order orderNew = new Order();
 
-            foreach(var Old in orderOld.orderDetails)
+            orderNew.OrderID = orderOld.OrderID;
+
+            foreach (var Old in orderOld.orderDetails)
             {
                 foreach(var New in viewOrder.orderDetails)
                 {
@@ -305,9 +303,13 @@ namespace ADO_NET_DAL.Repositories
 
             ProductRepository repository = new ProductRepository(ConnectionString);
 
+            List<Product> products = new List<Product>();
+
             foreach (var New in viewOrder.orderDetails)
             {
                 Product product = repository.GetById(New.ProductId);
+
+                products.Add(product);
 
                 orderNew.orderDetails.Add(new OrderDetails()
                 {
@@ -318,13 +320,19 @@ namespace ADO_NET_DAL.Repositories
                 });
             }
 
-            orderNew.OrderID = orderOld.OrderID;
-
             OrderRepository orderRepository = new OrderRepository(ConnectionString);
 
-            orderRepository.DeleteOrderDetails(orderOld);
+            try
+            {
+                orderRepository.DeleteOrderDetails(orderOld);  //предполагаю, что метод удаления в любом случае срабатывает.
 
-            orderRepository.CreateOrderDetails(orderNew);
+                orderRepository.CreateOrderDetails(orderNew);
+            }
+            catch
+            {
+                orderRepository.CreateOrderDetails(orderOld);
+            }
+ 
         }
         private int DeleteOrderDetails(Order order)
         {
