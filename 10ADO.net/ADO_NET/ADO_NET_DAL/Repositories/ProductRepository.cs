@@ -19,15 +19,6 @@ namespace ADO_NET_DAL.Repositories
         }
 
         /// <summary>
-        /// Получение всех продуктов
-        /// </summary>
-        /// <returns>Продукты</returns>
-        public IEnumerable<Product> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Получение продукта по идентификатору
         /// </summary>
         /// <param name="id">Идентификатор</param>

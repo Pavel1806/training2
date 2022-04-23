@@ -2,22 +2,35 @@ using ADO_NET_DAL.Interfaces;
 using ADO_NET_DAL.Model;
 using ADO_NET_DAL.Repositories;
 using ADO_NET_ViewModel;
+using ConsoleApp1;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 
 namespace ADO_NET_TESTs
 {
     [TestClass]
     public class UnitTest1
     {
-       
+        string ConnectionString { get; set; }
+
+        IOrderRepository OrderRepository { get; set; }
+
+        [TestInitialize]
+        public void Testinitialize()
+        {
+            //Ñonnectionstring ñonnectionstring = new Ñonnectionstring();
+
+            //var ConnectionString = ñonnectionstring.Get();
+
+            OrderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
+        }
+
         [TestMethod]
         public void GetAll_Not_Null()
         {
-
-            IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
-
-            var t = orderRepository.GetAll();
+            var t = OrderRepository.GetAll();
 
             List<Order> orders = (List<Order>)t;
 
@@ -25,12 +38,9 @@ namespace ADO_NET_TESTs
         }
 
         [TestMethod]
-        public void GetById_Not_Null()
+        public void GetById_Null()
         {
-
-            IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
-
-            Order order = orderRepository.GetById(23434);
+            Order order = OrderRepository.GetById(23434);
 
             Order expected = null;
 
@@ -39,11 +49,9 @@ namespace ADO_NET_TESTs
 
 
         [TestMethod]
-        public void Create_1()
+        public void Create_Not_Null()
         {
-            IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
-
-            orderRepository.Create(new ViewOrder()
+            int orderId = OrderRepository.Create(new ViewOrder()
             {
                 ShipAddress = "",
                 ShipCity = "",
@@ -54,19 +62,19 @@ namespace ADO_NET_TESTs
                     {
                         new ViewOrderDetails(){ ProductId=1, Quantity=1},
                         new ViewOrderDetails(){ ProductId=2, Quantity=1},
-                        new ViewOrderDetails(){ ProductId=3, Quantity=14}
+                        new ViewOrderDetails(){ ProductId=3, Quantity=1}
                     }
             });
 
+            int expected = 0;
+
+            Assert.AreNotEqual(expected, orderId);
         }
 
         [TestMethod]
         public void Delete_Not_Null()
-        {
-
-            IOrderRepository orderRepository = new OrderRepository(@"Data Source=DESKTOP-5V2J771\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True");
-
-            int actual = orderRepository.Delete(11092);
+        { 
+            int actual = OrderRepository.Delete(11082);
 
             int expected = 0;
 
@@ -100,6 +108,32 @@ namespace ADO_NET_TESTs
             //Assert.AreNotEqual(expected, actual);
         }
 
+        [TestMethod]
+        public void SetTheOrderDay()
+        {
+            int actual = OrderRepository.SetTheOrderDay(11081);
 
+            int expected = 1;
+
+            Assert.AreNotEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void InstallOrderCompleted()
+        {
+            int actual = OrderRepository.InstallOrderCompleted(11081);
+
+            int expected = 1;
+
+            Assert.AreNotEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void CallingStoredProcedure_Not_Null()
+        {
+            var dict = OrderRepository.CallingStoredProcedure("CHOPS");
+
+            CollectionAssert.AllItemsAreNotNull(dict);         
+        }
     }
 }

@@ -11,12 +11,6 @@ namespace ADO_NET_DAL.Interfaces
     public interface IProductRepository
     {
         /// <summary>
-        /// Получение всех продуктов
-        /// </summary>
-        /// <returns>Продукты</returns>
-        IEnumerable<Product> GetAll();
-
-        /// <summary>
         /// Получение продукта по идентификатору
         /// </summary>
         /// <param name="id">Идентификатор</param>

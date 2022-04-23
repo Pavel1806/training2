@@ -6,7 +6,7 @@ using System.Text;
 namespace ADO_NET_DAL.Model
 {
     /// <summary>
-    /// Продукт, входящие в ордер
+    /// Продукт, входящий в ордер
     /// </summary>
     public class OrderDetails
     {

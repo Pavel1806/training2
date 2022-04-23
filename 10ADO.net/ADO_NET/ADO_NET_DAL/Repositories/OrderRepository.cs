@@ -3,8 +3,8 @@ using ADO_NET_DAL.Model;
 using ADO_NET_ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace ADO_NET_DAL.Repositories
 {
@@ -21,7 +21,7 @@ namespace ADO_NET_DAL.Repositories
         /// Метод создания Order
         /// </summary>
         /// <param name="viewOrder">Order который приходит из интерфейса</param>
-        public void Create(ViewOrder viewOrder)
+        public int Create(ViewOrder viewOrder)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -33,11 +33,9 @@ namespace ADO_NET_DAL.Repositories
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand();
+                    string request = $"INSERT INTO Orders (OrderDate, ShipCity) VALUES (GETDATE(), 'Москва'); SELECT SCOPE_IDENTITY() as [SCOPE_IDENTITY]";
 
-                    command.CommandText = $"INSERT INTO Orders (OrderDate, ShipCity) VALUES (GETDATE(), 'Москва'); SELECT SCOPE_IDENTITY() as [SCOPE_IDENTITY]";
-
-                    command.Connection = connection;
+                    SqlCommand command = new SqlCommand(request, connection);
 
                     decimal number = (decimal)command.ExecuteScalar();
 
@@ -60,11 +58,9 @@ namespace ADO_NET_DAL.Repositories
 
                         repository.DecreaseUnitsInStock(product.ProductId, item.Quantity);
 
-                        SqlCommand command1 = new SqlCommand();
+                        string request1 = $"INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity) VALUES (@OrderId, @ProductId, @UnitPrice, @Quantity)";
 
-                        command1.CommandText = $"INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity) VALUES (@OrderId, @ProductId, @UnitPrice, @Quantity)";
-
-                        command1.Connection = connection;
+                        SqlCommand command1 = new SqlCommand(request1, connection);
 
                         SqlParameter OrderIdParam = new SqlParameter("@OrderId", orderId);
                         command1.Parameters.Add(OrderIdParam);
@@ -85,7 +81,7 @@ namespace ADO_NET_DAL.Repositories
                 {
                     Delete(orderId);
 
-                    foreach(var item in productIdQuantity)
+                    foreach (var item in productIdQuantity)
                     {
                         IProductRepository repository = new ProductRepository(ConnectionString);
 
@@ -93,6 +89,7 @@ namespace ADO_NET_DAL.Repositories
                     }
                 }
 
+                return orderId;
             }
         }
 
@@ -103,15 +100,18 @@ namespace ADO_NET_DAL.Repositories
         /// <returns></returns>
         public int Delete(int id)
         {
+            var order = GetById(id);
+
+            if (order.OrderStatus == Order.Status.Completed)
+                return 0;
+
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand();
+                string request = $"DELETE [Order Details] WHERE OrderID = {id} DELETE Orders WHERE OrderID = {id}";
 
-                command.CommandText = $"DELETE [Order Details] WHERE OrderID = {id} DELETE Orders WHERE OrderID = {id}";
-
-                command.Connection = connection;
+                SqlCommand command = new SqlCommand(request, connection);
 
                 int p = command.ExecuteNonQuery();
 
@@ -131,33 +131,20 @@ namespace ADO_NET_DAL.Repositories
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand();
+                string request = "SELECT * FROM Orders";
 
-                command.CommandText = "SELECT * FROM Orders";
-                command.Connection = connection;
+                SqlCommand command = new SqlCommand(request, connection);
 
                 SqlDataReader reader = command.ExecuteReader();
-
 
                 while (reader.Read())
                 {
                     Order order = new Order();
 
-
                     order.OrderID = (int)reader.GetValue(0);
-
-                    if (!DBNull.Value.Equals(reader.GetValue(3)))
-                    { order.OrderDate = (DateTime)reader.GetValue(3); }
-                    else { order.OrderDate = null; }
-
-                    if (!DBNull.Value.Equals(reader.GetValue(4)))
-                    { order.RequiredDate = (DateTime)reader.GetValue(4); }
-                    else { order.RequiredDate = null; }
-
-                    if (!DBNull.Value.Equals(reader.GetValue(5)))
-                    { order.ShippedDate = (DateTime)reader.GetValue(5); }
-                    else { order.ShippedDate = null; }
-
+                    order.OrderDate = DBNull.Value.Equals(reader.GetValue(3)) ? null : (DateTime?)reader.GetValue(3);
+                    order.RequiredDate = DBNull.Value.Equals(reader.GetValue(4)) ? null : (DateTime?)reader.GetValue(4);
+                    order.ShippedDate = DBNull.Value.Equals(reader.GetValue(5)) ? null : (DateTime?)reader.GetValue(5);
                     order.ShipName = DBNull.Value.Equals(reader.GetValue(8)) ? null : (string)reader.GetValue(8);
                     order.ShipAddress = DBNull.Value.Equals(reader.GetValue(9)) ? null : (string)reader.GetValue(9);
                     order.ShipCity = DBNull.Value.Equals(reader.GetValue(10)) ? null : (string)reader.GetValue(10);
@@ -165,20 +152,13 @@ namespace ADO_NET_DAL.Repositories
                     order.ShipRegion = DBNull.Value.Equals(reader.GetValue(11)) ? null : (string)reader.GetValue(11);
 
                     if (order.OrderDate == null)
-                    {
-                        order.OrderStatus = Order.Status.New;
-                    }
+                    {order.OrderStatus = Order.Status.New;}
                     else
-                    {
-                        if (order.ShippedDate == null)
-                        {
-                            order.OrderStatus = Order.Status.AtWork;
-                        }
+                    {if (order.ShippedDate == null)
+                        {order.OrderStatus = Order.Status.AtWork;}
                         else
-                        {
-                            order.OrderStatus = Order.Status.Completed;
-                        }
-                    }
+                        { order.OrderStatus = Order.Status.Completed;}}
+
                     Orders.Add(order);
                 }
             }
@@ -192,17 +172,15 @@ namespace ADO_NET_DAL.Repositories
         /// <returns></returns>
         public Order GetById(int id)
         {
-            
+
             Order order = new Order();
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand();
+                string request = $"SELECT * FROM Orders WHERE OrderID = {id}";
 
-                command.CommandText = $"SELECT * FROM Orders WHERE OrderID = {id}";
-
-                command.Connection = connection;
+                SqlCommand command = new SqlCommand(request, connection);
 
                 SqlDataReader reader = command.ExecuteReader();
 
@@ -210,27 +188,13 @@ namespace ADO_NET_DAL.Repositories
 
                 if (reader.HasRows == false)
                     return null;
-                    //throw new Exception("В таблице Orders из базы данных, нет данных");
+                //throw new Exception("В таблице Orders из базы данных, нет данных");
 
                 order.OrderID = (int)reader.GetValue(0);
 
-                Console.WriteLine(reader.GetValue(3));
-                Console.WriteLine(reader.GetValue(3).GetType());
-
-                if (!DBNull.Value.Equals(reader.GetValue(3)))
-                { order.OrderDate = (DateTime)reader.GetValue(3); }
-                else { order.OrderDate = null; }
-
-
-
-                if (!DBNull.Value.Equals(reader.GetValue(4)))
-                { order.RequiredDate = (DateTime)reader.GetValue(4); }
-                else { order.RequiredDate = null; }
-
-                if (!DBNull.Value.Equals(reader.GetValue(5)))
-                { order.ShippedDate = (DateTime)reader.GetValue(5); }
-                else { order.ShippedDate = null; }
-
+                order.OrderDate = DBNull.Value.Equals(reader.GetValue(3)) ? null : (DateTime?)reader.GetValue(3);
+                order.RequiredDate = DBNull.Value.Equals(reader.GetValue(4)) ? null : (DateTime?)reader.GetValue(4);
+                order.ShippedDate = DBNull.Value.Equals(reader.GetValue(5)) ? null : (DateTime?)reader.GetValue(5);
                 order.ShipName = DBNull.Value.Equals(reader.GetValue(8)) ? null : (string)reader.GetValue(8);
                 order.ShipAddress = DBNull.Value.Equals(reader.GetValue(9)) ? null : (string)reader.GetValue(9);
                 order.ShipCity = DBNull.Value.Equals(reader.GetValue(10)) ? null : (string)reader.GetValue(10);
@@ -238,28 +202,21 @@ namespace ADO_NET_DAL.Repositories
                 order.ShipRegion = DBNull.Value.Equals(reader.GetValue(11)) ? null : (string)reader.GetValue(11);
 
                 if (order.OrderDate == null)
-                {
-                    order.OrderStatus = Order.Status.New;
-                }
+                { order.OrderStatus = Order.Status.New; }
                 else
                 {
                     if (order.ShippedDate == null)
-                    {
-                        order.OrderStatus = Order.Status.AtWork;
-                    }
+                    { order.OrderStatus = Order.Status.AtWork; }
                     else
-                    {
-                        order.OrderStatus = Order.Status.Completed;
-                    }
+                    { order.OrderStatus = Order.Status.Completed; }
                 }
                 reader.Close();
 
-                SqlCommand command1 = new SqlCommand();
-
-                command1.CommandText = $"SELECT OD.ProductID, OrderID, OD.UnitPrice, Quantity, ProductName, QuantityPerUnit, UnitsInStock, Products.UnitPrice " +
+                string request1 = $"SELECT OD.ProductID, OrderID, OD.UnitPrice, Quantity, ProductName, QuantityPerUnit, UnitsInStock, Products.UnitPrice " +
                     $"FROM [Order Details] AS OD " +
                     $"JOIN Products ON OD.ProductID = Products.ProductID WHERE OD.OrderID = {id}";
-                command1.Connection = connection;
+
+                SqlCommand command1 = new SqlCommand(request1, connection);
 
                 SqlDataReader reader1 = command1.ExecuteReader();
 
@@ -269,7 +226,6 @@ namespace ADO_NET_DAL.Repositories
                 while (reader1.Read())
                 {
                     OrderDetails orderDetails = new OrderDetails(new Product());
-                    //Product product = new Product();
 
                     orderDetails.UnitPrice = (decimal)reader1.GetValue(2);
                     orderDetails.ProductId = (int)reader1.GetValue(0);
@@ -303,12 +259,12 @@ namespace ADO_NET_DAL.Repositories
 
             foreach (var Old in orderOld.orderDetails)
             {
-                foreach(var New in viewOrder.orderDetails)
+                foreach (var New in viewOrder.orderDetails)
                 {
-                    if(Old.ProductId == New.ProductId)
+                    if (Old.ProductId == New.ProductId)
                     {
-                        orderNew.orderDetails.Add(new OrderDetails() 
-                        { 
+                        orderNew.orderDetails.Add(new OrderDetails()
+                        {
                             ProductId = New.ProductId,
                             OrderId = Old.OrderId,
                             Quantity = New.Quantity,
@@ -318,7 +274,7 @@ namespace ADO_NET_DAL.Repositories
                         viewOrder.orderDetails.Remove(New);
 
                         break;
-                    } 
+                    }
                 }
             }
 
@@ -343,17 +299,9 @@ namespace ADO_NET_DAL.Repositories
 
             OrderRepository orderRepository = new OrderRepository(ConnectionString);
 
-            try
-            {
-                orderRepository.DeleteOrderDetails(orderOld);  //предполагаю, что метод удаления в любом случае срабатывает.
+            orderRepository.DeleteOrderDetails(orderOld);
 
-                orderRepository.CreateOrderDetails(orderNew);
-            }
-            catch
-            {
-                orderRepository.CreateOrderDetails(orderOld);
-            }
- 
+            orderRepository.CreateOrderDetails(orderNew);
         }
 
         /// <summary>
@@ -376,11 +324,9 @@ namespace ADO_NET_DAL.Repositories
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand();
-                
-                command.CommandText = $"DELETE [Order Details] WHERE OrderID = {order.OrderID}";
+                string request = $"DELETE [Order Details] WHERE OrderID = {order.OrderID}";
 
-                command.Connection = connection;
+                SqlCommand command = new SqlCommand(request, connection);
 
                 int p = command.ExecuteNonQuery();
 
@@ -420,11 +366,9 @@ namespace ADO_NET_DAL.Repositories
 
                     repository.DecreaseUnitsInStock(product.ProductId, item.Quantity);
 
-                    SqlCommand command = new SqlCommand();
+                    string request = $"INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity) VALUES (@OrderId, @ProductId, @UnitPrice, @Quantity)";
 
-                    command.CommandText = $"INSERT INTO [Order Details] (OrderID, ProductID, UnitPrice, Quantity) VALUES (@OrderId, @ProductId, @UnitPrice, @Quantity)";
-
-                    command.Connection = connection;
+                    SqlCommand command = new SqlCommand(request, connection);
 
                     SqlParameter OrderIdParam = new SqlParameter("@OrderId", order.OrderID);
                     command.Parameters.Add(OrderIdParam);
@@ -443,6 +387,95 @@ namespace ADO_NET_DAL.Repositories
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Установка даты доставки заказа
+        /// </summary>
+        /// <param name="id">номер заказа</param>
+        public int SetTheOrderDay(int id)
+        {
+            Order order = GetById(id);
+
+            if (order.RequiredDate != null)
+                return 0;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string request = $"UPDATE [Orders] SET RequiredDate = DATEADD(day, 5, GETDATE()) WHERE OrderID = {id}";
+
+                SqlCommand command = new SqlCommand(request, connection);
+
+                int p = command.ExecuteNonQuery();
+
+                return p;
+            }
+        }
+
+        /// <summary>
+        /// Установка даты доставки заказа
+        /// </summary>
+        /// <param name="id">номер заказа</param>
+        public int InstallOrderCompleted(int id)
+        {
+            Order order = GetById(id);
+
+            if (order.ShippedDate != null)
+                return 0;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string request = $"UPDATE [Orders] SET ShippedDate = GETDATE() WHERE OrderID = {id}";
+
+                SqlCommand command = new SqlCommand(request, connection);
+
+                int p = command.ExecuteNonQuery();
+
+                return p;
+            }
+        }
+
+        /// <summary>
+        /// Вызов хранимой процедуры из базы данных
+        /// </summary>
+        /// <param name="customer">id покупателя</param>
+        public Dictionary<string, int> CallingStoredProcedure(string customer)
+        {
+            Dictionary<string, int> keyValues = new Dictionary<string, int>();
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                SqlCommand command = new SqlCommand();
+
+                command.CommandText = $"CustOrderHist";
+
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                SqlParameter CustomerIdParam = new SqlParameter("@CustomerID", customer);
+
+                command.Parameters.Add(CustomerIdParam);
+
+                command.Connection = connection;
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    var t = (string)reader.GetValue(0);
+
+                    var e = (int)reader.GetValue(1);
+
+                    keyValues[t] = e;
+                }
+            }
+
+            return keyValues;
         }
     }
 }

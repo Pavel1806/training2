@@ -28,7 +28,7 @@ namespace ADO_NET_DAL.Interfaces
         /// Метод создания Order
         /// </summary>
         /// <param name="order">Order который приходит из интерфейса</param>
-        void Create(ViewOrder order);
+        int Create(ViewOrder order);
 
         /// <summary>
         /// Изменение Order
@@ -42,5 +42,24 @@ namespace ADO_NET_DAL.Interfaces
         /// <param name="id">Идентификатор Order</param>
         /// <returns></returns>
         int Delete(int id);
+
+        /// <summary>
+        /// Установка даты доставки заказа
+        /// </summary>
+        /// <param name="id">номер заказа</param>
+        int SetTheOrderDay(int id);
+
+        /// <summary>
+        /// Установка даты доставки заказа
+        /// </summary>
+        /// <param name="id">номер заказа</param>
+        int InstallOrderCompleted(int id);
+
+        /// <summary>
+        /// Вызов хранимой процедуры из базы данных
+        /// </summary>
+        /// <param name="customer">id покупателя</param>
+        Dictionary<string, int> CallingStoredProcedure(string customer);
+
     }
 }
