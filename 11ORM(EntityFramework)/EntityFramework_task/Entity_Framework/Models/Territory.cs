@@ -16,7 +16,7 @@ namespace Entity_Framework.Models
         public string TerritoryDescription { get; set; }
         public int RegionId { get; set; }
 
-        public virtual Region Region { get; set; }
+        public virtual Regions Region { get; set; }
         public virtual ICollection<EmployeeTerritory> EmployeeTerritories { get; set; }
     }
 }

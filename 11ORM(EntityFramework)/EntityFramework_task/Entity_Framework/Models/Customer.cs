@@ -24,6 +24,7 @@ namespace Entity_Framework.Models
         public string Country { get; set; }
         public string Phone { get; set; }
         public string Fax { get; set; }
+        public DateTime DateOfFoundation { get; set; }
 
         public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemos { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

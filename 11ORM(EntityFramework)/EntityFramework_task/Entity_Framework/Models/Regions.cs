@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace Entity_Framework.Models
 {
-    public partial class Region
+    public partial class Regions
     {
-        public Region()
+        public Regions()
         {
             Territories = new HashSet<Territory>();
         }

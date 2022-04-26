@@ -39,7 +39,7 @@ namespace Entity_Framework.Context
         public virtual DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrices { get; set; }
         public virtual DbSet<ProductsByCategory> ProductsByCategories { get; set; }
         public virtual DbSet<QuarterlyOrder> QuarterlyOrders { get; set; }
-        public virtual DbSet<Region> Regions { get; set; }
+        public virtual DbSet<Regions> Regions { get; set; }
         public virtual DbSet<SalesByCategory> SalesByCategories { get; set; }
         public virtual DbSet<SalesTotalsByAmount> SalesTotalsByAmounts { get; set; }
         public virtual DbSet<Shipper> Shippers { get; set; }
@@ -47,6 +47,7 @@ namespace Entity_Framework.Context
         public virtual DbSet<SummaryOfSalesByYear> SummaryOfSalesByYears { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
         public virtual DbSet<Territory> Territories { get; set; }
+        public virtual DbSet<CreditCardDetails> CreditCardsDetails { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -661,7 +662,7 @@ namespace Entity_Framework.Context
                     .IsFixedLength(true);
             });
 
-            modelBuilder.Entity<Region>(entity =>
+            modelBuilder.Entity<Regions>(entity =>
             {
                 entity.HasKey(e => e.RegionId)
                     .IsClustered(false);

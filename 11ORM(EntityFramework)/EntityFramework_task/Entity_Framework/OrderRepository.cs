@@ -13,34 +13,27 @@ namespace Entity_Framework
         {
             NorthwindContext context = new NorthwindContext();
 
-            var r = context.OrderDetails.AsEnumerable().GroupBy(x=>x.OrderId).ToList();
+            var order = context.OrderDetails.Where(c => c.Product.CategoryId == 1).AsEnumerable().GroupBy(x => x.OrderId).Select(c => new {
+                    OrderId = c.Key,
+                    OrderDetails = context.Orders.Join(context.OrderDetails, p => p.OrderId, c => c.OrderId,
+                        (p, c) => new
+                        {
+                            Category = c.Product.Category.CategoryId,
+                            Product = c.Product.ProductName,
+                            UnitPrice = c.UnitPrice,
+                            Quantity = c.Quantity,
+                            OrderId = p.OrderId,
+                            Customer = p.Customer.CompanyName
+                        }).Where(y => y.OrderId == c.Key)
+            }).ToList();
 
-            var p = context.Orders.Join(context.OrderDetails, p => p.OrderId, c => c.OrderId,
-                (p, c) => new
-                {
-                    Category = c.Product.Category.CategoryId,
-                    Product = c.Product.ProductName,
-                    OrderId = p.OrderId,
-                    OrderDetail = p.OrderDetails
-                }).Where(c => c.Category == 1).AsEnumerable().GroupBy(x => x.OrderId).Select(c=> new { 
-                           OrderId = c.Key,
-                           OrderDetails = c.Select(p=>p)
-                }).ToList();
-
-            var t = context.Orders.Join(context.OrderDetails, p => p.OrderId, c=>c.OrderId, 
-                (p, c) => new { 
-                    Category = c.Product.Category.CategoryId,
-                    Product = c.Product.ProductName,
-                    OrderId= p.OrderId
-                }).ToList();
-
-            foreach(var orderId in p)
+            foreach(var orderId in order) 
             {
                 Console.WriteLine($"{orderId.OrderId}");
 
                 foreach (var item in orderId.OrderDetails)
                 {
-                    Console.WriteLine($"{item.Product}--{item.Category}");
+                    Console.WriteLine($"{item.Customer}--{item.Product}--{item.UnitPrice}--{item.Quantity}");
                 }
             }
         }
