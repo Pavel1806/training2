@@ -13,7 +13,7 @@ namespace NoSql_MongoDB
         public string Name { get; set; }
         public string Author { get; set; }
         public int Count { get; set; }
-        public string Genre { get; set; }
+        public string[] Genre { get; set; } = new string[5];
         public int Year { get; set; }
     }
 }

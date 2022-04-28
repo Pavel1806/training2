@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using NoSql_MongoDB.Context;
+using NoSql_MongoDB.Intarfaces;
+using NoSql_MongoDB.Repositories;
 
 namespace NoSql_MongoDB
 {
@@ -9,54 +14,83 @@ namespace NoSql_MongoDB
     {
         static void Main(string[] args)
         {
-            string connectionString = "mongodb://localhost:27017";
-            MongoClient client = new MongoClient(connectionString);
-            IMongoDatabase database = client.GetDatabase("test");
+            string connectionString = ConfigurationManager.ConnectionStrings["MongoDb"].ConnectionString;
 
+            IRepository<Book> bookRepository = new BookRepository(connectionString, "test", "books");
 
+            
+            
+            Book book = new Book { Author = "Tolkien", Name = "Hobbit", Year = 2014, Count = 5};
+            Book book1 = new Book { Author = "Tolkien", Name = "Lord of the rings", Year = 2015, Count = 3};
+            Book book2 = new Book { Name = "Kolobok", Year = 2000, Count = 10};
+            Book book3 = new Book { Name = "Repka", Year = 2000, Count = 11};
+            Book book4 = new Book { Author = "Mihalkov", Name = "Dyadya Stiopa", Year = 2001, Count = 1};
 
-            var collection = database.GetCollection<Book>("books");
+            book.Genre[0] = "fantasy";
+            book1.Genre[0] = "fantasy";
+            book2.Genre[0] = "kids";
+            book3.Genre[0] = "kids";
+            book4.Genre[0] = "kids";
 
-            Book book = new Book { Author = "Tolkien", Name = "Hobbit", Year = 2014, Count = 5, Genre = "fantasy" };
-            Book book1 = new Book { Author = "Tolkien", Name = "Lord of the rings", Year = 2015, Count = 3, Genre = "fantasy" };
-            Book book2 = new Book { Name = "Kolobok", Year = 2000, Count = 10, Genre = "kids" };
-            Book book3 = new Book { Name = "Repka", Year = 2000, Count = 11, Genre = "kids" };
-            Book book4 = new Book { Author = "Mihalkov", Name = "Dyadya Stiopa", Year = 2001, Count = 1, Genre = "kids" };
+            List<Book> books = new List<Book> { book, book1, book2, book3, book4};
 
-            //collection.InsertOne(book);
+            bookRepository.Create(books);
 
-            //collection.InsertMany(new[] { book, book1, book2, book3, book4 });
+            var books1 = bookRepository.NumberOfInstancesIsMoreThanOne();
 
-            var filter = new BsonDocument("Count", new BsonDocument("$gt", 2));
+            var books2 = bookRepository.NumberOfInstancesIsMoreThanOneSort();
 
-            //var filter = new BsonDocument();
+            var books3 = bookRepository.NumberOfInstancesIsMoreThanOne_IsNotMoreThree();
 
-            var books = collection.Find(filter).SortBy(e=>e.Name).ToList();
+            var books4 = bookRepository.NumberOfInstancesIsMoreThanOne_Count();
 
-            foreach (var item in books)
+            var books5 = bookRepository.GetBookMaxCount();
+
+            var authors = bookRepository.GetUniqueAuthor();
+
+            var nameBooks = bookRepository.GetBooksWithoutAnAuthor();
+
+            var books6 = bookRepository.GetAll();
+
+            //bookRepository.UpdateNumberOfCopies();
+
+            foreach (var item in books1)
             {
                 Console.WriteLine($"{item.Name}");
             }
 
-            var countBook = collection.Find(filter).SortBy(e => e.Name).ToList().Count;
+            Console.WriteLine("-----------------");
 
-            Console.WriteLine(countBook);
-
-            //FindDocs().GetAwaiter().GetResult();
-        }
-
-        private static async Task FindDocs()
-        {
-            string connectionString = "mongodb://localhost:27017";
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("test");
-            var collection = database.GetCollection<Book>("books");
-            var filter = new BsonDocument();
-            var books = await collection.Find(filter).ToListAsync();
-
-            foreach (var doc in books)
+            foreach (var item in books2)
             {
-                Console.WriteLine("{0} - {1} ({2})", doc.Genre, doc.Name, doc.Count);
+                Console.WriteLine($"{item.Name}");
+            }
+
+            Console.WriteLine("-----------------");
+
+            foreach (var item in books3)
+            {
+                Console.WriteLine($"{item.Name}");
+            }
+
+            Console.WriteLine("-----------------");
+
+            Console.WriteLine(books4);
+
+            Console.WriteLine($"{books5.Name}--{books5.Count}");
+
+            Console.WriteLine("-----------------");
+
+            foreach (var item in authors)
+            {
+                Console.WriteLine($"{item}");
+            }
+
+            Console.WriteLine("-----------------");
+
+            foreach (var item in nameBooks)
+            {
+                Console.WriteLine($"{item}");
             }
         }
     }
