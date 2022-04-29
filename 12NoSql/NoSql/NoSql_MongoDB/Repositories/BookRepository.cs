@@ -31,9 +31,13 @@ namespace NoSql_MongoDB.Repositories
             Collection.InsertMany(books);
         }
 
-        BsonDocument filter_IsMoreThanOne()
+        FilterDefinition<Book> filter_IsMoreThanOne()
         {
-            var filter = new BsonDocument("Count", new BsonDocument("$gt", 2));
+            var filter1 = Builders<Book>.Filter.Size("Genre", 5);
+
+            var filter2 = Builders<Book>.Filter.Gt("Count", 2);
+
+            var filter = Builders<Book>.Filter.And(new List<FilterDefinition<Book>> { filter1, filter2 });
 
             return filter;
         }
@@ -49,9 +53,9 @@ namespace NoSql_MongoDB.Repositories
 
         public List<Book> GetAll()
         {
-            var filter = new BsonDocument();
-
-            var books = Collection.Find(filter).ToList();
+            var filter2 = Builders<Book>.Filter.Size("Genre", 5);
+            
+            var books = Collection.Find(filter2).ToList();
 
             return books;
         }
@@ -83,7 +87,7 @@ namespace NoSql_MongoDB.Repositories
         }
         public Book GetBookMaxCount()
         {
-            var filter = new BsonDocument();
+            var filter = Builders<Book>.Filter.Size("Genre", 5);
 
             var books = Collection.Find(filter).SortByDescending(e=>e.Count).Limit(1).ToList();
 
@@ -121,7 +125,9 @@ namespace NoSql_MongoDB.Repositories
 
         public void Delete()
         {
-            
+            var filter = new BsonDocument();
+
+            Collection.DeleteMany(filter);
         }
     }
 }

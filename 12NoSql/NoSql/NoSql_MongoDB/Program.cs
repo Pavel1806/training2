@@ -18,23 +18,21 @@ namespace NoSql_MongoDB
 
             IRepository<Book> bookRepository = new BookRepository(connectionString, "test", "books");
 
-            
-            
-            Book book = new Book { Author = "Tolkien", Name = "Hobbit", Year = 2014, Count = 5};
-            Book book1 = new Book { Author = "Tolkien", Name = "Lord of the rings", Year = 2015, Count = 3};
-            Book book2 = new Book { Name = "Kolobok", Year = 2000, Count = 10};
-            Book book3 = new Book { Name = "Repka", Year = 2000, Count = 11};
-            Book book4 = new Book { Author = "Mihalkov", Name = "Dyadya Stiopa", Year = 2001, Count = 1};
+            //Book book = new Book { Author = "Tolkien", Name = "Hobbit", Year = 2014, Count = 5};
+            //Book book1 = new Book { Author = "Tolkien", Name = "Lord of the rings", Year = 2015, Count = 3};
+            //Book book2 = new Book { Name = "Kolobok", Year = 2000, Count = 10};
+            //Book book3 = new Book { Name = "Repka", Year = 2000, Count = 11};
+            //Book book4 = new Book { Author = "Mihalkov", Name = "Dyadya Stiopa", Year = 2001, Count = 1};
 
-            book.Genre[0] = "fantasy";
-            book1.Genre[0] = "fantasy";
-            book2.Genre[0] = "kids";
-            book3.Genre[0] = "kids";
-            book4.Genre[0] = "kids";
+            //book.Genre[0] = "fantasy";
+            //book1.Genre[0] = "fantasy";
+            //book2.Genre[0] = "kids";
+            //book3.Genre[0] = "kids";
+            //book4.Genre[0] = "kids";
 
-            List<Book> books = new List<Book> { book, book1, book2, book3, book4};
+            //List<Book> books = new List<Book> { book, book1, book2, book3, book4};
 
-            bookRepository.Create(books);
+            //bookRepository.Create(books);
 
             var books1 = bookRepository.NumberOfInstancesIsMoreThanOne();
 
@@ -50,9 +48,16 @@ namespace NoSql_MongoDB
 
             var nameBooks = bookRepository.GetBooksWithoutAnAuthor();
 
-            var books6 = bookRepository.GetAll();
+            //bookRepository.Delete();
+
+            //var books6 = bookRepository.GetAll();
 
             //bookRepository.UpdateNumberOfCopies();
+
+            //foreach (var item in books6)
+            //{
+            //    Console.WriteLine($"{item.Genre[0]}");
+            //}
 
             foreach (var item in books1)
             {
