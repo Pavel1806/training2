@@ -16,7 +16,8 @@ namespace NoSql_MongoDB.Intarfaces
         List<string> GetUniqueAuthor();
         List<string> GetBooksWithoutAnAuthor();
         void UpdateNumberOfCopies();
-
         void Delete();
+        void AddFavorityGenre();
+        void DeleteTheNumberOf3();
     }
 }

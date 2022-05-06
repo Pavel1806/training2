@@ -18,7 +18,7 @@ namespace NoSql_MongoDB
 
         public Book()
         {
-            Genre = new string[5];
+            Genre = new string[1];
         }
     }
 }

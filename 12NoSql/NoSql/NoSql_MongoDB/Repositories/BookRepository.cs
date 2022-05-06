@@ -127,6 +127,21 @@ namespace NoSql_MongoDB.Repositories
         {
             var filter = new BsonDocument();
 
+            Collection.DeleteMany(filter);  
+        }
+
+        public void AddFavorityGenre()
+        {
+            var filter = Builders<Book>.Filter.All("Genre", new List<string>() {"fantasy"});
+
+            var update = Builders<Book>.Update.AddToSet("Genre", "favority");
+
+            var result = Collection.UpdateMany(filter, update);
+        }
+        public void DeleteTheNumberOf3()
+        {
+            var filter = Builders<Book>.Filter.Lt("Count", 3);
+
             Collection.DeleteMany(filter);
         }
     }
