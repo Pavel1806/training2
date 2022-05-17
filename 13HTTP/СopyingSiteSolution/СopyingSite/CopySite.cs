@@ -10,42 +10,77 @@ namespace СopyingSite
     {
         private string link;
 
-        public CopySite(string link)
+        private string nameDirectory;
+
+        private string puth;
+
+        private Stack<string> hrefTags;
+
+        private Stack<string> addidHref;
+
+        public CopySite(string link, string nameDirectory)
         {
             this.link = link;
+            this.nameDirectory = nameDirectory;
+            hrefTags = new Stack<string>();
+            addidHref = new Stack<string>();
         }
 
         public void Copy()
         {
             using (var handler = new HttpClientHandler())
-            using(var client = new HttpClient(handler))
             {
-                var file = new FileStream("image.html", FileMode.Create);
+                using (var client = new HttpClient(handler))
+                {
+                    if(hrefTags.TryPop(out puth))
+                    {
+                        addidHref.Push(puth);
 
-                var t = client.GetAsync(link);
+                        puth = puth.TrimEnd(new char[] { '/' }).Replace("/", "\\");
+                    }
+                        
+                    if (!Directory.Exists(nameDirectory + puth))
+                        Directory.CreateDirectory(nameDirectory + puth);
 
-                var y = t.Result.Content.ReadAsStreamAsync();
+                    if (!File.Exists(nameDirectory + puth + "\\index.html"))
+                    {
+                        var file = new FileStream($"{nameDirectory}{puth}\\index.html", FileMode.Create);
 
-                y.Result.CopyTo(file);  
+                        var t = client.GetAsync(link);
+
+                        t.Result.Content.ReadAsStreamAsync().Result.CopyTo(file);
+
+                        file.Close();
+                    }
+                }
             }
+            
+            HtmlAgilityPack();
         }
 
-        public IEnumerable<string> HtmlAgilityPack()
+        public void HtmlAgilityPack()
         {
             HtmlDocument htmlSnippet = new HtmlDocument();
-            htmlSnippet.Load("D:\\VisualStudio\\repos\\training\\13HTTP\\СopyingSiteSolution\\SiteFolder\\bin\\Debug\\netcoreapp3.1\\image.html");
 
-            List<string> hrefTags = new List<string>();
+            var u = nameDirectory + puth + "\\index.html";
+
+            htmlSnippet.Load(nameDirectory + puth + "\\index.html");
 
             var t = htmlSnippet.DocumentNode.SelectNodes("//a[@href]");
 
             foreach (HtmlNode link in t)
             {
                 HtmlAttribute att = link.Attributes["href"];
-                hrefTags.Add(att.Value);
+                if (!hrefTags.Contains(att.Value))
+                    if (!addidHref.Contains(att.Value))
+                        if (att.Value.StartsWith("/"))
+                            if(att.Value.IndexOf("?") == -1)
+                                if (att.Value.IndexOf("html") == -1)
+                                    if (att.Value.IndexOf("php") == -1)
+                                        hrefTags.Push(att.Value);            
             }
 
-            return hrefTags;
+            Copy();
         }
     }
 }

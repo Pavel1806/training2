@@ -7,7 +7,7 @@ namespace SiteFolder
     {
         static void Main(string[] args)
         {
-            CopySite cs = new CopySite("https://www.mebelion.ru/");
+            CopySite cs = new CopySite("https://www.mebelion.ru/", "Mebelion");
 
             cs.Copy();
         }
