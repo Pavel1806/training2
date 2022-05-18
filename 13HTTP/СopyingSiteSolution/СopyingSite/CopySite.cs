@@ -12,11 +12,15 @@ namespace СopyingSite
 
         private string nameDirectory;
 
-        private string puth;
+        private string puthDirectory;
+
+        private string puthLink;
 
         private Stack<string> hrefTags;
 
         private Stack<string> addidHref;
+
+        public event Action<string> pageHandler;
 
         public CopySite(string link, string nameDirectory)
         {
@@ -28,59 +32,86 @@ namespace СopyingSite
 
         public void Copy()
         {
-            using (var handler = new HttpClientHandler())
+            hrefTags.Push(nameDirectory);
+
+            while (hrefTags.Count > 0)
             {
-                using (var client = new HttpClient(handler))
+                using (var handler = new HttpClientHandler())
                 {
-                    if(hrefTags.TryPop(out puth))
+                    using (var client = new HttpClient(handler))
                     {
-                        addidHref.Push(puth);
+                        if (hrefTags.TryPop(out puthLink))
+                        {
+                            addidHref.Push(puthLink);
 
-                        puth = puth.TrimEnd(new char[] { '/' }).Replace("/", "\\");
-                    }
-                        
-                    if (!Directory.Exists(nameDirectory + puth))
-                        Directory.CreateDirectory(nameDirectory + puth);
+                            pageHandler(link + puthLink);
 
-                    if (!File.Exists(nameDirectory + puth + "\\index.html"))
-                    {
-                        var file = new FileStream($"{nameDirectory}{puth}\\index.html", FileMode.Create);
+                            if (puthLink.IndexOf(nameDirectory) < 0)
+                            {
+                                puthDirectory = puthLink.TrimEnd(new char[] { '/' }).Replace("/", "\\").Insert(0, nameDirectory);
+                            }
+                            else
+                            {
+                                puthDirectory = puthLink;
+                                puthLink = null;
+                            }
+                        }
 
-                        var t = client.GetAsync(link);
+                        if (!Directory.Exists(puthDirectory))
+                            Directory.CreateDirectory(puthDirectory);
 
-                        t.Result.Content.ReadAsStreamAsync().Result.CopyTo(file);
+                        if (!File.Exists(puthDirectory + "\\index.html"))
+                        {
 
-                        file.Close();
+                            FileStream file = null;
+
+                            try
+                            {
+                                file = new FileStream($"{puthDirectory}\\index.html", FileMode.Create);
+                            }
+                            catch
+                            {
+                                Console.WriteLine($"Ошибка при выполнении {puthDirectory} ") ;
+                                continue;
+                            }
+                            
+                            var t = client.GetAsync(link + puthLink);
+
+                            t.Result.Content.ReadAsStreamAsync().Result.CopyTo(file);
+
+                            file.Close();
+                        }
                     }
                 }
+
+                HtmlAgilityPack();
             }
             
-            HtmlAgilityPack();
         }
 
         public void HtmlAgilityPack()
         {
             HtmlDocument htmlSnippet = new HtmlDocument();
 
-            var u = nameDirectory + puth + "\\index.html";
+            var u = puthDirectory + "\\index.html";
 
-            htmlSnippet.Load(nameDirectory + puth + "\\index.html");
+            htmlSnippet.Load(puthDirectory + "\\index.html");
 
             var t = htmlSnippet.DocumentNode.SelectNodes("//a[@href]");
 
-            foreach (HtmlNode link in t)
-            {
-                HtmlAttribute att = link.Attributes["href"];
-                if (!hrefTags.Contains(att.Value))
-                    if (!addidHref.Contains(att.Value))
-                        if (att.Value.StartsWith("/"))
-                            if(att.Value.IndexOf("?") == -1)
-                                if (att.Value.IndexOf("html") == -1)
-                                    if (att.Value.IndexOf("php") == -1)
-                                        hrefTags.Push(att.Value);            
-            }
-
-            Copy();
+            if(t != null)
+                foreach (HtmlNode link in t)
+                {
+                    HtmlAttribute att = link.Attributes["href"];
+                    if (!hrefTags.Contains(att.Value))
+                        if (!addidHref.Contains(att.Value))
+                            if (att.Value.StartsWith("/"))
+                                if(att.Value.IndexOf("?") == -1)
+                                    if (att.Value.IndexOf("html") == -1)
+                                        if (att.Value.IndexOf("php") == -1)
+                                            if (att.Value.IndexOf("page") == -1)
+                                                hrefTags.Push(att.Value);            
+                }
         }
     }
 }
