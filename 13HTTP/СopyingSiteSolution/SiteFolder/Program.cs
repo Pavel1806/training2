@@ -7,7 +7,7 @@ namespace SiteFolder
     {
         static void Main(string[] args)
         {
-            CopySite cs = new CopySite("https://www.mebelion.ru/", "Mebelion");
+            CopySite cs = new CopySite("https://www.cosmorelax.ru/", "Сosmorelax");
 
             cs.pageHandler += Cs_pageHandler;
 
