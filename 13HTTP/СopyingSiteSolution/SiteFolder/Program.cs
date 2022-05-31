@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using СopyingSite;
 
 namespace SiteFolder
@@ -7,7 +8,11 @@ namespace SiteFolder
     {
         static void Main(string[] args)
         {
-            CopySite cs = new CopySite("https://www.cosmorelax.ru/", "Сosmorelax");
+            List<string> list = new List<string>() { ".jpeg", ".jpg", ".png", ".pdf", ".svg" };
+
+            // ".jpeg", ".jpg", ".png", ".pdf", 
+
+            CopySite cs = new CopySite("https://www.cosmorelax.ru/", "мебель", list);
 
             cs.pageHandler += Cs_pageHandler;
 

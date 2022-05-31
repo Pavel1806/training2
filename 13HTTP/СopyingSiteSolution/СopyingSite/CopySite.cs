@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 
@@ -19,7 +20,9 @@ namespace СopyingSite
 
         private Stack<string> addidHref;
 
-        private Stack<string> jpeg;
+        private List<string> jpeg;
+
+        private List<string> extensions;
 
         /// <summary>
         /// Событие для вывода ссылки обрабатываемой страницы
@@ -31,13 +34,14 @@ namespace СopyingSite
         /// </summary>
         /// <param name="link">ссылка на сайт</param>
         /// <param name="nameDirectory">название папки, в которую будет идти сохранение </param>
-        public CopySite(string link, string nameDirectory)
+        public CopySite(string link, string nameDirectory, List<string> extensions)
         {
             this.link = link;
             this.nameDirectory = nameDirectory;
+            this.extensions = extensions;
             hrefTags = new Stack<string>();
             addidHref = new Stack<string>();
-            jpeg = new Stack<string>();
+            jpeg = new List<string>();
         }
 
         /// <summary>
@@ -45,13 +49,15 @@ namespace СopyingSite
         /// </summary>
         public void Copy()
         {
+            string domain = RemovingDomainFromLink();
+
             hrefTags.Push(nameDirectory);
 
             while (hrefTags.Count > 0)
             {
                 string pathLink = null;
 
-                string tyu = null;
+                string url = null;
 
                 if (hrefTags.TryPop(out pathLink))
                 {
@@ -59,17 +65,16 @@ namespace СopyingSite
 
                     if (pathLink.IndexOf(nameDirectory) < 0)
                     {
-                        pathDirectory = pathLink.TrimEnd(new char[] { '/' }).Replace("/", "\\").Insert(0, nameDirectory);
+                        pathDirectory = pathLink.TrimEnd(new char[] { '/' }).Replace(".html","").Replace("/", "\\").Insert(0, nameDirectory);
+                        url = domain + pathLink;
                     }
                     else
                     {
                         pathDirectory = pathLink;
-                        pathLink = null;
+                        url = link;
                     }
 
-                    tyu = link + pathLink;
-
-                    pageHandler(tyu);
+                    pageHandler(url);
                 }
 
                 if (!Directory.Exists(pathDirectory))
@@ -77,65 +82,92 @@ namespace СopyingSite
 
                 string pathFile = $"{pathDirectory}\\index.html";
 
-                HtmlAgilityPack(tyu);
+                HtmlAgilityPack(url);
 
-                CopyFile(pathFile, tyu);
+                CopyFile(pathFile, url);
 
-                CopyLinkJpeg(tyu);
+                //CopyLinkPicture(url);
 
-                if(jpeg.Count >= 1)
+                CopyLinkPictureHtml(pathFile);
+
+                if (jpeg.Count >= 1)
                 {
-                    while (jpeg.Count > 0)
+                    foreach (var it in extensions)
                     {
-                        string imgFile = $"{pathDirectory}\\{jpeg.Count}.jpeg";
-                        CopyFile(imgFile, jpeg.Pop());
+                        List<string> i = null;
+                        i = jpeg.Where(x => x.IndexOf(it) > -1).ToList();
+
+                        foreach (var item in i)
+                        {
+                            string link = null;
+
+                            if (!item.StartsWith("http") && item.StartsWith('/'))
+                            {
+                                link = item.Insert(0, domain);
+                            }
+                            else if(!item.StartsWith("http") && !item.StartsWith('/'))
+                            {
+                                jpeg.Remove(item);
+                                continue;
+                            }
+                            else
+                            {
+                                link = item;
+                            }
+
+                            string imgFile = $"{pathDirectory}\\{jpeg.Count}{it}";
+
+                            jpeg.Remove(item);
+
+                            CopyFile(imgFile, link);
+                        }
                     }
                 }
-              }
-            
+            } 
         }
 
+        /// <summary>
+        /// Выделение домена из ссылки, указанной в данных
+        /// </summary>
+        /// <returns>домен</returns>
+        string RemovingDomainFromLink()
+        {
+            int i = 0;
+            int k = 0;
+            string domain = null;
 
-        //void CopyJpeg()
-        //{
-        //    using (var handler = new HttpClientHandler())
-        //    {
-        //        using (var client = new HttpClient(handler))
-        //        {
-        //            client.BaseAddress = new Uri(link);
+            var quantity = link.Select(x => x.Equals('/')).Where(x=>x == true);
 
-        //            if (!File.Exists(pathDirectory + "\\index.html"))
-        //            {
+            for (var j = 0; j < link.Count(); j++)
+            {
+                if (link[j] == '/')
+                    ++i;
+                if (i == 3)
+                {
+                    k = j;
+                    break;
+                }    
+            }
 
-        //                FileStream file = null;
+            domain = link;
 
-        //                try
-        //                {
-        //                    file = new FileStream($"{pathDirectory}\\index.html", FileMode.Create);
-        //                }
-        //                catch
-        //                {
-        //                    Console.WriteLine($"Ошибка при выполнении {pathDirectory} ");
-        //                }
+            if (quantity.Count() > 2)
+                domain = link.Substring(0, k);
 
-        //                var t = client.GetAsync(pathLink);
+            return domain;
+        }
 
-        //                t.Result.Content.ReadAsStreamAsync().Result.CopyTo(file);
-
-        //                file.Close();
-        //            }
-        //        }
-        //    }
-        //}
-
+        /// <summary>
+        /// Копирование Html-страницы сайта в файл в папке
+        /// </summary>
+        /// <param name="pathFile"></param>
+        /// <param name="pathLink"></param>
         void CopyFile(string pathFile, string pathLink)
         {
             using (var handler = new HttpClientHandler())
             {
                 using (var client = new HttpClient(handler))
                 {
-                    //client.BaseAddress = new Uri(link);
-
                     if (!File.Exists(pathFile))
                     {
 
@@ -150,9 +182,7 @@ namespace СopyingSite
                             Console.WriteLine($"Ошибка при выполнении {pathDirectory} ");
                         }
 
-                        var t = client.GetAsync(pathLink);
-
-                        t.Result.Content.ReadAsStreamAsync().Result.CopyTo(file);
+                        client.GetAsync(pathLink).Result.Content.ReadAsStreamAsync().Result.CopyTo(file);
 
                         file.Close();
                     }
@@ -172,50 +202,75 @@ namespace СopyingSite
             var t = u.DocumentNode.SelectNodes("//a[@href]");
 
             if (t != null)
-                foreach (HtmlNode link in t)
+            {
+                var e = t.Select(s => s.Attributes["href"])
+                .Where(x => x.Value.StartsWith("/"))
+                .Where(x => x.Value.IndexOf("?") == -1)
+                .Where(x => x.Value.IndexOf("php") == -1);
+
+                foreach (var link in e)
                 {
-                    HtmlAttribute att = link.Attributes["href"];
-                    if (!hrefTags.Contains(att.Value))
-                        if (!addidHref.Contains(att.Value))
-                            if (att.Value.StartsWith("/"))
-                                if(att.Value.IndexOf("?") == -1)
-                                    if (att.Value.IndexOf("php") == -1)
-                                            hrefTags.Push(att.Value);            
+                    //HtmlAttribute att = link.Attributes["href"];
+                    if (!hrefTags.Contains(link.Value))
+                        if (!addidHref.Contains(link.Value))
+                            hrefTags.Push(link.Value);
                 }
+            }    
         }
 
-        void CopyLinkJpeg(string puthLink)
+        /// <summary>
+        /// Копирование всех ссылок с картинками с Html страницы
+        /// </summary>
+        /// <param name="puthLink">Ссылка на обрабатываемую страницу</param>
+        void CopyLinkPicture(string puthLink)
         {
             HtmlWeb htmlSnippet = new HtmlWeb();
 
             var u = htmlSnippet.Load(puthLink);
 
-            var t = u.DocumentNode.SelectNodes("//img");
+            foreach(var item in extensions)
+            {
+                var t = u.DocumentNode.Descendants().Select(e => e.Attributes.Select(x => x.Value).Where(c => c.IndexOf(item) > -1)); 
 
-            if (t != null)
-                foreach (HtmlNode link in t)
+                foreach (var tag in t)
                 {
-                    HtmlAttribute src = link.Attributes["src"];
-
-                    if (src != null)
+                    foreach (var it in tag)
                     {
-                        Console.WriteLine($"src - {src.Value}");
-
-                        if (src.Value.IndexOf("jpeg") != -1)
-                            jpeg.Push(src.Value);
+                        jpeg.Add(it);
                     }
-
-                    HtmlAttribute dataSrc = link.Attributes["data-src"];
-
-                    if (dataSrc != null)
-                    {
-                        Console.WriteLine($"data-src - {dataSrc.Value}");
-
-                        if (dataSrc.Value.IndexOf("jpeg") != -1)
-                            jpeg.Push(dataSrc.Value);
-                    }
-
                 }
+            }
+            var listWithoutDuplicates = jpeg.Distinct().ToList();
+
+            jpeg = listWithoutDuplicates;
+
+        }
+        /// <summary>
+        /// Копирование всех ссылок с картинками с Html страницы, которая находится в папке
+        /// </summary>
+        /// <param name="puthDirectory"></param>
+        void CopyLinkPictureHtml(string puthDirectory)
+        {
+            HtmlDocument htmlSnippet = new HtmlDocument();
+
+            htmlSnippet.Load(puthDirectory);
+
+            foreach (var item in extensions)
+            {
+                var t = htmlSnippet.DocumentNode.Descendants().Select(e => e.Attributes.Select(x => x.Value).Where(c => c.IndexOf(item) > -1)); 
+
+                foreach (var tag in t)
+                {
+                    foreach (var it in tag)
+                    {
+                        jpeg.Add(it);
+                    }
+                }
+            }
+            var listWithoutDuplicates = jpeg.Distinct().ToList();
+
+            jpeg = listWithoutDuplicates;
+
         }
     }
 }
