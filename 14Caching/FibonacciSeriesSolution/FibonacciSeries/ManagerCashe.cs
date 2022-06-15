@@ -9,9 +9,12 @@ namespace FibonacciSeries
     class ManagerCashe
     {
         INumberCashe cashe;
-        public ManagerCashe(INumberCashe cashe)
+
+        TimeSpan timespan;
+        public ManagerCashe(INumberCashe cashe, TimeSpan timespan)
         {
             this.cashe = cashe;
+            this.timespan = timespan;
         }
 
         public void Cashe()
@@ -32,7 +35,7 @@ namespace FibonacciSeries
 
                 numbers.Add(x);
 
-                cashe.Set(numbers, fib, DateTimeOffset.Now.AddSeconds(15));
+                cashe.Set(numbers, fib, timespan);
 
                 Thread.Sleep(3000);
 

@@ -14,9 +14,9 @@ namespace FibonacciSeries
             return (IEnumerable<int>)cashe.Get(key);
         }
 
-        public void Set(IEnumerable<int> numbers, string key, DateTimeOffset dateTimeOffset)
+        public void Set(IEnumerable<int> numbers, string key, TimeSpan timespan)
         {
-            cashe.Set(key, numbers, dateTimeOffset);
+            cashe.Set(key, numbers, DateTimeOffset.Now.Add(timespan));
         }
     }
 }

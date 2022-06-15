@@ -30,7 +30,7 @@ namespace FibonacciSeries
             return (IEnumerable<int>)serialiser.ReadObject(new MemoryStream(value));
         }
 
-        public void Set(IEnumerable<int> numbers, string key, DateTimeOffset dateTimeOffset)
+        public void Set(IEnumerable<int> numbers, string key, TimeSpan timespan)
         {
             var db = connectionRedis.GetDatabase();
 
@@ -44,9 +44,7 @@ namespace FibonacciSeries
                 
                 serialiser.WriteObject(stream, numbers);
 
-                var t = dateTimeOffset - DateTimeOffset.Now;
-
-                db.StringSet(key, stream.ToArray(), dateTimeOffset - DateTimeOffset.Now);
+                db.StringSet(key, stream.ToArray(), timespan);
             }
         }
     }

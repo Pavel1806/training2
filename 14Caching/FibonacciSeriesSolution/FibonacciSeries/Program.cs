@@ -9,9 +9,9 @@ namespace FibonacciSeries
     {
         static void Main(string[] args)
         {
-            ManagerCashe casheRedis = new ManagerCashe(new NumberRedisCashe("localhost"));
+            ManagerCashe casheRedis = new ManagerCashe(new NumberRedisCashe("localhost"), new TimeSpan(0, 0, 4));
 
-            ManagerCashe casheMemory = new ManagerCashe(new NumberMemoryCashe());
+            ManagerCashe casheMemory = new ManagerCashe(new NumberMemoryCashe(), new TimeSpan(0, 0, 4));
 
             Console.WriteLine("Кеш редис");
             

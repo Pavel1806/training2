@@ -8,7 +8,7 @@ namespace FibonacciSeries
     {
         IEnumerable<int> Get(string key);
 
-        void Set(IEnumerable<int> numbers, string key, DateTimeOffset dateTimeOffset);
+        void Set(IEnumerable<int> numbers, string key, TimeSpan timespan);
 
     }
 }
